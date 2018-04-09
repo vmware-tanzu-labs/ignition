@@ -10,9 +10,9 @@ import (
 	"testing"
 )
 
-// handleTestdata is a http.Handler that loads the given filename from the
+// HandleTestdata is a http.Handler that loads the given filename from the
 // testdata directory and serves it over HTTP.
-func handleTestdata(t *testing.T, s string, called func()) http.HandlerFunc {
+func HandleTestdata(t *testing.T, s string, called func()) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		called()
 		w.Header().Set("Content-Type", "application/json")
@@ -29,7 +29,7 @@ func handleTestdata(t *testing.T, s string, called func()) http.HandlerFunc {
 // ServeFromTestdata is a test HTTP server that serves files from the testdata directory.
 func ServeFromTestdata(t *testing.T, s string, called func()) *httptest.Server {
 	t.Helper()
-	return httptest.NewServer(handleTestdata(t, s, called))
+	return httptest.NewServer(HandleTestdata(t, s, called))
 }
 
 // StringFromTestdata reads the given file from the testdata dierctory and

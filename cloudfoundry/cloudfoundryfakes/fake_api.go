@@ -91,6 +91,19 @@ type FakeAPI struct {
 		result1 cfclient.Org
 		result2 error
 	}
+	GetOrgQuotaByNameStub        func(name string) (cfclient.OrgQuota, error)
+	getOrgQuotaByNameMutex       sync.RWMutex
+	getOrgQuotaByNameArgsForCall []struct {
+		name string
+	}
+	getOrgQuotaByNameReturns struct {
+		result1 cfclient.OrgQuota
+		result2 error
+	}
+	getOrgQuotaByNameReturnsOnCall map[int]struct {
+		result1 cfclient.OrgQuota
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -404,6 +417,57 @@ func (fake *FakeAPI) AssociateOrgManagerReturnsOnCall(i int, result1 cfclient.Or
 	}{result1, result2}
 }
 
+func (fake *FakeAPI) GetOrgQuotaByName(name string) (cfclient.OrgQuota, error) {
+	fake.getOrgQuotaByNameMutex.Lock()
+	ret, specificReturn := fake.getOrgQuotaByNameReturnsOnCall[len(fake.getOrgQuotaByNameArgsForCall)]
+	fake.getOrgQuotaByNameArgsForCall = append(fake.getOrgQuotaByNameArgsForCall, struct {
+		name string
+	}{name})
+	fake.recordInvocation("GetOrgQuotaByName", []interface{}{name})
+	fake.getOrgQuotaByNameMutex.Unlock()
+	if fake.GetOrgQuotaByNameStub != nil {
+		return fake.GetOrgQuotaByNameStub(name)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.getOrgQuotaByNameReturns.result1, fake.getOrgQuotaByNameReturns.result2
+}
+
+func (fake *FakeAPI) GetOrgQuotaByNameCallCount() int {
+	fake.getOrgQuotaByNameMutex.RLock()
+	defer fake.getOrgQuotaByNameMutex.RUnlock()
+	return len(fake.getOrgQuotaByNameArgsForCall)
+}
+
+func (fake *FakeAPI) GetOrgQuotaByNameArgsForCall(i int) string {
+	fake.getOrgQuotaByNameMutex.RLock()
+	defer fake.getOrgQuotaByNameMutex.RUnlock()
+	return fake.getOrgQuotaByNameArgsForCall[i].name
+}
+
+func (fake *FakeAPI) GetOrgQuotaByNameReturns(result1 cfclient.OrgQuota, result2 error) {
+	fake.GetOrgQuotaByNameStub = nil
+	fake.getOrgQuotaByNameReturns = struct {
+		result1 cfclient.OrgQuota
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAPI) GetOrgQuotaByNameReturnsOnCall(i int, result1 cfclient.OrgQuota, result2 error) {
+	fake.GetOrgQuotaByNameStub = nil
+	if fake.getOrgQuotaByNameReturnsOnCall == nil {
+		fake.getOrgQuotaByNameReturnsOnCall = make(map[int]struct {
+			result1 cfclient.OrgQuota
+			result2 error
+		})
+	}
+	fake.getOrgQuotaByNameReturnsOnCall[i] = struct {
+		result1 cfclient.OrgQuota
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAPI) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -419,6 +483,8 @@ func (fake *FakeAPI) Invocations() map[string][][]interface{} {
 	defer fake.associateOrgAuditorMutex.RUnlock()
 	fake.associateOrgManagerMutex.RLock()
 	defer fake.associateOrgManagerMutex.RUnlock()
+	fake.getOrgQuotaByNameMutex.RLock()
+	defer fake.getOrgQuotaByNameMutex.RUnlock()
 	return fake.invocations
 }
 

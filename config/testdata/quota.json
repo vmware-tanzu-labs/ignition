@@ -1,0 +1,30 @@
+{
+	"total_results": 1,
+	"total_pages": 1,
+	"prev_url": null,
+	"next_url": null,
+	"resources": [
+		{
+			"metadata": {
+				"guid": "00000000-0000-0000-0000-000000000001",
+				"url": "/v2/quota_definitions/00000000-0000-0000-0000-000000000001",
+				"created_at": "2018-04-01T16:00:00Z",
+				"updated_at": "2018-04-01T16:00:00Z"
+			},
+			"entity": {
+				"name": "ignition",
+				"non_basic_services_allowed": true,
+				"total_services": 100,
+				"total_routes": 1000,
+				"total_private_domains": -1,
+				"memory_limit": 10240,
+				"trial_db_allowed": false,
+				"instance_memory_limit": -1,
+				"app_instance_limit": -1,
+				"app_task_limit": -1,
+				"total_service_keys": -1,
+				"total_reserved_route_ports": 1
+			}
+		}
+	]
+}

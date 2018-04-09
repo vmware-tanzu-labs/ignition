@@ -6,4 +6,5 @@ type API interface {
 	OrganizationQuerier
 	SpaceCreator
 	RoleGrantor
+	QuotaQuerier
 }

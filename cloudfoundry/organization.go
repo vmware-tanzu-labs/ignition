@@ -20,7 +20,7 @@ type Organization struct {
 	URL                         string `json:"url"`
 }
 
-// OrganizationQuerier is used to query a Cloud Controller API or organizations
+// OrganizationQuerier is used to query a Cloud Controller API for organizations
 type OrganizationQuerier interface {
 	ListOrgsByQuery(query url.Values) ([]cfclient.Org, error)
 }
