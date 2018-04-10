@@ -17,12 +17,13 @@ import (
 
 // Authorizer is used to authenticate and authorize the user
 type Authorizer struct {
-	Variant      string          `envconfig:"auth_variant" default:"p-identity"`            // IGNITION_AUTH_VARIANT
-	ServiceName  string          `envconfig:"auth_servicename" default:"ignition-identity"` // IGNITION_AUTH_SERVICENAME
-	ClientID     string          `envconfig:"client_id"`                                    // IGNITION_CLIENT_ID << REQUIRED
-	ClientSecret string          `envconfig:"client_secret"`                                // IGNITION_CLIENT_SECRET << REQUIRED
-	URL          string          `envconfig:"auth_url"`                                     // IGNITION_AUTH_URL << REQUIRED
-	Domain       string          `envconfig:"authorized_domain"`                            // IGNITION_AUTHORIZED_DOMAIN << REQUIRED
+	Variant      string          `envconfig:"auth_variant" default:"p-identity"`                    // IGNITION_AUTH_VARIANT
+	ServiceName  string          `envconfig:"auth_servicename" default:"ignition-identity"`         // IGNITION_AUTH_SERVICENAME
+	ClientID     string          `envconfig:"client_id"`                                            // IGNITION_CLIENT_ID << REQUIRED
+	ClientSecret string          `envconfig:"client_secret"`                                        // IGNITION_CLIENT_SECRET << REQUIRED
+	URL          string          `envconfig:"auth_url"`                                             // IGNITION_AUTH_URL << REQUIRED
+	Domain       string          `envconfig:"authorized_domain"`                                    // IGNITION_AUTHORIZED_DOMAIN << REQUIRED
+	Scopes       []string        `envconfig:"auth_scopes" default:"openid,profile,user_attributes"` // IGNITION_AUTH_SCOPES
 	Provider     *Provider       `ignored:"true"`
 	Verifier     openid.Verifier `ignored:"true"`
 	Fetcher      user.Fetcher    `ignored:"true"`
@@ -135,6 +136,7 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 		return nil, err
 	}
 	a.Provider = &p
+	// TODO: Warn when a.Scopes includes items that are not in p.ScopesSupported
 	a.Verifier = openid.NewVerifier(p.Issuer, a.ClientID, p.JWKSURL)
 	a.Fetcher = &openid.Fetcher{
 		Verifier: a.Verifier,
@@ -146,7 +148,7 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 			AuthURL:  p.AuthURL,
 			TokenURL: p.TokenURL,
 		},
-		Scopes: p.ScopesSupported,
+		Scopes: a.Scopes,
 	}
 	return &a, nil
 }

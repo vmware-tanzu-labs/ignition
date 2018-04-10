@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
+	"github.com/pivotalservices/ignition/config"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -16,14 +17,21 @@ func testAPI(t *testing.T, when spec.G, it spec.S) {
 	var api *API
 	it.Before(func() {
 		RegisterTestingT(t)
-		api = &API{}
+		api = &API{
+			Ignition: &config.Ignition{
+				Authorizer:   &config.Authorizer{},
+				Deployment:   &config.Deployment{},
+				Experimenter: &config.Experimenter{},
+				Server:       &config.Server{},
+			},
+		}
 	})
 
 	it("returns the URI correctly", func() {
-		api.Scheme = "https"
-		api.Domain = "example.net"
+		api.Ignition.Server.Scheme = "https"
+		api.Ignition.Server.Domain = "example.net"
 		Expect(api.URI()).To(Equal("https://example.net"))
-		api.Port = 1234
+		api.Ignition.Server.Port = 1234
 		Expect(api.URI()).To(Equal("https://example.net:1234"))
 	})
 

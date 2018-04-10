@@ -104,6 +104,17 @@ type FakeAPI struct {
 		result1 cfclient.OrgQuota
 		result2 error
 	}
+	GetTokenStub        func() (string, error)
+	getTokenMutex       sync.RWMutex
+	getTokenArgsForCall []struct{}
+	getTokenReturns     struct {
+		result1 string
+		result2 error
+	}
+	getTokenReturnsOnCall map[int]struct {
+		result1 string
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -468,6 +479,49 @@ func (fake *FakeAPI) GetOrgQuotaByNameReturnsOnCall(i int, result1 cfclient.OrgQ
 	}{result1, result2}
 }
 
+func (fake *FakeAPI) GetToken() (string, error) {
+	fake.getTokenMutex.Lock()
+	ret, specificReturn := fake.getTokenReturnsOnCall[len(fake.getTokenArgsForCall)]
+	fake.getTokenArgsForCall = append(fake.getTokenArgsForCall, struct{}{})
+	fake.recordInvocation("GetToken", []interface{}{})
+	fake.getTokenMutex.Unlock()
+	if fake.GetTokenStub != nil {
+		return fake.GetTokenStub()
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.getTokenReturns.result1, fake.getTokenReturns.result2
+}
+
+func (fake *FakeAPI) GetTokenCallCount() int {
+	fake.getTokenMutex.RLock()
+	defer fake.getTokenMutex.RUnlock()
+	return len(fake.getTokenArgsForCall)
+}
+
+func (fake *FakeAPI) GetTokenReturns(result1 string, result2 error) {
+	fake.GetTokenStub = nil
+	fake.getTokenReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAPI) GetTokenReturnsOnCall(i int, result1 string, result2 error) {
+	fake.GetTokenStub = nil
+	if fake.getTokenReturnsOnCall == nil {
+		fake.getTokenReturnsOnCall = make(map[int]struct {
+			result1 string
+			result2 error
+		})
+	}
+	fake.getTokenReturnsOnCall[i] = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAPI) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -485,6 +539,8 @@ func (fake *FakeAPI) Invocations() map[string][][]interface{} {
 	defer fake.associateOrgManagerMutex.RUnlock()
 	fake.getOrgQuotaByNameMutex.RLock()
 	defer fake.getOrgQuotaByNameMutex.RUnlock()
+	fake.getTokenMutex.RLock()
+	defer fake.getTokenMutex.RUnlock()
 	return fake.invocations
 }
 

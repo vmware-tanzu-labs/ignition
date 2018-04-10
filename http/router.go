@@ -8,71 +8,46 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/dghubble/sessions"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/pivotalservices/ignition/cloudfoundry"
+	"github.com/pivotalservices/ignition/config"
 	"github.com/pivotalservices/ignition/http/organization"
 	"github.com/pivotalservices/ignition/http/session"
-	"github.com/pivotalservices/ignition/uaa"
-	"github.com/pivotalservices/ignition/user"
-	"golang.org/x/oauth2"
 )
 
 // API is the Ignition web app
 type API struct {
-	AuthorizedDomain string
-	SessionSecret    string
-	Domain           string
-	Port             int
-	ServePort        int
-	WebRoot          string
-	Scheme           string
-	APIURL           string
-	AppsURL          string
-	UAAURL           string
-	UAAOrigin        string
-	UserConfig       *oauth2.Config
-	APIConfig        *oauth2.Config
-	APIUsername      string
-	APIPassword      string
-	Fetcher          user.Fetcher
-	SessionStore     sessions.Store
-	CCAPI            cloudfoundry.API
-	UAAAPI           uaa.API
-	OrgPrefix        string
-	QuotaID          string
-	SpaceName        string
+	Ignition *config.Ignition
 }
 
 // URI is the combination of the scheme, domain, and port
 func (a *API) URI() string {
-	s := fmt.Sprintf("%s://%s", a.Scheme, a.Domain)
-	if a.Port != 0 {
-		s = fmt.Sprintf("%s:%v", s, a.Port)
+	s := fmt.Sprintf("%s://%s", a.Ignition.Server.Scheme, a.Ignition.Server.Domain)
+	if a.Ignition.Server.Port != 0 {
+		s = fmt.Sprintf("%s:%v", s, a.Ignition.Server.Port)
 	}
 	return s
 }
 
 // Run starts a server listening on the given serveURI
 func (a *API) Run() error {
-	a.UserConfig.RedirectURL = fmt.Sprintf("%s%s", a.URI(), "/oauth2")
+	a.Ignition.Authorizer.Config.RedirectURL = fmt.Sprintf("%s%s", a.URI(), "/oauth2")
 	r := a.createRouter()
-	return http.ListenAndServe(fmt.Sprintf(":%v", a.ServePort), handlers.LoggingHandler(os.Stdout, handlers.CORS()(r)))
+	return http.ListenAndServe(fmt.Sprintf(":%v", a.Ignition.Server.ServePort), handlers.LoggingHandler(os.Stdout, handlers.CORS()(r)))
 }
 
 func (a *API) createRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.Handle("/", ensureHTTPS(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		http.ServeFile(w, req, filepath.Join(a.WebRoot, "index.html"))
+		http.ServeFile(w, req, filepath.Join(a.Ignition.Server.WebRoot, "index.html"))
 	}))).Name("index")
-	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
-	r.Handle("/profile", ensureHTTPS(session.PopulateContext(Authorize(profileHandler(), a.AuthorizedDomain), a.SessionStore)))
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.Ignition.Server.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
+	r.Handle("/profile", ensureHTTPS(session.PopulateContext(Authorize(profileHandler(), a.Ignition.Authorizer.Domain), a.Ignition.Server.SessionStore)))
 
-	orgHandler := organization.Handler(a.AppsURL, a.OrgPrefix, a.QuotaID, a.SpaceName, a.CCAPI)
-	orgHandler = ensureUser(orgHandler, a.UAAAPI, a.UAAOrigin, a.SessionStore)
-	orgHandler = Authorize(orgHandler, a.AuthorizedDomain)
-	orgHandler = session.PopulateContext(orgHandler, a.SessionStore)
+	orgHandler := organization.Handler(a.Ignition.Deployment.AppsURL, a.Ignition.Experimenter.OrgPrefix, a.Ignition.Experimenter.QuotaID, a.Ignition.Experimenter.SpaceName, a.Ignition.Deployment.CC)
+	orgHandler = ensureUser(orgHandler, a.Ignition.Deployment.UAA, a.Ignition.Deployment.UAAOrigin, a.Ignition.Server.SessionStore)
+	orgHandler = Authorize(orgHandler, a.Ignition.Authorizer.Domain)
+	orgHandler = session.PopulateContext(orgHandler, a.Ignition.Server.SessionStore)
 	orgHandler = ensureHTTPS(orgHandler)
 	r.Handle("/organization", orgHandler)
 

@@ -88,9 +88,7 @@ func NewDeployment(name string) (*Deployment, error) {
 		return nil, errors.New("api_password is required")
 	}
 
-	tokenEndpoint := fmt.Sprintf("%s/oauth/token", d.UAAURL)
-
-	config := cfclient.Config{
+	config := &cfclient.Config{
 		ApiAddress:        d.APIURL,
 		Username:          d.Username,
 		Password:          d.Password,
@@ -104,14 +102,9 @@ func NewDeployment(name string) (*Deployment, error) {
 		config.ClientSecret = d.ClientSecret
 	}
 
-	cfAPI := &cfclient.Client{
+	d.CC = &cloudfoundry.Client{
 		Config: config,
-		Endpoint: cfclient.Endpoint{
-			AuthEndpoint:  fmt.Sprintf("%s/oauth/authorize", d.UAAURL),
-			TokenEndpoint: tokenEndpoint,
-		},
 	}
-	d.CC = cfAPI
 	uaaAPI := &uaa.Client{
 		URL:          d.UAAURL,
 		ClientID:     d.ClientID,

@@ -18,12 +18,12 @@ import (
 
 func (a *API) handleAuth(r *mux.Router) {
 	stateConfig := gologin.DefaultCookieConfig
-	if a.Domain == "localhost" {
+	if a.Ignition.Server.Domain == "localhost" {
 		stateConfig = gologin.DebugOnlyCookieConfig
 	}
-	r.Handle("/login", ensureHTTPS(dgoauth2.StateHandler(stateConfig, dgoauth2.LoginHandler(a.UserConfig, nil)))).Name("login")
-	r.Handle("/oauth2", ensureHTTPS(dgoauth2.StateHandler(stateConfig, CallbackHandler(a.UserConfig, a.Fetcher, session.IssueSession(a.SessionStore, a.UAAAPI), session.LogoutHandler(a.SessionStore))))).Name("oauth2")
-	r.Handle("/logout", ensureHTTPS(session.LogoutHandler(a.SessionStore))).Name("logout")
+	r.Handle("/login", ensureHTTPS(dgoauth2.StateHandler(stateConfig, dgoauth2.LoginHandler(a.Ignition.Authorizer.Config, nil)))).Name("login")
+	r.Handle("/oauth2", ensureHTTPS(dgoauth2.StateHandler(stateConfig, CallbackHandler(a.Ignition.Authorizer.Config, a.Ignition.Authorizer.Fetcher, session.IssueSession(a.Ignition.Server.SessionStore, a.Ignition.Deployment.UAA), session.LogoutHandler(a.Ignition.Server.SessionStore))))).Name("oauth2")
+	r.Handle("/logout", ensureHTTPS(session.LogoutHandler(a.Ignition.Server.SessionStore))).Name("logout")
 }
 
 func ensureUser(next http.Handler, uaa uaa.API, origin string, s sessions.Store) http.Handler {

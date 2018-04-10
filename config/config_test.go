@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -12,6 +13,14 @@ import (
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
+
+type info struct {
+	AuthorizationEndpoint  string `json:"authorization_endpoint"`
+	TokenEndpoint          string `json:"token_endpoint"`
+	AppSSHEndpoint         string `json:"app_ssh_endpoint"`
+	DopplerLoggingEndpoint string `json:"doppler_logging_endpoint"`
+	RoutingEndpoint        string `json:"routing_endpoint"`
+}
 
 func TestNew(t *testing.T) {
 	spec.Run(t, "New", testNew, spec.Report(report.Terminal{}))
@@ -85,6 +94,26 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 				}
 				if strings.Contains(r.URL.Path, "quota") {
 					handler := internal.HandleTestdata(t, quotaFile, func() {})
+					handler.ServeHTTP(w, r)
+					return
+				}
+				if strings.Contains(r.URL.Path, "info") {
+					handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						i := info{
+							AuthorizationEndpoint:  s.URL,
+							TokenEndpoint:          s.URL,
+							DopplerLoggingEndpoint: s.URL,
+							RoutingEndpoint:        s.URL,
+							AppSSHEndpoint:         s.URL,
+						}
+						json.NewEncoder(w).Encode(&i)
+						return
+					})
+					handler.ServeHTTP(w, r)
+					return
+				}
+				if strings.Contains(r.URL.Path, "token") {
+					handler := internal.HandleTestdata(t, "token.json", func() {})
 					handler.ServeHTTP(w, r)
 					return
 				}
