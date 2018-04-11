@@ -6,12 +6,5 @@ applications:
   buildpack: binary_buildpack
   command: ./ignition
   services:
-    - identity
-  env:
-    IGNITION_AUTH_VARIANT: "p-identity"
-    IGNITION_ISSUER_URL: "https://ignition.uaa.run.pcfbeta.io/oauth/token"
-    IGNITION_AUTH_URL: "https://ignition.login.run.pcfbeta.io/oauth/authorize"
-    IGNITION_TOKEN_URL: "https://ignition.login.run.pcfbeta.io/oauth/token"
-    IGNITION_JWKS_URL: "https://ignition.login.run.pcfbeta.io/token_keys"
-    IGNITION_AUTH_SCOPES: "openid,profile,user_attributes"
-    IGNITION_AUTHORIZED_DOMAIN: "@pivotal.io"
+    - ignition-config
+    - ignition-identity

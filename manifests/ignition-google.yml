@@ -5,11 +5,7 @@ applications:
   instances: 2
   buildpack: binary_buildpack
   command: ./ignition
+  services:
+    - ignition-google-config
   env:
-    IGNITION_AUTH_VARIANT: "google"
-    IGNITION_ISSUER_URL: "https://accounts.google.com"
-    IGNITION_AUTH_URL: "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent"
-    IGNITION_TOKEN_URL: "https://www.googleapis.com/oauth2/v4/token"
-    IGNITION_JWKS_URL: "https://www.googleapis.com/oauth2/v3/certs"
-    IGNITION_AUTH_SCOPES: "openid,email,profile"
-    IGNITION_AUTHORIZED_DOMAIN: "@pivotal.io"
+    IGNITION_CONFIG_SERVICENAME: "ignition-google-config"

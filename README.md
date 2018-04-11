@@ -35,58 +35,95 @@ We welcome pull requests to add additional functionality or fix issues. Please f
 
 ### Configure the application
 #### Authentication
-The app can be configured to authenticate against google or the PCF SSO tile.
+We recommend you use the [Single Sign-On for PCF](https://network.pivotal.io/products/pivotal_single_sign-on_service) service to authenticate and authorize users for the application. It is possible that an OpenID Connect compliant provider can be used directly, but it is not recommended.
 
-To authenticate against google:
-1. [Generate a google OAuth2 client id and secret](https://console.developers.google.com/apis/credentials)
-1. Ensure you have a username and password that can be used to connect to the
-  Cloud Controller API for your target Cloud Foundry deployment
-1. Set the following environment variables
-  * IGNITION_AUTH_VARIANT="openid"
-  * IGNITION_CLIENT_ID="[client id generated from google]"
-  * IGNITION_CLIENT_SECRET="[client secret generated from google]"
-  * IGNITION_AUTH_URL="https://accounts.google.com/o/oauth2/v2/auth?prompt=consent"
-  * IGNITION_TOKEN_URL="https://www.googleapis.com/oauth2/v4/token"
-  * IGNITION_JWKS_URL="https://www.googleapis.com/oauth2/v3/certs"
-  * IGNITION_ISSUER_URL="https://accounts.google.com"
-  * IGNITION_AUTH_SCOPES="openid,email,profile"
-  * IGNITION_AUTHORIZED_DOMAIN="@[your-domain]"
-  * IGNITION_SESSION_SECRET="your-session-secret-here"
-  * IGNITION_UAA_URL="https://login.[system-domain]"
-  * IGNITION_APPS_URL="https://apps.[system-domain]"
-  * IGNITION_CCAPI_URL="https://api.[system-domain]"
-  * IGNITION_CCAPI_USERNAME="your-robot-username-here"
-  * IGNITION_CCAPI_PASSWORD="your-robot-password-here"
-  * IGNITION_CCAPI_CLIENT_ID="cf"
-  * IGNITION_CCAPI_CLIENT_SECRET=""
-  * IGNITION_QUOTA_ID="your-quota-id-here"
-  * IGNITION_UAA_ORIGIN="origin-here"
+To authenticate users with the Single Sign-On for PCF service:
+1. Configure the Single Sign-On for PCF tile in your PCF foundation http://docs.pivotal.io/p-identity/
+1. Create a Single Sign-On service instance named `ignition-identity` in your space, and bind it to the ignition app
+1. Create a user provided service `cf cups ignition-config -p /path/to/ignition-config.json` (see below for an `ignition-config.json` template)
 
-To authenticate against PCF SSO tile:
-1. Configure the PCF SSO tile in your PCF foundation http://docs.pivotal.io/p-identity/
-1. Create a PCF SSO service instance named `identity` in your space, and bind it to the ignition app
-1. Set the following environment variables
-  * IGNITION_AUTH_VARIANT: "p-identity"
-  * IGNITION_ISSUER_URL: "https://ignition.uaa.[system-domain]/oauth/token"
-  * IGNITION_AUTH_URL: "https://ignition.login.[system-domain]/oauth/authorize"
-  * IGNITION_TOKEN_URL: "https://ignition.login.[system-domain]/oauth/token"
-  * IGNITION_JWKS_URL: "https://ignition.login.[system-domain]/token_keys"
-  * IGNITION_AUTH_SCOPES: "openid,profile,user_attributes"
-  * IGNITION_AUTHORIZED_DOMAIN="@[your-domain]"
-  * IGNITION_SESSION_SECRET="your-session-secret-here"
-  * IGNITION_UAA_URL="https://login.[system-domain]"
-  * IGNITION_APPS_URL="https://apps.[system-domain]"
-  * IGNITION_CCAPI_URL="https://api.[system-domain]"
-  * IGNITION_CCAPI_USERNAME="your-robot-username-here"
-  * IGNITION_CCAPI_PASSWORD="your-robot-password-here"
-  * IGNITION_CCAPI_CLIENT_ID="cf"
-  * IGNITION_CCAPI_CLIENT_SECRET=""
-  * IGNITION_QUOTA_ID="your-quota-id-here"
-  * IGNITION_UAA_ORIGIN="origin-here"
+#### Templates For `ignition-config.json`
+
+When you have a bound Single Sign-On service instance:
+
+```json
+{
+  "session_secret": "",
+  "system_domain": "run.example.net",
+  "uaa_origin": "okta",
+  "api_username": "ignition",
+  "api_password": "password",
+  "authorized_domain": "@example.net"
+}
+```
+
+When you want to use Google (or an equivalent OpenID Connect provider) to authenticate users (i.e. you do _not_ have a bound Single Sign-On service instance):
+
+Generate a Google [OAuth2 Client ID and Secret](https://console.developers.google.com/apis/credentials), and use them below:
+
+```json
+{
+  "session_secret": "",
+  "system_domain": "run.example.net",
+  "uaa_origin": "okta",
+  "api_username": "ignition",
+  "api_password": "password",
+  "authorized_domain": "@example.net",
+  "auth_variant": "openid",
+  "auth_scopes": "openid,profile,email",
+  "auth_url": "https://accounts.google.com",
+  "client_id": "your-client-id-here",
+  "client_secret": "your-client-secret-here"  
+}
+```
 
 ### Run the application locally
 
-1. Make sure you're in the repository root directory: `cd $GOPATH/src/github.com/pivotalservices/ignition`
+You will need to ensure your environment contains the relevant variables for the app to run. Here is an example `$GOPATH/src/github.com/pivotalservices/ignition/credentials/export.sh`:
+
+```sh
+#!/bin/sh
+
+### Server ###
+export IGNITION_SCHEME="http" # IGNITION_SCHEME allows you to use http for local development; it is always set to HTTPS on PCF
+export IGNITION_DOMAIN="localhost" # IGNITION_DOMAIN allows you to set the domain that will be used to access the app
+export IGNITION_PORT="3000" # IGNITION_PORT is the port used to access ignition; this is always set to 443 on PCF
+export IGNITION_SERVE_PORT="3000" # IGNITION_SERVE_PORT is the port that ignition listens on; this is usually different to IGNITION_PORT except during development
+# export IGNITION_WEB_ROOT="" # IGNITION_WEB_ROOT can be used to store JS / CSS / image resources at a non-default path
+export IGNITION_SESSION_SECRET="insert-a-random-session-secret-here" # IGNITION_SESSION_SECRET is used to encrypt the contents of the secure cookie used to store a user's session information
+
+### Your CF Deployment ###
+export IGNITION_SYSTEM_DOMAIN="run.example.net" # IGNITION_SYSTEM_DOMAIN is what you get when you take the "api." away from the Cloud Controller API URL
+export IGNITION_UAA_ORIGIN="okta" # IGNITION_UAA_ORIGIN is the origin for a user that logs in to Cloud Foundry with your single sign on solution of choice
+export IGNITION_API_CLIENT_ID="cf" # IGNITION_API_CLIENT_ID is almost always cf
+export IGNITION_API_CLIENT_SECRET="" # IGNITION_API_CLIENT_SECRET is almost always blank
+export IGNITION_API_USERNAME="ignition" # IGNITION_API_USERNAME is the username for the user that can create Cloud Foundry organizations
+export IGNITION_API_PASSWORD="password" # IGNITION_API_PASSWORD is the password for the user that can create Cloud Foundry organizations
+
+### Developer Experimentation ###
+export IGNITION_ORG_PREFIX="ignition" # IGNITION_ORG_PREFIX is used to generate a developer's org name (e.g. ignition-testuser)
+export IGNITION_QUOTA_NAME="ignition" # IGNITION_QUOTA_NAME is used to generate a developer's org with the appropriate quota
+export IGNITION_SPACE_NAME="playground" # IGNITION_SPACE_NAME is used to create the initial space in a developer's org
+
+### Authorization ###
+export IGNITION_AUTHORIZED_DOMAIN="@example.net" # IGNITION_AUTHORIZED_DOMAIN is used to validate that users are allowed to access the application
+
+### Authentication ###
+### Single Sign-On ###
+export IGNITION_AUTH_VARIANT="openid" # IGNITION_AUTH_VARIANT is openid when you're working locally because you don't have a bound sso service instance
+export IGNITION_CLIENT_ID="your-service-instance-client-id"
+export IGNITION_CLIENT_SECRET="your-service-instance-client-secret"
+export IGNITION_AUTH_URL="https://ignition.login.run.example.net"
+
+### Google ###
+# export IGNITION_AUTH_VARIANT="openid"
+# export IGNITION_CLIENT_ID="your-client-id-here"
+# export IGNITION_CLIENT_SECRET="your-client-secret-here"
+# export IGNITION_AUTH_URL="https://accounts.google.com"
+# export IGNITION_AUTH_SCOPES="openid,profile,email" # IGNITION_AUTH_SCOPES is not the same for Google as it is for the a Single Sign-On instance, and this allows you to override it with a comma separated list of values
+```
+
+1. Make sure you're in the repository root directory: `cd $GOPATH/src/github.com/pivotalservices/ignition && . ./credentials/export.sh`
 1. Ensure the web bundle is built: `pushd web && yarn install && yarn build && popd`
 1. Start the go web app: `go run cmd/ignition/main.go`
 1. Navigate to http://localhost:3000
