@@ -38,7 +38,7 @@ We welcome pull requests to add additional functionality or fix issues. Please f
 The app can be configured to authenticate against google or the PCF SSO tile.
 
 To authenticate against google:
-1. [Generate a goolge OAuth2 client id and secret](https://console.developers.google.com/apis/credentials)
+1. [Generate a google OAuth2 client id and secret](https://console.developers.google.com/apis/credentials)
 1. Ensure you have a username and password that can be used to connect to the
   Cloud Controller API for your target Cloud Foundry deployment
 1. Set the following environment variables
@@ -50,11 +50,11 @@ To authenticate against google:
   * IGNITION_JWKS_URL="https://www.googleapis.com/oauth2/v3/certs"
   * IGNITION_ISSUER_URL="https://accounts.google.com"
   * IGNITION_AUTH_SCOPES="openid,email,profile"
-  * IGNITION_AUTHORIZED_DOMAIN="@pivotal.io"
+  * IGNITION_AUTHORIZED_DOMAIN="@[your-domain]"
   * IGNITION_SESSION_SECRET="your-session-secret-here"
-  * IGNITION_UAA_URL="https://login.run.pcfbeta.io"
-  * IGNITION_APPS_URL="https://apps.run.pcfbeta.io"
-  * IGNITION_CCAPI_URL="https://api.run.pcfbeta.io"
+  * IGNITION_UAA_URL="https://login.[system-domain]"
+  * IGNITION_APPS_URL="https://apps.[system-domain]"
+  * IGNITION_CCAPI_URL="https://api.[system-domain]"
   * IGNITION_CCAPI_USERNAME="your-robot-username-here"
   * IGNITION_CCAPI_PASSWORD="your-robot-password-here"
   * IGNITION_CCAPI_CLIENT_ID="cf"
@@ -67,16 +67,16 @@ To authenticate against PCF SSO tile:
 1. Create a PCF SSO service instance named `identity` in your space, and bind it to the ignition app
 1. Set the following environment variables
   * IGNITION_AUTH_VARIANT: "p-identity"
-  * IGNITION_ISSUER_URL: "https://ignition.uaa.run.pcfbeta.io/oauth/token"
-  * IGNITION_AUTH_URL: "https://ignition.login.run.pcfbeta.io/oauth/authorize"
-  * IGNITION_TOKEN_URL: "https://ignition.login.run.pcfbeta.io/oauth/token"
-  * IGNITION_JWKS_URL: "https://ignition.login.run.pcfbeta.io/token_keys"
+  * IGNITION_ISSUER_URL: "https://ignition.uaa.[system-domain]/oauth/token"
+  * IGNITION_AUTH_URL: "https://ignition.login.[system-domain]/oauth/authorize"
+  * IGNITION_TOKEN_URL: "https://ignition.login.[system-domain]/oauth/token"
+  * IGNITION_JWKS_URL: "https://ignition.login.[system-domain]/token_keys"
   * IGNITION_AUTH_SCOPES: "openid,profile,user_attributes"
-  * IGNITION_AUTHORIZED_DOMAIN="@pivotal.io"
+  * IGNITION_AUTHORIZED_DOMAIN="@[your-domain]"
   * IGNITION_SESSION_SECRET="your-session-secret-here"
-  * IGNITION_UAA_URL="https://login.run.pcfbeta.io"
-  * IGNITION_APPS_URL="https://apps.run.pcfbeta.io"
-  * IGNITION_CCAPI_URL="https://api.run.pcfbeta.io"
+  * IGNITION_UAA_URL="https://login.[system-domain]"
+  * IGNITION_APPS_URL="https://apps.[system-domain]"
+  * IGNITION_CCAPI_URL="https://api.[system-domain]"
   * IGNITION_CCAPI_USERNAME="your-robot-username-here"
   * IGNITION_CCAPI_PASSWORD="your-robot-password-here"
   * IGNITION_CCAPI_CLIENT_ID="cf"
