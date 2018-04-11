@@ -59,6 +59,11 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 			a.Variant = variant
 		}
 
+		scopes, ok := s.CredentialString("auth_scopes")
+		if ok && strings.TrimSpace(scopes) != "" {
+			a.Scopes = strings.Split(scopes, ",")
+		}
+
 		domain, ok := s.CredentialString("authorized_domain")
 		if ok && strings.TrimSpace(domain) != "" {
 			a.Domain = domain

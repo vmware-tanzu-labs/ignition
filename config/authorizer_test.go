@@ -35,6 +35,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("PORT")
 
 		os.Unsetenv("IGNITION_AUTH_VARIANT")
+		os.Unsetenv("IGNITION_AUTH_SCOPES")
 		os.Unsetenv("IGNITION_CLIENT_ID")
 		os.Unsetenv("IGNITION_CLIENT_SECRET")
 		os.Unsetenv("IGNITION_AUTH_URL")
@@ -191,6 +192,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 							"instance_name": "ignition-config",
 							"credentials": {
 								"auth_variant": "test-service-auth-variant",
+								"auth_scopes": "testscope,anotherscope",
 								"authorized_domain": "test-service-authorized-domain",
 								"auth_url": "%s",
 								"client_id": "test-service-client-id",
@@ -207,6 +209,8 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(a).NotTo(BeNil())
 				Expect(a.Variant).To(Equal("test-service-auth-variant"))
+				Expect(a.Scopes[0]).To(Equal("testscope"))
+				Expect(a.Scopes[1]).To(Equal("anotherscope"))
 				Expect(a.ClientID).To(Equal("test-service-client-id"))
 				Expect(a.ClientSecret).To(Equal("test-service-client-secret"))
 				Expect(a.URL).To(Equal(s.URL))
