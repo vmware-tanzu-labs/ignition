@@ -91,6 +91,7 @@ export IGNITION_PORT="3000" # IGNITION_PORT is the port used to access ignition;
 export IGNITION_SERVE_PORT="3000" # IGNITION_SERVE_PORT is the port that ignition listens on; this is usually different to IGNITION_PORT except during development
 # export IGNITION_WEB_ROOT="" # IGNITION_WEB_ROOT can be used to store JS / CSS / image resources at a non-default path
 export IGNITION_SESSION_SECRET="insert-a-random-session-secret-here" # IGNITION_SESSION_SECRET is used to encrypt the contents of the secure cookie used to store a user's session information
+export IGNITION_COMPANY_NAME="Company Name" # IGNITION_COMPANY_NAME is used to white label the UX for ignition
 
 ### Your CF Deployment ###
 export IGNITION_SYSTEM_DOMAIN="run.example.net" # IGNITION_SYSTEM_DOMAIN is what you get when you take the "api." away from the Cloud Controller API URL

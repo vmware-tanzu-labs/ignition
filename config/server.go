@@ -20,6 +20,7 @@ type Server struct {
 	ServePort     int            `envconfig:"serve_port" default:"3000"`                    // IGNITION_SERVE_PORT
 	WebRoot       string         `ignored:"true"`                                           // Not configurable
 	SessionSecret string         `envconfig:"session_secret"`                               // IGNITION_SESSION_SECRET << REQUIRED
+	CompanyName   string         `envconfig:"company_name" default:"Pivotal"`               // IGNITION_COMPANY_NAME
 	SessionStore  sessions.Store `ignored:"true"`                                           // Not configurable
 }
 
@@ -76,6 +77,11 @@ func (s *Server) ConfigureServer(name string) error {
 		sessionSecret, ok := service.CredentialString("session_secret")
 		if ok && strings.TrimSpace(sessionSecret) != "" {
 			s.SessionSecret = sessionSecret
+		}
+
+		companyName, ok := service.CredentialString("company_name")
+		if ok && strings.TrimSpace(companyName) != "" {
+			s.CompanyName = companyName
 		}
 	}
 	d := strings.TrimSpace(strings.ToLower(s.Domain))

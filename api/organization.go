@@ -1,4 +1,4 @@
-package organization
+package api
 
 import (
 	"encoding/json"
@@ -11,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Handler retrieves or creates the user's development organization
-func Handler(appsURL string, orgPrefix string, quotaID string, spaceName string, a cloudfoundry.API) http.Handler {
+// OrganizationHandler retrieves or creates the user's development organization
+func OrganizationHandler(appsURL string, orgPrefix string, quotaID string, spaceName string, a cloudfoundry.API) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		userID, accountName, err := userInfoFromContext(req.Context())
@@ -27,7 +27,7 @@ func Handler(appsURL string, orgPrefix string, quotaID string, spaceName string,
 			return
 		}
 
-		orgName := Name(orgPrefix, accountName)
+		orgName := OrganizationName(orgPrefix, accountName)
 		org, err := FindOrgForUser(orgName, appsURL, userID, quotaID, a)
 		if err != nil {
 			switch err.(type) {
@@ -129,7 +129,7 @@ func FindOrgForUser(name string, appsURL string, userID string, quotaID string, 
 }
 
 // Name returns the organization name for the user's development organization
-func Name(orgPrefix string, accountName string) string {
+func OrganizationName(orgPrefix string, accountName string) string {
 	orgPrefix = strings.ToLower(orgPrefix)
 	accountName = strings.ToLower(accountName)
 	if strings.Contains(accountName, "@") {

@@ -10,8 +10,8 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/pivotalservices/ignition/api"
 	"github.com/pivotalservices/ignition/config"
-	"github.com/pivotalservices/ignition/http/organization"
 	"github.com/pivotalservices/ignition/http/session"
 )
 
@@ -42,14 +42,18 @@ func (a *API) createRouter() *mux.Router {
 		http.ServeFile(w, req, filepath.Join(a.Ignition.Server.WebRoot, "index.html"))
 	}))).Name("index")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.Ignition.Server.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
-	r.Handle("/profile", ensureHTTPS(session.PopulateContext(Authorize(profileHandler(), a.Ignition.Authorizer.Domain), a.Ignition.Server.SessionStore)))
+	r.Handle("/api/v1/profile", ensureHTTPS(session.PopulateContext(Authorize(api.ProfileHandler(), a.Ignition.Authorizer.Domain), a.Ignition.Server.SessionStore)))
+	r.Handle("/api/v1/info", ensureHTTPS(api.InfoHandler(api.Info{
+		CompanyName:              a.Ignition.Server.CompanyName,
+		ExperimentationSpaceName: a.Ignition.Experimenter.SpaceName,
+	})))
 
-	orgHandler := organization.Handler(a.Ignition.Deployment.AppsURL, a.Ignition.Experimenter.OrgPrefix, a.Ignition.Experimenter.QuotaID, a.Ignition.Experimenter.SpaceName, a.Ignition.Deployment.CC)
+	orgHandler := api.OrganizationHandler(a.Ignition.Deployment.AppsURL, a.Ignition.Experimenter.OrgPrefix, a.Ignition.Experimenter.QuotaID, a.Ignition.Experimenter.SpaceName, a.Ignition.Deployment.CC)
 	orgHandler = ensureUser(orgHandler, a.Ignition.Deployment.UAA, a.Ignition.Deployment.UAAOrigin, a.Ignition.Server.SessionStore)
 	orgHandler = Authorize(orgHandler, a.Ignition.Authorizer.Domain)
 	orgHandler = session.PopulateContext(orgHandler, a.Ignition.Server.SessionStore)
 	orgHandler = ensureHTTPS(orgHandler)
-	r.Handle("/organization", orgHandler)
+	r.Handle("/api/v1/organization", orgHandler)
 
 	a.handleAuth(r)
 	r.HandleFunc("/403", func(w http.ResponseWriter, r *http.Request) {

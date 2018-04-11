@@ -1,4 +1,4 @@
-package http
+package api_test
 
 import (
 	"net/http"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
+	"github.com/pivotalservices/ignition/api"
 	"github.com/pivotalservices/ignition/user"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
@@ -23,7 +24,7 @@ func testProfileHandler(t *testing.T, when spec.G, it spec.S) {
 	it("returns unauthorized when there is no profile", func() {
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		w := httptest.NewRecorder()
-		profileHandler().ServeHTTP(w, req)
+		api.ProfileHandler().ServeHTTP(w, req)
 		Expect(w.Code).To(Equal(http.StatusUnauthorized))
 	})
 
@@ -35,7 +36,7 @@ func testProfileHandler(t *testing.T, when spec.G, it spec.S) {
 			Email:       "test@example.net",
 		}))
 		w := httptest.NewRecorder()
-		profileHandler().ServeHTTP(w, req)
+		api.ProfileHandler().ServeHTTP(w, req)
 		Expect(w.Code).To(Equal(http.StatusOK))
 		Expect(w.Body.String()).To(ContainSubstring("test@example.net"))
 	})

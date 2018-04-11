@@ -1,4 +1,4 @@
-package http
+package api
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"github.com/pivotalservices/ignition/user"
 )
 
-func profileHandler() http.Handler {
+func ProfileHandler() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		p, err := user.ProfileFromContext(req.Context())
 		if err != nil {

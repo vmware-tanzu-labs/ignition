@@ -1,5 +1,5 @@
 async function getOrgUrl () {
-  const response = await window.fetch('/organization', {
+  const response = await window.fetch('/api/v1/organization', {
     credentials: 'same-origin'
   })
   if (!response.ok) {

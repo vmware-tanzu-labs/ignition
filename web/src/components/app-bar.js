@@ -91,7 +91,7 @@ class MenuAppBar extends React.Component {
       return
     }
     window
-      .fetch('/profile', {
+      .fetch('/api/v1/profile', {
         credentials: 'same-origin'
       })
       .then(response => {
