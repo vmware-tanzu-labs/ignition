@@ -50,7 +50,8 @@ const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
     }
   },
   [theme.breakpoints.down('sm')]: {
-    width: '90vw'
+    width: '90vw',
+    fontSize: '1.50rem'
   }
 })
 
@@ -88,6 +89,7 @@ const styles = theme => ({
   spacesSpeech: makeSpeechBubbleClass(theme, speech2Background, 'black'),
 
   // CTA 1: Welcome
+  // container
   ctaWelcome: {
     backgroundImage: `url("${milkyWay}")`,
     backgroundRepeat: 'no-repeat',
@@ -101,9 +103,12 @@ const styles = theme => ({
     flexDirection: 'row',
     justifyContent: 'center',
     [theme.breakpoints.down('sm')]: {
-      padding: 2 * theme.spacing.unit
+      padding: 2 * theme.spacing.unit,
+      height: '90vh',
+      alignItems: 'center'
     }
   },
+  // character
   rocketMan: {
     backgroundImage: `url("${rocketMan}")`,
     height: '450px',
@@ -115,6 +120,7 @@ const styles = theme => ({
   },
 
   // CTA 2: three steps
+  // container
   ctaSteps: {
     position: 'relative', // for arrow icon absolute positioning
 
@@ -129,8 +135,19 @@ const styles = theme => ({
     fontSize: '32px',
     display: 'flex',
     flexDirection: 'row',
-    minWidth: '1224px'
+    // minWidth: '1224px',
+    [theme.breakpoints.down('sm')]: {
+      width: '100vw',
+      height: '120vh',
+      padding: 2 * theme.spacing.unit,
+      fontSize: '2rem',
+      paddingBottom: '20vh',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+      alignItems: 'center'
+    }
   },
+  // character
   pewPew: {
     backgroundImage: `url("${pewPew}")`,
     backgroundRepeat: 'no-repeat',
@@ -150,12 +167,22 @@ const styles = theme => ({
     flexGrow: '1',
     '& p': {
       maxWidth: '258px',
-      margin: 'auto'
+      margin: 'auto',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1.5rem'
+      }
+    },
+    [theme.breakpoints.down('sm')]: {
+      borderTop: 'none',
+      flexGrow: '0'
     }
   },
   stepImage: {
     height: '146px',
-    marginTop: '-82px'
+    marginTop: '-82px',
+    [theme.breakpoints.down('sm')]: {
+      height: '25vw'
+    }
   },
 
   // CTA 3: spaces overview
@@ -168,7 +195,11 @@ const styles = theme => ({
     padding: 6 * theme.spacing.unit,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    [theme.breakpoints.down('sm')]: {
+      height: '85vh',
+      alignItems: 'center'
+    }
   },
   moonMan: {
     backgroundImage: `url("${moonMan}")`,
@@ -183,7 +214,10 @@ const styles = theme => ({
     position: 'absolute',
     bottom: '10px',
     height: '100px',
-    marginLeft: '45%'
+    marginLeft: '45%',
+    [theme.breakpoints.down('sm')]: {
+      margin: '0'
+    }
   }
 })
 
