@@ -226,6 +226,7 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
     // screen less than 960
     [theme.breakpoints.down('sm')]: {
       height: '85vh',
