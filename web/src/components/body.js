@@ -19,7 +19,7 @@ import step3 from './../../images/step-3.svg'
 import pivotalLogo from './../../images/pivotal.png'
 import arrowIcon from './../../images/icon_arrow.svg'
 
-const makeSpeechBubbleClass = (bgColor, fgColor) => ({
+const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
   position: 'relative', // so we can overlap the button
 
   padding: '24px',
@@ -44,7 +44,13 @@ const makeSpeechBubbleClass = (bgColor, fgColor) => ({
     borderTop: `25px solid ${bgColor}`,
     borderBottom: '25px solid transparent',
     right: '-175px',
-    top: '75px'
+    top: '75px',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '90vw'
   }
 })
 
@@ -78,8 +84,8 @@ const styles = theme => ({
     letterSpacing: '3px',
     boxShadow: '-5px 5px 3px rgba(0, 0, 0, 0.29)'
   },
-  welcomeSpeech: makeSpeechBubbleClass(speech1Background, 'white'),
-  spacesSpeech: makeSpeechBubbleClass(speech2Background, 'black'),
+  welcomeSpeech: makeSpeechBubbleClass(theme, speech1Background, 'white'),
+  spacesSpeech: makeSpeechBubbleClass(theme, speech2Background, 'black'),
 
   // CTA 1: Welcome
   ctaWelcome: {
@@ -93,13 +99,19 @@ const styles = theme => ({
 
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    [theme.breakpoints.down('sm')]: {
+      padding: 2 * theme.spacing.unit
+    }
   },
   rocketMan: {
     backgroundImage: `url("${rocketMan}")`,
     height: '450px',
     width: '450px',
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: 'no-repeat',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
   },
 
   // CTA 2: three steps
@@ -126,7 +138,10 @@ const styles = theme => ({
     backgroundSize: 'auto',
     height: '450px',
     width: '450px',
-    flexShrink: 0
+    flexShrink: 0,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
   },
   step: {
     textAlign: 'center',
