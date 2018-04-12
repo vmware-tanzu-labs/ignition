@@ -49,6 +49,11 @@ const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
       display: 'none'
     }
   },
+  // screen over 1920
+  [theme.breakpoints.up('xl')]: {
+    fontSize: '2.75rem'
+  },
+  // screen less than 960
   [theme.breakpoints.down('sm')]: {
     width: '90vw',
     fontSize: '1.50rem'
@@ -96,15 +101,17 @@ const styles = theme => ({
     backgroundPosition: 'center',
     backgroundColor: '#00253e',
     backgroundSize: 'cover',
-    height: '700px',
+    height: '89vh',
     padding: 6 * theme.spacing.unit,
+    alignItems: 'center',
 
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       padding: 2 * theme.spacing.unit,
-      height: '90vh',
+      height: '80vh',
       alignItems: 'center'
     }
   },
@@ -114,6 +121,12 @@ const styles = theme => ({
     height: '450px',
     width: '450px',
     backgroundRepeat: 'no-repeat',
+    // screen over 1920
+    [theme.breakpoints.up('xl')]: {
+      height: '600px',
+      width: '600px'
+    },
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     }
@@ -131,11 +144,10 @@ const styles = theme => ({
     backgroundColor: '#00253e',
     color: 'white',
     padding: 6 * theme.spacing.unit,
-    height: '700px',
+    height: '77vh',
     fontSize: '32px',
     display: 'flex',
     flexDirection: 'row',
-    // minWidth: '1224px',
     [theme.breakpoints.down('sm')]: {
       width: '100vw',
       height: '120vh',
@@ -156,6 +168,12 @@ const styles = theme => ({
     height: '450px',
     width: '450px',
     flexShrink: 0,
+    // screen over 1920
+    [theme.breakpoints.up('xl')]: {
+      height: '600px',
+      width: '600px'
+    },
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     }
@@ -165,21 +183,33 @@ const styles = theme => ({
     borderTop: '9px solid #FFC712',
     marginTop: '64px',
     flexGrow: '1',
-    '& p': {
-      maxWidth: '258px',
-      margin: 'auto',
-      [theme.breakpoints.down('sm')]: {
-        fontSize: '1.5rem'
-      }
+    // screen over 1920
+    [theme.breakpoints.up('xl')]: {
+      marginTop: '87px'
     },
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       borderTop: 'none',
       flexGrow: '0'
+    },
+    '& p': {
+      maxWidth: '258px',
+      margin: 'auto',
+      // screen less than 960
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1.5rem'
+      }
     }
   },
   stepImage: {
     height: '146px',
     marginTop: '-82px',
+    // screen over 1920
+    [theme.breakpoints.up('xl')]: {
+      height: '240px',
+      marginTop: '-148px'
+    },
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       height: '25vw'
     }
@@ -191,11 +221,12 @@ const styles = theme => ({
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
-    height: '700px',
+    height: '80vh',
     padding: 6 * theme.spacing.unit,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       height: '85vh',
       alignItems: 'center'
@@ -205,7 +236,12 @@ const styles = theme => ({
     backgroundImage: `url("${moonMan}")`,
     height: '450px',
     width: '400px',
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: 'no-repeat',
+    // screen over 1920
+    [theme.breakpoints.up('xl')]: {
+      height: '600px',
+      width: '600px'
+    }
   },
   temporary: {
     alignItems: 'center'
@@ -215,6 +251,7 @@ const styles = theme => ({
     bottom: '10px',
     height: '100px',
     marginLeft: '45%',
+    // screen less than 960
     [theme.breakpoints.down('sm')]: {
       margin: '0'
     }
