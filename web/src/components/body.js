@@ -53,10 +53,22 @@ const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
   [theme.breakpoints.up('xl')]: {
     fontSize: '2.75rem'
   },
-  // screen less than 960
-  [theme.breakpoints.down('sm')]: {
-    width: '90vw',
-    fontSize: '1.50rem'
+  // screen less 600
+  '@media screen and (orientation:portrait)': {
+    [theme.breakpoints.down('sm')]: {
+      width: '90vw',
+      fontSize: '1.50rem'
+    }
+  },
+  '@media screen and (orientation:landscape)': {
+    [theme.breakpoints.down('sm')]: {
+      width: '95vw',
+      maxHeight: '60vh',
+      fontSize: '1.25rem',
+      '& p': {
+        marginTop: '0'
+      }
+    }
   }
 })
 
@@ -108,7 +120,7 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    // screen less than 960
+    // screen less 600
     [theme.breakpoints.down('sm')]: {
       padding: 2 * theme.spacing.unit,
       height: '80vh',
@@ -126,7 +138,7 @@ const styles = theme => ({
       height: '600px',
       width: '600px'
     },
-    // screen less than 960
+    // screen less 600
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     }
@@ -148,15 +160,24 @@ const styles = theme => ({
     fontSize: '32px',
     display: 'flex',
     flexDirection: 'row',
-    [theme.breakpoints.down('sm')]: {
-      width: '100vw',
-      height: '120vh',
-      padding: 2 * theme.spacing.unit,
-      fontSize: '2rem',
-      paddingBottom: '20vh',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      alignItems: 'center'
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        width: '100vw',
+        height: '120vh',
+        padding: 2 * theme.spacing.unit,
+        fontSize: '2rem',
+        paddingBottom: '20vh',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-around'
+      }
+    },
+    '@media screen and (orientation:landscape)': {
+      [theme.breakpoints.down('sm')]: {
+        height: '100vh',
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+      }
     }
   },
   // character
@@ -173,7 +194,7 @@ const styles = theme => ({
       height: '600px',
       width: '600px'
     },
-    // screen less than 960
+    // screen less 600
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     }
@@ -187,7 +208,7 @@ const styles = theme => ({
     [theme.breakpoints.up('xl')]: {
       marginTop: '87px'
     },
-    // screen less than 960
+    // screen less 600
     [theme.breakpoints.down('sm')]: {
       borderTop: 'none',
       flexGrow: '0'
@@ -195,7 +216,7 @@ const styles = theme => ({
     '& p': {
       maxWidth: '258px',
       margin: 'auto',
-      // screen less than 960
+      // screen less 600
       [theme.breakpoints.down('sm')]: {
         fontSize: '1.5rem'
       }
@@ -209,9 +230,16 @@ const styles = theme => ({
       height: '240px',
       marginTop: '-148px'
     },
-    // screen less than 960
-    [theme.breakpoints.down('sm')]: {
-      height: '25vw'
+    // screen less 600
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        height: '25vw'
+      }
+    },
+    '@media screen and (orientation:landscape)': {
+      [theme.breakpoints.down('sm')]: {
+        height: '36vh'
+      }
     }
   },
 
@@ -227,7 +255,7 @@ const styles = theme => ({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    // screen less than 960
+    // screen less 600
     [theme.breakpoints.down('sm')]: {
       height: '85vh',
       alignItems: 'center'
@@ -252,7 +280,7 @@ const styles = theme => ({
     bottom: '10px',
     height: '100px',
     marginLeft: '45%',
-    // screen less than 960
+    // screen less 600
     [theme.breakpoints.down('sm')]: {
       margin: '0'
     }
