@@ -121,10 +121,17 @@ const styles = theme => ({
     flexDirection: 'row',
     justifyContent: 'center',
     // screen less 600
-    [theme.breakpoints.down('sm')]: {
-      padding: 2 * theme.spacing.unit,
-      height: '80vh',
-      alignItems: 'center'
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        padding: 2 * theme.spacing.unit,
+        height: '80vh',
+        alignItems: 'center'
+      }
+    },
+    '@media screen and (orientation:landscape)': {
+      [theme.breakpoints.down('sm')]: {
+        height: '65vh'
+      }
     }
   },
   // character
