@@ -23,3 +23,6 @@ vendor/
 debug*
 /yarn-error.log
 /cmd/tester
+build
+.idea
+ignition-config.json
