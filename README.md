@@ -39,8 +39,19 @@ We recommend you use the [Single Sign-On for PCF](https://network.pivotal.io/pro
 
 To authenticate users with the Single Sign-On for PCF service:
 1. Configure the Single Sign-On for PCF tile in your PCF foundation http://docs.pivotal.io/p-identity/
-1. Create a Single Sign-On service instance named `ignition-identity` in your space, and bind it to the ignition app
+
+   Single Sign-On service is a multi tenancy openid connect server. It can integrate with other openid connect, ldap and saml servers as identity providers
+1. Create a Single Sign-On service instance named `ignition-identity` in your space.
 1. Create a user provided service `cf cups ignition-config -p /path/to/ignition-config.json` (see below for an `ignition-config.json` template)
+1. Build ignition `./build_local.sh`
+1. Push Ignition to Cloud Foundry and bind both services
+
+  ```
+  cf push ignition -p build -c './ignition-linux' -b binary_buildpack --no-start
+  cf bind-service ignition ignition-config
+  cf bind-service ignition ignition-identity
+  cf start ignition
+  ```
 
 #### Templates For `ignition-config.json`
 
@@ -48,12 +59,12 @@ When you have a bound Single Sign-On service instance:
 
 ```json
 {
-  "session_secret": "",
-  "system_domain": "run.example.net",
-  "uaa_origin": "okta",
-  "api_username": "ignition",
-  "api_password": "password",
-  "authorized_domain": "@example.net"
+  "session_secret": "encrypt the secure cookie used to store a user's session",
+  "system_domain": "system domain of PAS",
+  "uaa_origin": "okta|saml|ldap",
+  "api_username": "cloud controller username",
+  "api_password": "cloud controller password",
+  "authorized_domain": "@example.net make sure open id token user profile email domain"
 }
 ```
 
