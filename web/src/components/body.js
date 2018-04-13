@@ -113,7 +113,7 @@ const styles = theme => ({
     backgroundPosition: 'center',
     backgroundColor: '#00253e',
     backgroundSize: 'cover',
-    height: '89vh',
+    height: '80vh',
     padding: 6 * theme.spacing.unit,
     alignItems: 'center',
 
@@ -132,6 +132,10 @@ const styles = theme => ({
       [theme.breakpoints.down('sm')]: {
         height: '65vh'
       }
+    },
+    // screen over 1920
+    [theme.breakpoints.up('xl')]: {
+      height: '89vh'
     }
   },
   // character
