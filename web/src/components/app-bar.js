@@ -32,10 +32,21 @@ const styles = theme => ({
   userContainer: {
     display: 'flex',
     flexGrow: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        justifyContent: 'flex-end'
+      }
+    }
   },
   name: {
-    flexGrow: 1
+    flexGrow: 1,
+    paddingRight: '10px',
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        display: 'none'
+      }
+    }
   },
   icon: {
     flexShrink: 1
