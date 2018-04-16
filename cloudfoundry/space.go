@@ -12,8 +12,8 @@ type SpaceCreator interface {
 	CreateSpace(req cfclient.SpaceRequest) (cfclient.Space, error)
 }
 
-// CreateSpace creates an space with the given name
-// the given user
+// CreateSpace creates a space with the given name
+// for the given user
 func CreateSpace(name string, organizationID string, userID string, a SpaceCreator) error {
 	req := cfclient.SpaceRequest{
 		Name:             strings.ToLower(name),

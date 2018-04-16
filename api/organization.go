@@ -99,7 +99,7 @@ func CreateOrgForUser(name string, appsURL string, userID string, quotaID string
 	return org, nil
 }
 
-// FindOrgForUser returns an orgNotFoundError if the org is not found, and a
+// FindOrgForUser returns an OrgNotFoundError if the org is not found, and a
 // single org with a name or quota match, when it exists
 func FindOrgForUser(name string, appsURL string, userID string, quotaID string, a cloudfoundry.OrganizationQuerier) (*cloudfoundry.Organization, error) {
 	o, err := cloudfoundry.OrgsForUserID(userID, appsURL, a)
