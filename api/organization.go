@@ -58,7 +58,7 @@ func (o OrgNotFoundError) Error() string {
 	return fmt.Sprintf("organization %s not found", o)
 }
 
-// CreateOrgForUser creates an org, a default space, and creates or retreieves
+// CreateOrgForUser creates an org, a default space, and creates or retrieves
 // the user and then assigns that user to org manager, org auditor, space manager,
 // space developer, and space auditor roles
 func CreateOrgForUser(name string, appsURL string, userID string, quotaID string, spaceName string, a cloudfoundry.API) (*cloudfoundry.Organization, error) {
@@ -128,7 +128,7 @@ func FindOrgForUser(name string, appsURL string, userID string, quotaID string, 
 	return &quotaMatches[0], nil
 }
 
-// Name returns the organization name for the user's development organization
+// OrganizationName of the user's development organization
 func OrganizationName(orgPrefix string, accountName string) string {
 	orgPrefix = strings.ToLower(orgPrefix)
 	accountName = strings.ToLower(accountName)
