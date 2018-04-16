@@ -44,6 +44,7 @@
     "dev": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --config webpack.prod.js --watch",
+    "devwatch": "webpack --config webpack.dev.js --watch",
     "devbuild": "webpack --config webpack.dev.js",
     "lint": "eslint '{src,test}/**/*.js' ",
     "test": "jest",
