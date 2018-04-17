@@ -302,7 +302,9 @@ class Body extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      orgUrl: ''
+      orgUrl: '',
+      companyName: props.companyName || 'Pivotal',
+      spaceName: props.spaceName || 'development'
     }
   }
 
@@ -315,6 +317,33 @@ class Body extends React.Component {
     }
   }
 
+  componentDidMount () {
+    if (this.props && this.props.testing) {
+      return
+    }
+    window
+      .fetch('/api/v1/info', {
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            window.location.replace('/login')
+            return
+          }
+          window.location.replace('/' + response.status)
+          return
+        }
+        return response.json()
+      })
+      .then(info => {
+        this.setState({
+          spaceName: info.ExperimentationSpaceName,
+          companyName: info.CompanyName
+        })
+      })
+  }
+
   renderWelcomeInfo () {
     const { classes } = this.props
 
@@ -322,7 +351,7 @@ class Body extends React.Component {
       <div className={classes.ctaWelcome}>
         <div>
           <div className={classes.welcomeSpeech}>
-            {introMessages.map((msg, i) => <p key={i}>{msg}</p>)}
+            {introMessages.map((msg, i) => <p key={i}>{msg(this.state.companyName)}</p>)}
             {this.renderButton('Give Me an Org!', classes.speechButton)}
           </div>
         </div>
@@ -384,7 +413,7 @@ class Body extends React.Component {
       <div className={classes.ctaSpaces}>
         <div>
           <div className={classes.spacesSpeech}>
-            {spaceMessages.map((msg, i) => <p key={i}>{msg}</p>)}
+            {spaceMessages.map((msg, i) => <p key={i}>{msg(this.state.spaceName)}</p>)}
             {this.renderButton(
               `I'm ready. Go to my org!`,
               classes.speechButton
@@ -425,19 +454,21 @@ class Body extends React.Component {
 }
 
 Body.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  testing: PropTypes.bool,
+  companyName: PropTypes.string,
+  spaceName: PropTypes.string,
 }
 
+
 const introMessages = [
-  // TODO: replace 'Pivotal' with <CompanyName> from component state..
-  'Pivotal is giving you a free playground to push (deploy) apps and experiment.  PCF uses orgs to organize things.',
-  'Orgs contain spaces, and each space can host apps.  You will get your very own org and can create as many spaces as you like.'
+  (c) => `${c} is giving you a free playground to push (deploy) apps and experiment.  PCF uses orgs to organize things.`,
+  (c) => 'Orgs contain spaces, and each space can host apps.  You will get your very own org and can create as many spaces as you like.'
 ]
 
 const spaceMessages = [
-  // TODO: replace 'development' with <SpaceName> from component state...
-  'Spaces can act like environments, and your first space is called "development".',
-  'Once apps are pushed to a space, you can bind them to services like MySQL and NewRelic by visiting the "Marketplace" link in PCF.'
+  (s) => `Spaces can act like environments, and your first space is called "${s}".`,
+  (s) => 'Once apps are pushed to a space, you can bind them to services like MySQL and NewRelic by visiting the "Marketplace" link in PCF.'
 ]
 
 export default withStyles(styles)(Body)
