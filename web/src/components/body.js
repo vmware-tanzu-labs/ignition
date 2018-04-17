@@ -17,7 +17,6 @@ import step1 from './../../images/step-1.svg'
 import step2 from './../../images/step-2.svg'
 import step3 from './../../images/step-3.svg'
 import pivotalLogo from './../../images/pivotal.png'
-import arrowIcon from './../../images/icon_arrow.svg'
 
 const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
   position: 'relative', // so we can overlap the button
@@ -158,8 +157,6 @@ const styles = theme => ({
   // CTA 2: three steps
   // container
   ctaSteps: {
-    position: 'relative', // for arrow icon absolute positioning
-
     backgroundImage: `url("${deepSpace}")`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
@@ -285,16 +282,6 @@ const styles = theme => ({
   },
   temporary: {
     alignItems: 'center'
-  },
-  arrow: {
-    position: 'absolute',
-    bottom: '10px',
-    height: '100px',
-    marginLeft: '45%',
-    // screen less 600
-    [theme.breakpoints.down('sm')]: {
-      margin: '0'
-    }
   }
 })
 
@@ -402,7 +389,6 @@ class Body extends React.Component {
             </a>
           </p>
         </div>
-        <img className={classes.arrow} src={arrowIcon} />
       </div>
     )
   }
