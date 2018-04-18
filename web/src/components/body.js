@@ -338,7 +338,14 @@ class Body extends React.Component {
       <div className={classes.ctaWelcome}>
         <div>
           <div className={classes.welcomeSpeech}>
-            {introMessages.map((msg, i) => <p key={i}>{msg(this.state.companyName)}</p>)}
+            <p>
+              {this.state.companyName} is giving you a playground to push (deploy) apps
+              and experiment.  PCF uses <b>orgs</b> to organize things.
+            </p>
+            <p>
+              <b>Orgs</b> contain <b>spaces</b>, and each <b>space</b> can host apps.  You will
+              get your very own <b>org</b> and can create as many <b>spaces</b> as you like.
+            </p>
             {this.renderButton('Give Me an Org!', classes.speechButton)}
           </div>
         </div>
@@ -399,7 +406,13 @@ class Body extends React.Component {
       <div className={classes.ctaSpaces}>
         <div>
           <div className={classes.spacesSpeech}>
-            {spaceMessages.map((msg, i) => <p key={i}>{msg(this.state.spaceName)}</p>)}
+            <p>
+              <b>Spaces</b> can act like environments, and your first <b>space</b> is called 
+              "{this.state.spaceName}".
+            </p>
+            <p>
+              Once apps are pushed to a <b>space</b>, you can bind them to services like MySQL and RabbitMQ by visiting the "Marketplace" link in PCF.
+            </p>
             {this.renderButton(
               `I'm ready. Go to my org!`,
               classes.speechButton
@@ -445,16 +458,5 @@ Body.propTypes = {
   companyName: PropTypes.string,
   spaceName: PropTypes.string,
 }
-
-
-const introMessages = [
-  (c) => `${c} is giving you a free playground to push (deploy) apps and experiment.  PCF uses orgs to organize things.`,
-  (c) => 'Orgs contain spaces, and each space can host apps.  You will get your very own org and can create as many spaces as you like.'
-]
-
-const spaceMessages = [
-  (s) => `Spaces can act like environments, and your first space is called "${s}".`,
-  (s) => 'Once apps are pushed to a space, you can bind them to services like MySQL and NewRelic by visiting the "Marketplace" link in PCF.'
-]
 
 export default withStyles(styles)(Body)
