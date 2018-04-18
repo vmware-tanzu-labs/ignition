@@ -54,6 +54,9 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: '#007363'
+    },
     color: 'white',
     letterSpacing: '0.5px'
   },

@@ -88,7 +88,10 @@ const styles = theme => ({
     marginTop: '68px'
   },
   button: {
-    margin: theme.spacing.unit
+    margin: theme.spacing.unit,
+    '&:hover': {
+      backgroundColor: '#007363'
+    },
   },
   // for buttons that overlap the bottom of a speech bubble
   speechButton: {
