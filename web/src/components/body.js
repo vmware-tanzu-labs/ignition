@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
 import Footer from './footer'
@@ -428,13 +429,11 @@ class Body extends React.Component {
   }
 
   renderButton (text, extraClasses) {
-    let classes = this.props.classes.button
-    if (extraClasses) classes += ' ' + extraClasses
     return (
       <Button
         size="large"
         variant="raised"
-        className={classes}
+        className={classNames(this.props.classes.button, extraClasses)}
         onClick={this.handleOrgButtonClick}
       >
         {text}
