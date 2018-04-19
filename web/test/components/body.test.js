@@ -9,7 +9,7 @@ test('body defaults space name to development', () => {
 
 test('body defaults company name to Pivotal', () => {
   const body = shallow(<Body />)
-  expect(body.html().includes('Pivotal is giving you')).toBe(true)
+  expect(body.html().includes('Pivotal</span> is giving you')).toBe(true)
 })
 
 test('body renders space name when present', () => {

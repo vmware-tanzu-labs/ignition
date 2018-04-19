@@ -351,8 +351,8 @@ class Body extends React.Component {
               things.
             </p>
             <p>
-              Orgs contain <span className={classes.emphasis}>spaces</span>, 
-              and each space can host <span className={classes.emphasis}>apps</span>. You 
+              Orgs contain <span className={classes.emphasis}>spaces</span>,
+              and each space can host <span className={classes.emphasis}>apps</span>. You
               will get your very own org and can create as many spaces as you like.
             </p>
             {this.renderButton('Give Me an Org!', classes.speechButton)}
@@ -417,11 +417,11 @@ class Body extends React.Component {
           <div className={classes.spacesSpeech}>
             <p>
               <span className={classes.emphasis}>Spaces</span> can act like
-              environments, and your first space is 
+              environments, and your first space is
               called {'"' + this.state.spaceName + '"'}.
             </p>
             <p>
-              Once apps are pushed to a space, you can bind them to <span className={classes.emphasis}>services</span> like 
+              Once apps are pushed to a space, you can bind them to <span className={classes.emphasis}>services</span> like
               MySQL and RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
             </p>
             {this.renderButton(
