@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
 import Footer from './footer'
@@ -92,7 +92,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     '&:hover': {
       backgroundColor: '#007363'
-    },
+    }
   },
   // for buttons that overlap the bottom of a speech bubble
   speechButton: {
@@ -286,6 +286,9 @@ const styles = theme => ({
   },
   temporary: {
     alignItems: 'center'
+  },
+  emphasis: {
+    fontWeight: 600
   }
 })
 
@@ -343,12 +346,14 @@ class Body extends React.Component {
         <div>
           <div className={classes.welcomeSpeech}>
             <p>
-              {this.state.companyName} is giving you a playground to push (deploy) apps
-              and experiment.  PCF uses <b>orgs</b> to organize things.
+              <span className={classes.emphasis}>{this.state.companyName}</span> is giving you a playground to push
+              (deploy) apps and experiment. Pivotal Cloud Foundry (PCF) uses <span className={classes.emphasis}>orgs</span> to organize
+              things.
             </p>
             <p>
-              <b>Orgs</b> contain <b>spaces</b>, and each <b>space</b> can host apps.  You will
-              get your very own <b>org</b> and can create as many <b>spaces</b> as you like.
+              Orgs contain <span className={classes.emphasis}>spaces</span>, 
+              and each space can host <span className={classes.emphasis}>apps</span>. You 
+              will get your very own org and can create as many spaces as you like.
             </p>
             {this.renderButton('Give Me an Org!', classes.speechButton)}
           </div>
@@ -411,11 +416,13 @@ class Body extends React.Component {
         <div>
           <div className={classes.spacesSpeech}>
             <p>
-              <b>Spaces</b> can act like environments, and your first <b>space</b> is called 
-              "{this.state.spaceName}".
+              <span className={classes.emphasis}>Spaces</span> can act like
+              environments, and your first space is 
+              called {'"' + this.state.spaceName + '"'}.
             </p>
             <p>
-              Once apps are pushed to a <b>space</b>, you can bind them to services like MySQL and RabbitMQ by visiting the "Marketplace" link in PCF.
+              Once apps are pushed to a space, you can bind them to <span className={classes.emphasis}>services</span> like 
+              MySQL and RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
             </p>
             {this.renderButton(
               `I'm ready. Go to my org!`,
@@ -458,7 +465,7 @@ Body.propTypes = {
   classes: PropTypes.object.isRequired,
   testing: PropTypes.bool,
   companyName: PropTypes.string,
-  spaceName: PropTypes.string,
+  spaceName: PropTypes.string
 }
 
 export default withStyles(styles)(Body)
