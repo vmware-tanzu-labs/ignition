@@ -38,9 +38,6 @@ func (a *API) Run() error {
 
 func (a *API) createRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.Handle("/", ensureHTTPS(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		http.ServeFile(w, req, filepath.Join(a.Ignition.Server.WebRoot, "index.html"))
-	}))).Name("index")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.Ignition.Server.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
 	r.Handle("/api/v1/profile", ensureHTTPS(session.PopulateContext(Authorize(api.ProfileHandler(), a.Ignition.Authorizer.Domain), a.Ignition.Server.SessionStore)))
 	r.Handle("/api/v1/info", ensureHTTPS(api.InfoHandler(api.Info{
@@ -56,9 +53,12 @@ func (a *API) createRouter() *mux.Router {
 	r.Handle("/api/v1/organization", orgHandler)
 
 	a.handleAuth(r)
-	r.HandleFunc("/403", func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
-	})
 	r.Handle("/debug/vars", http.DefaultServeMux)
+
+	// If the API can't handle the route, let the SPA handle it
+	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		http.ServeFile(w, req, filepath.Join(a.Ignition.Server.WebRoot, "index.html"))
+	})
+
 	return r
 }
