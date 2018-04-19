@@ -8,6 +8,7 @@ import (
 	"github.com/pivotalservices/ignition/user"
 )
 
+// ProfileHandler gets the user's profile from the current context
 func ProfileHandler() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		p, err := user.ProfileFromContext(req.Context())

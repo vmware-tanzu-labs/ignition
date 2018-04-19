@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
 import Footer from './footer'
@@ -17,7 +18,6 @@ import step1 from './../../images/step-1.svg'
 import step2 from './../../images/step-2.svg'
 import step3 from './../../images/step-3.svg'
 import pivotalLogo from './../../images/pivotal.png'
-import arrowIcon from './../../images/icon_arrow.svg'
 
 const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
   position: 'relative', // so we can overlap the button
@@ -89,7 +89,10 @@ const styles = theme => ({
     marginTop: '68px'
   },
   button: {
-    margin: theme.spacing.unit
+    margin: theme.spacing.unit,
+    '&:hover': {
+      backgroundColor: '#007363'
+    }
   },
   // for buttons that overlap the bottom of a speech bubble
   speechButton: {
@@ -158,8 +161,6 @@ const styles = theme => ({
   // CTA 2: three steps
   // container
   ctaSteps: {
-    position: 'relative', // for arrow icon absolute positioning
-
     backgroundImage: `url("${deepSpace}")`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
@@ -286,15 +287,8 @@ const styles = theme => ({
   temporary: {
     alignItems: 'center'
   },
-  arrow: {
-    position: 'absolute',
-    bottom: '10px',
-    height: '100px',
-    marginLeft: '45%',
-    // screen less 600
-    [theme.breakpoints.down('sm')]: {
-      margin: '0'
-    }
+  emphasis: {
+    fontWeight: 600
   }
 })
 
@@ -302,7 +296,9 @@ class Body extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      orgUrl: ''
+      orgUrl: '',
+      companyName: props.companyName || 'Pivotal',
+      spaceName: props.spaceName || 'development'
     }
   }
 
@@ -315,6 +311,33 @@ class Body extends React.Component {
     }
   }
 
+  componentDidMount () {
+    if (this.props && this.props.testing) {
+      return
+    }
+    window
+      .fetch('/api/v1/info', {
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            window.location.replace('/login')
+            return
+          }
+          window.location.replace('/' + response.status)
+          return
+        }
+        return response.json()
+      })
+      .then(info => {
+        this.setState({
+          spaceName: info.ExperimentationSpaceName,
+          companyName: info.CompanyName
+        })
+      })
+  }
+
   renderWelcomeInfo () {
     const { classes } = this.props
 
@@ -322,7 +345,16 @@ class Body extends React.Component {
       <div className={classes.ctaWelcome}>
         <div>
           <div className={classes.welcomeSpeech}>
-            {introMessages.map((msg, i) => <p key={i}>{msg}</p>)}
+            <p>
+              <span className={classes.emphasis}>{this.state.companyName}</span> is giving you a playground to push
+              (deploy) apps and experiment. Pivotal Cloud Foundry (PCF) uses <span className={classes.emphasis}>orgs</span> to organize
+              things.
+            </p>
+            <p>
+              Orgs contain <span className={classes.emphasis}>spaces</span>, 
+              and each space can host <span className={classes.emphasis}>apps</span>. You 
+              will get your very own org and can create as many spaces as you like.
+            </p>
             {this.renderButton('Give Me an Org!', classes.speechButton)}
           </div>
         </div>
@@ -373,7 +405,6 @@ class Body extends React.Component {
             </a>
           </p>
         </div>
-        <img className={classes.arrow} src={arrowIcon} />
       </div>
     )
   }
@@ -384,7 +415,15 @@ class Body extends React.Component {
       <div className={classes.ctaSpaces}>
         <div>
           <div className={classes.spacesSpeech}>
-            {spaceMessages.map((msg, i) => <p key={i}>{msg}</p>)}
+            <p>
+              <span className={classes.emphasis}>Spaces</span> can act like
+              environments, and your first space is 
+              called {'"' + this.state.spaceName + '"'}.
+            </p>
+            <p>
+              Once apps are pushed to a space, you can bind them to <span className={classes.emphasis}>services</span> like 
+              MySQL and RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
+            </p>
             {this.renderButton(
               `I'm ready. Go to my org!`,
               classes.speechButton
@@ -397,13 +436,11 @@ class Body extends React.Component {
   }
 
   renderButton (text, extraClasses) {
-    let classes = this.props.classes.button
-    if (extraClasses) classes += ' ' + extraClasses
     return (
       <Button
         size="large"
         variant="raised"
-        className={classes}
+        className={classNames(this.props.classes.button, extraClasses)}
         onClick={this.handleOrgButtonClick}
       >
         {text}
@@ -425,19 +462,10 @@ class Body extends React.Component {
 }
 
 Body.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  testing: PropTypes.bool,
+  companyName: PropTypes.string,
+  spaceName: PropTypes.string
 }
-
-const introMessages = [
-  // TODO: replace 'Pivotal' with <CompanyName> from component state..
-  'Pivotal is giving you a free playground to push (deploy) apps and experiment.  PCF uses orgs to organize things.',
-  'Orgs contain spaces, and each space can host apps.  You will get your very own org and can create as many spaces as you like.'
-]
-
-const spaceMessages = [
-  // TODO: replace 'development' with <SpaceName> from component state...
-  'Spaces can act like environments, and your first space is called "development".',
-  'Once apps are pushed to a space, you can bind them to services like MySQL and NewRelic by visiting the "Marketplace" link in PCF.'
-]
 
 export default withStyles(styles)(Body)
