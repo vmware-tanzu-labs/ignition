@@ -1,8 +1,6 @@
 package cloudfoundry
 
 import (
-	"strings"
-
 	cfclient "github.com/cloudfoundry-community/go-cfclient"
 	"github.com/pkg/errors"
 )
@@ -16,7 +14,7 @@ type SpaceCreator interface {
 // for the given user
 func CreateSpace(name string, organizationID string, userID string, a SpaceCreator) error {
 	req := cfclient.SpaceRequest{
-		Name:             strings.ToLower(name),
+		Name:             name,
 		AuditorGuid:      []string{userID},
 		DeveloperGuid:    []string{userID},
 		ManagerGuid:      []string{userID},

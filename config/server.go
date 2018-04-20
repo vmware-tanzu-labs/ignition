@@ -20,7 +20,7 @@ type Server struct {
 	ServePort     int            `envconfig:"serve_port" default:"3000"`                    // IGNITION_SERVE_PORT
 	WebRoot       string         `ignored:"true"`                                           // Not configurable
 	SessionSecret string         `envconfig:"session_secret"`                               // IGNITION_SESSION_SECRET << REQUIRED
-	CompanyName   string         `envconfig:"company_name" default:"Pivotal"`               // IGNITION_COMPANY_NAME
+	CompanyName   string         `envconfig:"company_name" default:"Your Company"`          // IGNITION_COMPANY_NAME
 	SessionStore  sessions.Store `ignored:"true"`                                           // Not configurable
 }
 
