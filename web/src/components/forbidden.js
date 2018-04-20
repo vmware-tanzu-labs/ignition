@@ -11,6 +11,7 @@ const styles = theme => ({
   button: {
     backgroundColor: '#007D69',
     color: 'white',
+    width: '27vh',
     margin: theme.spacing.unit,
     '&:hover': {
       backgroundColor: '#007363'
@@ -41,10 +42,30 @@ const styles = theme => ({
 class Forbidden extends React.Component {
   constructor (props) {
     super(props)
+    this.state = {
+      email: props.email || 'an unknown email',
+    }
+  }
+
+  componentDidMount () {
+    if (this.props && this.props.testing) {
+      return
+    }
+    window
+      .fetch('/api/v1/profile', {
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return false;
+      })
+      .then(info => { this.setState({ email: info.Email }) })
   }
 
   handleTryAgainButtonClick = async () => {
-    // TODO: windows.location = login
+    window.location.replace('/login')
   }
 
   render () {
@@ -53,9 +74,13 @@ class Forbidden extends React.Component {
       <div className={classes.forbidden}>
         <div className={classes.text}>
           <p>
-            You've attempted to sign in with email@address,
-            which does not grant you access.
-            Please sign in with your company email account.
+            <div>
+              You've attempted to sign in with {this.state.email} which
+              does not grant you access.
+            </div>
+            <div>
+              Please sign in with your company email account.
+            </div>
           </p>
           <Button
             size="large"
@@ -72,7 +97,8 @@ class Forbidden extends React.Component {
 }
 
 Forbidden.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  email: PropTypes.string,
 }
 
 export default withStyles(styles)(Forbidden)
