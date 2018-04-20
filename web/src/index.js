@@ -1,5 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Home from './components/home'
+import Main from './components/main'
 
-ReactDOM.render(<Home />, document.getElementById('root'))
+ReactDOM.render(<Main/>, document.getElementById('root'))
