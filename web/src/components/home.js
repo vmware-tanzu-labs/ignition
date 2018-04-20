@@ -1,7 +1,6 @@
 import React from 'react'
 import AppBar from './app-bar'
 import Body from './body'
-import withRoot from '../withRoot'
 
 const Home = () => (
   <div>
@@ -10,4 +9,4 @@ const Home = () => (
   </div>
 )
 
-export default withRoot(Home)
+export default Home

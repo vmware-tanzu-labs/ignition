@@ -1,14 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Home from './components/home'
-import Forbidden from './components/forbidden'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import Main from './components/main'
 
-ReactDOM.render((
-  <BrowserRouter>
-    <Switch>
-      <Route exact path='/403' component={Forbidden} />
-      <Route component={Home} />
-    </Switch>
-  </BrowserRouter>
-), document.getElementById('root'))
+ReactDOM.render(<Main/>, document.getElementById('root'))
