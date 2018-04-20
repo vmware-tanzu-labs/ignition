@@ -87,6 +87,8 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 			a.ServiceName = serviceName
 		}
 
+		a.Variant = strings.TrimSpace(a.Variant)
+		a.ServiceName = strings.TrimSpace(a.ServiceName)
 		if strings.EqualFold(strings.TrimSpace(a.Variant), "p-identity") {
 			i, err := c.Services.WithName(a.ServiceName)
 			if err != nil {
@@ -97,7 +99,7 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 			if !ok {
 				return nil, fmt.Errorf("could not retrieve the client_id; make sure you have created and bound a Single Sign On service instance with the name \"%s\"", a.ServiceName)
 			}
-			a.URL = authURL
+			a.URL = strings.TrimSpace(authURL)
 			clientid, ok := i.CredentialString("client_id")
 			if !ok {
 				return nil, fmt.Errorf("could not retrieve the client_id; make sure you have created and bound a Single Sign On service instance with the name \"%s\"", a.ServiceName)
@@ -117,10 +119,12 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 	if strings.TrimSpace(a.ClientSecret) == "" {
 		return nil, errors.New("client_secret is required")
 	}
-	if strings.TrimSpace(a.URL) == "" {
+	a.URL = strings.TrimSpace(a.URL)
+	if a.URL == "" {
 		return nil, errors.New("auth_url is required")
 	}
-	if strings.TrimSpace(a.Domain) == "" {
+	a.Domain = strings.TrimSpace(a.Domain)
+	if a.Domain == "" {
 		return nil, errors.New("authorized_domain is required")
 	}
 

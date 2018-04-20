@@ -45,7 +45,11 @@ func NewExperimenter(name string, q cloudfoundry.QuotaQuerier) (*Experimenter, e
 			}
 		}
 	}
-	if strings.TrimSpace(e.QuotaName) == "" {
+	e.OrgPrefix = strings.TrimSpace(e.OrgPrefix)
+	e.QuotaName = strings.TrimSpace(e.QuotaName)
+	e.SpaceName = strings.TrimSpace(e.SpaceName)
+
+	if e.QuotaName == "" {
 		e.QuotaName = defaultQuota
 	}
 	id, err := cloudfoundry.QuotaIDForName(e.QuotaName, q)

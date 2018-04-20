@@ -78,7 +78,8 @@ func NewDeployment(name string) (*Deployment, error) {
 		return nil, errors.New("system_domain is required")
 	}
 	d.ParseSystemDomain()
-	if strings.TrimSpace(d.UAAOrigin) == "" {
+	d.UAAOrigin = strings.TrimSpace(d.UAAOrigin)
+	if d.UAAOrigin == "" {
 		return nil, errors.New("uaa_origin is required")
 	}
 	if strings.TrimSpace(d.Username) == "" {
@@ -149,6 +150,7 @@ func (d *Deployment) URL(s string) *url.URL {
 
 // ParseSystemDomain sets the AppsURL, APIURL and UAAURL using the system domain
 func (d *Deployment) ParseSystemDomain() {
+	d.SystemDomain = strings.TrimSpace(d.SystemDomain)
 	a := d.URL("apps")
 	if a != nil {
 		d.AppsURL = a.String()

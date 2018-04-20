@@ -41,6 +41,10 @@ func NewServer() (*Server, error) {
 		return nil, errors.New("session_secret is required")
 	}
 	s.SessionStore = sessions.NewCookieStore([]byte(s.SessionSecret), nil)
+	s.CompanyName = strings.TrimSpace(s.CompanyName)
+	s.Scheme = strings.TrimSpace(s.Scheme)
+	s.Domain = strings.TrimSpace(s.Domain)
+	s.ServiceName = strings.TrimSpace(s.ServiceName)
 	return &s, nil
 }
 
