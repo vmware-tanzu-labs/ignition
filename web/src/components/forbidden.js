@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
 
 import bkgd403 from './../../images/bkgd_403.svg'
-
 
 const styles = theme => ({
   button: {
@@ -15,7 +13,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     '&:hover': {
       backgroundColor: '#007363'
-    },
+    }
   },
   forbidden: {
     backgroundImage: `url("${bkgd403}")`,
@@ -25,7 +23,7 @@ const styles = theme => ({
     height: '100vh',
     alignItems: 'center',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   text: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
@@ -43,7 +41,7 @@ class Forbidden extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      email: props.email || 'an unknown email',
+      email: props.email || 'an unknown email'
     }
   }
 
@@ -57,9 +55,9 @@ class Forbidden extends React.Component {
       })
       .then(response => {
         if (response.ok) {
-          return response.json();
+          return response.json()
         }
-        return false;
+        return false
       })
       .then(info => { this.setState({ email: info.Email }) })
   }
@@ -75,7 +73,7 @@ class Forbidden extends React.Component {
         <div className={classes.text}>
           <p>
             <div>
-              You've attempted to sign in with {this.state.email} which
+              You&apos;ve attempted to sign in with {this.state.email} which
               does not grant you access.
             </div>
             <div>
@@ -98,7 +96,8 @@ class Forbidden extends React.Component {
 
 Forbidden.propTypes = {
   classes: PropTypes.object.isRequired,
-  email: PropTypes.string,
+  testing: PropTypes.bool,
+  email: PropTypes.string
 }
 
 export default withStyles(styles)(Forbidden)

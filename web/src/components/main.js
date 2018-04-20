@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Home from './home'
 import Forbidden from './forbidden'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
