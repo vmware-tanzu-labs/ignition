@@ -296,9 +296,7 @@ class Body extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      orgUrl: '',
-      companyName: props.companyName || 'Pivotal',
-      spaceName: props.spaceName || 'development'
+      orgUrl: ''
     }
   }
 
@@ -311,33 +309,6 @@ class Body extends React.Component {
     }
   }
 
-  componentDidMount () {
-    if (this.props && this.props.testing) {
-      return
-    }
-    window
-      .fetch('/api/v1/info', {
-        credentials: 'same-origin'
-      })
-      .then(response => {
-        if (!response.ok) {
-          if (response.status === 401) {
-            window.location.replace('/login')
-            return
-          }
-          window.location.replace('/' + response.status)
-          return
-        }
-        return response.json()
-      })
-      .then(info => {
-        this.setState({
-          spaceName: info.ExperimentationSpaceName,
-          companyName: info.CompanyName
-        })
-      })
-  }
-
   renderWelcomeInfo () {
     const { classes } = this.props
 
@@ -346,7 +317,7 @@ class Body extends React.Component {
         <div>
           <div className={classes.welcomeSpeech}>
             <p>
-              <span className={classes.emphasis}>{this.state.companyName}</span> is giving you a playground to push
+              <span className={classes.emphasis}>{this.props.info.CompanyName}</span> is giving you a playground to push
               (deploy) apps and experiment. Pivotal Cloud Foundry (PCF) uses <span className={classes.emphasis}>orgs</span> to organize
               things.
             </p>
@@ -418,7 +389,7 @@ class Body extends React.Component {
             <p>
               <span className={classes.emphasis}>Spaces</span> can act like
               environments, and your first space is
-              called {'"' + this.state.spaceName + '"'}.
+              called {'"' + this.props.info.ExperimentationSpaceName + '"'}.
             </p>
             <p>
               Once apps are pushed to a space, you can bind them to <span className={classes.emphasis}>services</span> like
@@ -461,11 +432,17 @@ class Body extends React.Component {
   }
 }
 
+Body.defaultProps = {
+  info: {
+    CompanyName: 'Pivotal',
+    ExperimentationSpaceName: 'development'
+  }
+}
+
 Body.propTypes = {
   classes: PropTypes.object.isRequired,
   testing: PropTypes.bool,
-  companyName: PropTypes.string,
-  spaceName: PropTypes.string
+  info: PropTypes.object
 }
 
 export default withStyles(styles)(Body)

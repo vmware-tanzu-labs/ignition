@@ -38,42 +38,19 @@ const styles = theme => ({
 })
 
 class Forbidden extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      email: props.email || 'an unknown email'
-    }
-  }
-
-  componentDidMount () {
-    if (this.props && this.props.testing) {
-      return
-    }
-    window
-      .fetch('/api/v1/profile', {
-        credentials: 'same-origin'
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json()
-        }
-        return false
-      })
-      .then(info => { this.setState({ email: info.Email }) })
-  }
-
   handleTryAgainButtonClick = async () => {
-    window.location.replace('/login')
+    window.location.replace('/logout')
   }
 
   render () {
     const { classes } = this.props
+    const email = this.props.profile.Email
     return (
       <div className={classes.forbidden}>
         <div className={classes.text}>
           <p>
             <div>
-              You&apos;ve attempted to sign in with {this.state.email} which
+              You&apos;ve attempted to sign in with {email} which
               does not grant you access.
             </div>
             <div>
@@ -94,10 +71,16 @@ class Forbidden extends React.Component {
   }
 }
 
+Forbidden.defaultProps = {
+  profile: {
+    Email: 'an unknown email'
+  }
+}
+
 Forbidden.propTypes = {
   classes: PropTypes.object.isRequired,
   testing: PropTypes.bool,
-  email: PropTypes.string
+  profile: PropTypes.object
 }
 
 export default withStyles(styles)(Forbidden)

@@ -53,8 +53,8 @@ func ensureUser(next http.Handler, uaa uaa.API, origin string, s sessions.Store)
 	return http.HandlerFunc(fn)
 }
 
-// Authorize guards access to protected resources by inspecting the user's token
-func Authorize(next http.Handler, domain string) http.Handler {
+// Authenticate guards access to protected resources by inspecting the user's token
+func Authenticate(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		token, err := session.TokenFromContext(req.Context())
 		if err != nil {
@@ -65,6 +65,19 @@ func Authorize(next http.Handler, domain string) http.Handler {
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
+		profile, err := user.ProfileFromContext(req.Context())
+		if err != nil || strings.TrimSpace(profile.Email) == "" {
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, req)
+	}
+	return http.HandlerFunc(fn)
+}
+
+// Authorize guards access to protected resources by inspecting the user's token
+func Authorize(next http.Handler, domain string) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
 		profile, err := user.ProfileFromContext(req.Context())
 		if err != nil {
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
@@ -77,6 +90,11 @@ func Authorize(next http.Handler, domain string) http.Handler {
 		next.ServeHTTP(w, req)
 	}
 	return http.HandlerFunc(fn)
+}
+
+// Secure ensures the current request is TLS secured, authenticated, and authorized
+func Secure(next http.Handler, domain string, store sessions.Store) http.Handler {
+	return ensureHTTPS(session.PopulateContext(Authenticate(Authorize(next, domain)), store))
 }
 
 // CallbackHandler handles Google redirection URI requests and adds the Google
