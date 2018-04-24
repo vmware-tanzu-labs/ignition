@@ -150,7 +150,7 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 		ClientID:     a.ClientID,
 		ClientSecret: a.ClientSecret,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  p.AuthURL,
+			AuthURL:  fmt.Sprintf("%s?prompt=select_account", p.AuthURL),
 			TokenURL: p.TokenURL,
 		},
 		Scopes: a.Scopes,
