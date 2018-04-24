@@ -63,11 +63,11 @@ func (f *fakeSessionStore) Destroy(w http.ResponseWriter, name string) {
 	f.session = nil
 }
 
-func TestAuthorize(t *testing.T) {
-	spec.Run(t, "Authorize", testAuthorize, spec.Report(report.Terminal{}))
+func TestAuthenticate(t *testing.T) {
+	spec.Run(t, "Authenticate", testAuthenticate, spec.Report(report.Terminal{}))
 }
 
-func testAuthorize(t *testing.T, when spec.G, it spec.S) {
+func testAuthenticate(t *testing.T, when spec.G, it spec.S) {
 	it.Before(func() {
 		RegisterTestingT(t)
 	})
@@ -75,7 +75,7 @@ func testAuthorize(t *testing.T, when spec.G, it spec.S) {
 	it("is unauthorized when there is no token", func() {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
-		Authorize(nil, "").ServeHTTP(w, req)
+		Authenticate(nil).ServeHTTP(w, req)
 		Expect(w.Code).To(Equal(http.StatusUnauthorized))
 	})
 
@@ -89,8 +89,79 @@ func testAuthorize(t *testing.T, when spec.G, it spec.S) {
 		}
 		ctx := session.ContextWithToken(context.Background(), t)
 		req := httptest.NewRequest(http.MethodGet, "/", nil).WithContext(ctx)
-		Authorize(nil, "").ServeHTTP(w, req)
+		Authenticate(nil).ServeHTTP(w, req)
 		Expect(w.Code).To(Equal(http.StatusUnauthorized))
+	})
+
+	when("there is a valid token", func() {
+		var (
+			w   *httptest.ResponseRecorder
+			req *http.Request
+			t   *oauth2.Token
+		)
+
+		it.Before(func() {
+			w = httptest.NewRecorder()
+			t = &oauth2.Token{
+				AccessToken:  "test-token",
+				RefreshToken: "test-refresh-token",
+				TokenType:    "bearer",
+				Expiry:       time.Now().Add(24 * time.Hour),
+			}
+			ctx := session.ContextWithToken(context.Background(), t)
+			req = httptest.NewRequest(http.MethodGet, "/", nil).WithContext(ctx)
+		})
+
+		when("there isn't a valid profile in the context", func() {
+			it("is unauthorized", func() {
+				Authenticate(nil).ServeHTTP(w, req)
+				Expect(w.Code).To(Equal(http.StatusUnauthorized))
+			})
+		})
+
+		when("there an empty profile is in the context", func() {
+			it.Before(func() {
+				profile := &user.Profile{}
+				req = req.WithContext(user.WithProfile(req.Context(), profile))
+			})
+
+			it("is unauthorized", func() {
+				Authenticate(nil).ServeHTTP(w, req)
+				Expect(w.Code).To(Equal(http.StatusUnauthorized))
+			})
+		})
+
+		when("there is a valid profile in the context", func() {
+			it.Before(func() {
+				profile := &user.Profile{
+					Name:        "Test User",
+					Email:       "test@example.net",
+					AccountName: "corp\tester",
+				}
+				req = req.WithContext(user.WithProfile(req.Context(), profile))
+			})
+
+			it("calls the next handler", func() {
+				called := false
+				next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					called = true
+					w.WriteHeader(http.StatusOK)
+				})
+				Authenticate(next).ServeHTTP(w, req)
+				Expect(called).To(BeTrue())
+				Expect(w.Code).To(Equal(http.StatusOK))
+			})
+		})
+	})
+}
+
+func TestAuthorize(t *testing.T) {
+	spec.Run(t, "Authorize", testAuthorize, spec.Report(report.Terminal{}))
+}
+
+func testAuthorize(t *testing.T, when spec.G, it spec.S) {
+	it.Before(func() {
+		RegisterTestingT(t)
 	})
 
 	when("there is a valid token", func() {

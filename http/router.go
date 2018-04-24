@@ -39,17 +39,15 @@ func (a *API) Run() error {
 func (a *API) createRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.Ignition.Server.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
-	r.Handle("/api/v1/profile", ensureHTTPS(session.PopulateContext(Authorize(api.ProfileHandler(), a.Ignition.Authorizer.Domain), a.Ignition.Server.SessionStore)))
-	r.Handle("/api/v1/info", ensureHTTPS(api.InfoHandler(api.Info{
+	r.Handle("/api/v1/profile", ensureHTTPS(session.PopulateContext(Authenticate(api.ProfileHandler()), a.Ignition.Server.SessionStore)))
+	r.Handle("/api/v1/info", Secure(api.InfoHandler(api.Info{
 		CompanyName:              a.Ignition.Server.CompanyName,
 		ExperimentationSpaceName: a.Ignition.Experimenter.SpaceName,
-	})))
+	}), a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore))
 
 	orgHandler := api.OrganizationHandler(a.Ignition.Deployment.AppsURL, a.Ignition.Experimenter.OrgPrefix, a.Ignition.Experimenter.QuotaID, a.Ignition.Experimenter.SpaceName, a.Ignition.Deployment.CC)
 	orgHandler = ensureUser(orgHandler, a.Ignition.Deployment.UAA, a.Ignition.Deployment.UAAOrigin, a.Ignition.Server.SessionStore)
-	orgHandler = Authorize(orgHandler, a.Ignition.Authorizer.Domain)
-	orgHandler = session.PopulateContext(orgHandler, a.Ignition.Server.SessionStore)
-	orgHandler = ensureHTTPS(orgHandler)
+	orgHandler = Secure(orgHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore)
 	r.Handle("/api/v1/organization", orgHandler)
 
 	a.handleAuth(r)
