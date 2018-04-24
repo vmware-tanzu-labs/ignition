@@ -5,7 +5,7 @@ module.exports = {
   entry: [
     './src/index.js'
   ],
-  devtool: 'source-map',
+  devtool: 'none',
   module: {
     rules: [
       {
@@ -33,6 +33,9 @@ module.exports = {
     path: path.join(__dirname, '/dist'),
     publicPath: '/',
     filename: 'assets/bundle.js'
+  },
+  performance: {
+    hints: false
   },
   plugins: [
     new HtmlWebpackPlugin({
