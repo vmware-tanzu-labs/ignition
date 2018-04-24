@@ -69,11 +69,8 @@ const styles = theme => ({
 class MenuAppBar extends React.Component {
   constructor (props) {
     super(props)
-    const { profile } = props
     this.state = {
-      auth: true,
-      anchorEl: null,
-      profile: profile
+      anchorEl: null
     }
   }
 
@@ -93,43 +90,18 @@ class MenuAppBar extends React.Component {
   }
 
   handleLogout = (e, location = window.location) => {
-    this.setState({ anchorEl: null, profile: null })
+    this.setState({ anchorEl: null })
     if (this.props && this.props.testing) {
       return
     }
     location.replace('/logout')
   }
 
-  componentDidMount () {
-    if (this.props && this.props.testing) {
-      return
-    }
-    window
-      .fetch('/api/v1/profile', {
-        credentials: 'same-origin'
-      })
-      .then(response => {
-        if (!response.ok) {
-          if (response.status === 401) {
-            window.location.replace('/login')
-            return
-          }
-          window.location.replace('/' + response.status)
-          return
-        }
-        return response.json()
-      })
-      .then(profile => this.setState({ profile }))
-  }
-
   render () {
     const { classes } = this.props
-    const { anchorEl, profile } = this.state
+    const { anchorEl } = this.state
     const open = Boolean(anchorEl)
-    let name = ''
-    if (profile && profile.Name) {
-      name = profile.Name
-    }
+    const name = this.props.profile.Name
 
     return (
       <div className={classes.root}>
@@ -138,51 +110,49 @@ class MenuAppBar extends React.Component {
             <div className={classes.logoContainer}>
               <img className={classes.logo} src={ignitionLogo} />
             </div>
-            {profile && (
-              <div className={classes.userContainer}>
-                <Typography
-                  variant="subheading"
-                  color="primary"
-                  align="right"
-                  className={classes.name}
-                >
-                  {`Welcome, ${name}`}
-                </Typography>
-                <Button
-                  className={classes.button}
-                  size="large"
-                  variant="raised"
-                  onClick={this.handleButton}
-                >
-                  My Org
-                </Button>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="primary"
-                  className={classes.icon}
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
-                </Menu>
-              </div>
-            )}
+            <div className={classes.userContainer}>
+              <Typography
+                variant="subheading"
+                color="primary"
+                align="right"
+                className={classes.name}
+              >
+                {`Welcome, ${name}`}
+              </Typography>
+              <Button
+                className={classes.button}
+                size="large"
+                variant="raised"
+                onClick={this.handleButton}
+              >
+                My Org
+              </Button>
+              <IconButton
+                aria-owns={open ? 'menu-appbar' : null}
+                aria-haspopup="true"
+                onClick={this.handleMenu}
+                color="primary"
+                className={classes.icon}
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={open}
+                onClose={this.handleClose}
+              >
+                <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
+              </Menu>
+            </div>
           </Toolbar>
         </AppBar>
       </div>
@@ -194,10 +164,6 @@ MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
   testing: PropTypes.bool,
   profile: PropTypes.object
-}
-
-MenuAppBar.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(MenuAppBar)

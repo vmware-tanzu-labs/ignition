@@ -8,6 +8,9 @@ test('forbidden defaults email address to `an unknown email`', () => {
 })
 
 test('forbidden renders email address when present', () => {
-  const forbidden = shallow(<Forbidden email='sneal@example.com' />)
+  const profile = {
+    Email: 'sneal@example.com'
+  }
+  const forbidden = shallow(<Forbidden profile={profile} />)
   expect(forbidden.html().includes('sneal@example.com')).toBe(true)
 })

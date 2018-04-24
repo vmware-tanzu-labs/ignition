@@ -13,11 +13,19 @@ test('body defaults company name to Pivotal', () => {
 })
 
 test('body renders space name when present', () => {
-  const body = shallow(<Body spaceName='prod' />)
+  const info = {
+    CompanyName: 'Maximus',
+    ExperimentationSpaceName: 'prod'
+  }
+  const body = shallow(<Body info={info} />)
   expect(body.html().includes('prod')).toBe(true)
 })
 
 test('body renders company name when present', () => {
-  const body = shallow(<Body companyName='Maximus' />)
+  const info = {
+    CompanyName: 'Maximus',
+    ExperimentationSpaceName: 'prod'
+  }
+  const body = shallow(<Body info={info} />)
   expect(body.html().includes('Maximus')).toBe(true)
 })
