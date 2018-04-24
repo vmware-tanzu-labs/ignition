@@ -47,7 +47,7 @@
     "devwatch": "webpack --config webpack.dev.js --watch",
     "devbuild": "webpack --config webpack.dev.js",
     "lint": "eslint '{src,test}/**/*.js' ",
-    "test": "jest",
+    "test": "jest --silent",
     "testwatch": "jest --watch",
     "fmt": "prettier-eslint --write '{src,test}/**/*.js'"
   },
