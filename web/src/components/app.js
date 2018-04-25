@@ -44,7 +44,7 @@ class App extends React.Component {
     } else if (this.state.profile) {
       return (<Forbidden profile={this.state.profile} />)
     } else {
-      return (<h1>Loading...</h1>)
+      return (<div>&nbsp;</div>)
     }
   }
 }
