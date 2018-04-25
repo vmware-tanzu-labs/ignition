@@ -24,7 +24,7 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center',
     '@media only screen and (max-height: 600px)': {
-      height: '700px',
+      height: '700px'
     }
   },
   info: {
