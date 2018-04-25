@@ -9,7 +9,7 @@ const styles = theme => ({
   button: {
     backgroundColor: '#007D69',
     color: 'white',
-    width: '27vh',
+    width: '200px',
     margin: theme.spacing.unit,
     '&:hover': {
       backgroundColor: '#007363'
@@ -21,19 +21,38 @@ const styles = theme => ({
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     height: '100vh',
-    alignItems: 'center',
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    '@media only screen and (max-height: 600px)': {
+      height: '700px',
+    }
+  },
+  info: {
+    width: '80vw',
+    paddingTop: '5vh',
+    textAlign: 'center',
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        width: '100vw'
+      }
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '800px'
+    }
   },
   text: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
     fontSize: '1.5rem',
     fontWeight: 'lighter',
-    height: '100vh',
-    width: '80vh',
-    paddingTop: '40px',
     color: 'white',
-    textAlign: 'center'
+    '@media screen and (orientation:portrait)': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1.2rem'
+      }
+    },
+    [theme.breakpoints.up('lg')]: {
+      paddingBottom: '4vh'
+    }
   }
 })
 
@@ -47,8 +66,8 @@ class Forbidden extends React.Component {
     const email = this.props.profile.Email
     return (
       <div className={classes.forbidden}>
-        <div className={classes.text}>
-          <p>
+        <div className={classes.info}>
+          <div className={classes.text}>
             <div>
               You&apos;ve attempted to sign in with {email} which
               does not grant you access.
@@ -56,7 +75,7 @@ class Forbidden extends React.Component {
             <div>
               Please sign in with your company email account.
             </div>
-          </p>
+          </div>
           <Button
             size="large"
             variant="raised"
