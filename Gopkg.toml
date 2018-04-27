@@ -55,3 +55,7 @@ required = ["github.com/maxbrunsfeld/counterfeiter"]
 [[constraint]]
   branch = "master"
   name = "github.com/cloudfoundry-incubator/uaa-cli"
+
+[[constraint]]
+  name = "github.com/bitly/go-simplejson"
+  version = "0.5.0"
