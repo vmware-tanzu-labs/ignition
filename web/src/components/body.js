@@ -328,7 +328,8 @@ class Body extends React.Component {
               Orgs contain <span className={classes.emphasis}>spaces</span>, and
               each space can host <span className={classes.emphasis}>apps</span>.
               You will get your very own org and can create as many spaces as
-              you like. {this.props.info.IgnitionOrgCount} are already using PCF!
+              you like. {this.props.info.IgnitionOrgCount} people in your company are
+              already using PCF!
             </p>
             {this.renderButton('Give Me an Org!', classes.speechButton)}
           </div>

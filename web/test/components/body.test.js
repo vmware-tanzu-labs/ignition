@@ -14,7 +14,7 @@ test('body defaults company name to Pivotal', () => {
 
 test('body defaults org count to 0', () => {
   const body = shallow(<Body />)
-  expect(body.html().includes('0 are already using PCF!')).toBe(true)
+  expect(body.html().includes('0 people in your company are already using PCF!')).toBe(true)
 })
 
 test('body renders space name when present', () => {
@@ -42,5 +42,5 @@ test('body renders ignition org count when present', () => {
     IgnitionOrgCount: 42
   }
   const body = shallow(<Body info={info} />)
-  expect(body.html().includes('42 are already using PCF!')).toBe(true)
+  expect(body.html().includes('42 people in your company are already using PCF!')).toBe(true)
 })
