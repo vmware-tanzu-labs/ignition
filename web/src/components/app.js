@@ -26,7 +26,7 @@ class App extends React.Component {
         } else if (response.status === 401) {
           window.location.replace('/login')
         } else if (response.status === 403) {
-          this.state.forbidden = true
+          this.setState({ forbidden: true })
         }
       })
       .then(info => { this.setState({info: info}) })
