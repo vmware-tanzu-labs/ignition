@@ -108,7 +108,11 @@ class MenuAppBar extends React.Component {
         <AppBar color="white">
           <Toolbar disableGutters={true}>
             <div className={classes.logoContainer}>
-              <img className={classes.logo} src={ignitionLogo} />
+              <img
+                className={classes.logo}
+                src={ignitionLogo}
+                alt="ignition logo"
+              />
             </div>
             <div className={classes.userContainer}>
               <Typography
@@ -124,6 +128,7 @@ class MenuAppBar extends React.Component {
                 size="large"
                 variant="raised"
                 onClick={this.handleButton}
+                alt=""
               >
                 My Org
               </Button>

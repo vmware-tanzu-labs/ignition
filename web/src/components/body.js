@@ -317,14 +317,18 @@ class Body extends React.Component {
         <div>
           <div className={classes.welcomeSpeech}>
             <p>
-              <span className={classes.emphasis}>{this.props.info.CompanyName}</span> is giving you a playground to push
-              (deploy) apps and experiment. Pivotal Cloud Foundry (PCF) uses <span className={classes.emphasis}>orgs</span> to organize
-              things.
+              <span className={classes.emphasis}>
+                {this.props.info.CompanyName}
+              </span>{' '}
+              is giving you a playground to push (deploy) apps and experiment.
+              Pivotal Cloud Foundry (PCF) uses{' '}
+              <span className={classes.emphasis}>orgs</span> to organize things.
             </p>
             <p>
-              Orgs contain <span className={classes.emphasis}>spaces</span>,
-              and each space can host <span className={classes.emphasis}>apps</span>. You
-              will get your very own org and can create as many spaces as you like.
+              Orgs contain <span className={classes.emphasis}>spaces</span>, and
+              each space can host <span className={classes.emphasis}>apps</span>.
+              You will get your very own org and can create as many spaces as
+              you like.
             </p>
             {this.renderButton('Give Me an Org!', classes.speechButton)}
           </div>
@@ -341,7 +345,7 @@ class Body extends React.Component {
         <div className={classes.pewPew} />
         <div className={classes.step}>
           <div>
-            <img className={classes.stepImage} src={step1} />
+            <img className={classes.stepImage} src={step1} alt="step 1" />
           </div>
           <p>
             Get the<br />
@@ -354,7 +358,7 @@ class Body extends React.Component {
         </div>
         <div className={classes.step}>
           <div>
-            <img className={classes.stepImage} src={step2} />
+            <img className={classes.stepImage} src={step2} alt="step 2" />
           </div>
           <p>
             Download the <br />
@@ -367,7 +371,7 @@ class Body extends React.Component {
         </div>
         <div className={classes.step}>
           <div>
-            <img className={classes.stepImage} src={step3} />
+            <img className={classes.stepImage} src={step3} alt="step 3" />
           </div>
           <p>
             Learn to<br />
@@ -388,12 +392,13 @@ class Body extends React.Component {
           <div className={classes.spacesSpeech}>
             <p>
               <span className={classes.emphasis}>Spaces</span> can act like
-              environments, and your first space is
-              called {'"' + this.props.info.ExperimentationSpaceName + '"'}.
+              environments, and your first space is called{' '}
+              {'"' + this.props.info.ExperimentationSpaceName + '"'}.
             </p>
             <p>
-              Once apps are pushed to a space, you can bind them to <span className={classes.emphasis}>services</span> like
-              MySQL and RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
+              Once apps are pushed to a space, you can bind them to{' '}
+              <span className={classes.emphasis}>services</span> like MySQL and
+              RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
             </p>
             {this.renderButton(
               `I'm ready. Go to my org!`,

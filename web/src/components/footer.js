@@ -36,7 +36,7 @@ const Footer = props => {
           </a>
         ))}
       </div>
-      <img className={classes.img} src={logoURL} />
+      <img className={classes.img} src={logoURL} alt="logo" />
     </div>
   )
 }
