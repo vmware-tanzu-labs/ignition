@@ -6,15 +6,6 @@ import Button from 'material-ui/Button'
 import bkgd403 from './../../images/bkgd_403.svg'
 
 const styles = theme => ({
-  button: {
-    backgroundColor: '#007D69',
-    color: 'white',
-    width: '200px',
-    margin: theme.spacing.unit,
-    '&:hover': {
-      backgroundColor: '#007363'
-    }
-  },
   forbidden: {
     backgroundImage: `url("${bkgd403}")`,
     backgroundRepeat: 'no-repeat',
@@ -22,36 +13,72 @@ const styles = theme => ({
     backgroundSize: 'cover',
     height: '100vh',
     display: 'flex',
-    justifyContent: 'center',
-    '@media only screen and (max-height: 600px)': {
-      height: '700px'
-    }
+    justifyContent: 'center'
   },
   info: {
-    width: '80vw',
     paddingTop: '5vh',
     textAlign: 'center',
-    '@media screen and (orientation:portrait)': {
-      [theme.breakpoints.down('sm')]: {
-        width: '100vw'
+    '@media screen and (orientation:landscape)': {
+      // iphone 5/SE, 6/7/8 & galaxy S5
+      '@media only screen and (max-height: 375px) and (max-width: 667px)': {
+        paddingTop: '1vh'
       }
+    }
+  },
+  button: {
+    backgroundColor: '#007D69',
+    color: 'white',
+    width: '200px',
+    margin: theme.spacing.unit,
+    fontWeight: 'bold',
+    letterSpacing: '3px',
+    boxShadow: '-5px 5px 3px rgba(0, 0, 0, 0.20)',
+
+    '&:hover': {
+      backgroundColor: '#007363'
     },
-    [theme.breakpoints.up('lg')]: {
-      width: '800px'
+    '@media screen and (orientation:landscape)': {
+      // iphone 5/SE, 6/7/8 & galaxy S5
+      '@media only screen and (max-height: 375px) and (max-width: 667px)': {
+        padding: '0',
+        width: '150px',
+        margin: 0.5 * theme.spacing.unit,
+        minHeight: '32px'
+      }
     }
   },
   text: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-    fontSize: '1.5rem',
+    fontSize: '2rem',
     fontWeight: 'lighter',
+    width: '90vw',
+    margin: 'auto',
     color: 'white',
     '@media screen and (orientation:portrait)': {
       [theme.breakpoints.down('sm')]: {
-        fontSize: '1.2rem'
+        fontSize: '1.2rem',
+        paddingBottom: '5px'
+      },
+      // iphone 5/SE, 6/7/8 & galaxy S5
+      '@media only screen and (max-height: 668px) and (max-width: 375px)': {
+        fontSize: '1rem'
+      },
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '2rem'
       }
     },
-    [theme.breakpoints.up('lg')]: {
-      paddingBottom: '4vh'
+    '@media screen and (orientation:landscape)': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1rem',
+        paddingBottom: '3px'
+      },
+      // iphone 5/SE, 6/7/8 & galaxy S5
+      '@media only screen and (max-height: 375px) and (max-width: 667px)': {
+        padding: '0'
+      },
+      [theme.breakpoints.up('lg')]: {
+        fontSize: '2.5rem'
+      }
     }
   }
 })
@@ -67,12 +94,12 @@ class Forbidden extends React.Component {
     return (
       <div className={classes.forbidden}>
         <div className={classes.info}>
-          <div className={classes.text}>
-            <div>
-              You&apos;ve attempted to sign in with {email} which
-              does not grant you access.
+          <div>
+            <div className={classes.text}>
+              You&apos;ve attempted to sign in with {email} which does not grant
+              you access.
             </div>
-            <div>
+            <div className={classes.text}>
               Please sign in with your company email account.
             </div>
           </div>
