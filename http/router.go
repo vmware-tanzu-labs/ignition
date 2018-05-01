@@ -40,12 +40,13 @@ func (a *API) createRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.Ignition.Server.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
 	r.Handle("/api/v1/profile", ensureHTTPS(session.PopulateContext(Authenticate(api.ProfileHandler()), a.Ignition.Server.SessionStore)))
-	r.Handle("/api/v1/info", Secure(api.InfoHandler(
+	infoHandler := api.InfoHandler(
 		a.Ignition.Server.CompanyName,
 		a.Ignition.Experimenter.SpaceName,
 		a.Ignition.Experimenter.QuotaID,
-		a.Ignition.Deployment.CC),
-		a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore))
+		a.Ignition.Experimenter.OrgCountUpdateInterval,
+		a.Ignition.Deployment.CC)
+	r.Handle("/api/v1/info", Secure(infoHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore))
 
 	orgHandler := api.OrganizationHandler(a.Ignition.Deployment.AppsURL, a.Ignition.Experimenter.OrgPrefix, a.Ignition.Experimenter.QuotaID, a.Ignition.Experimenter.SpaceName, a.Ignition.Deployment.CC)
 	orgHandler = ensureUser(orgHandler, a.Ignition.Deployment.UAA, a.Ignition.Deployment.UAAOrigin, a.Ignition.Server.SessionStore)

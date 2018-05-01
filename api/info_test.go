@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/bitly/go-simplejson"
 	cfclient "github.com/cloudfoundry-community/go-cfclient"
@@ -22,6 +23,42 @@ func TestInfoHandler(t *testing.T) {
 func testInfoHandler(t *testing.T, when spec.G, it spec.S) {
 	it.Before(func() {
 		RegisterTestingT(t)
+	})
+
+	when("the ignition org count updates async in the background", func() {
+		var handler http.Handler
+		it.Before(func() {
+			a := &cloudfoundryfakes.FakeAPI{}
+			handler = api.InfoHandler(
+				"Test Company", "Test Space", "ignition-quota-definition-guid", 100*time.Millisecond, a)
+
+			// stub this out after the handler has initialized, the goroutine will update
+			a.ListOrgsByQueryReturns([]cfclient.Org{
+				cfclient.Org{
+					Guid:                "4321",
+					Name:                "orgprefix-joe",
+					QuotaDefinitionGuid: "ignition-quota-definition-guid",
+				},
+				cfclient.Org{
+					Guid:                "5432",
+					Name:                "orgprefix-larry",
+					QuotaDefinitionGuid: "ignition-quota-definition-guid",
+				},
+			}, nil)
+		})
+
+		it("returns the updated ignition org count", func() {
+			Eventually(func() int {
+				r := httptest.NewRecorder()
+				handler.ServeHTTP(r, httptest.NewRequest(http.MethodGet, "/", nil))
+				Expect(r.Code).To(Equal(http.StatusOK))
+				j, err := simplejson.NewFromReader(r.Body)
+				if err != nil {
+					t.Errorf("Error while reading response JSON: %s", err)
+				}
+				return j.GetPath("IgnitionOrgCount").MustInt()
+			}, "2s").Should(Equal(2))
+		})
 	})
 
 	when("there are ignition and non-ignition orgs", func() {
@@ -46,7 +83,7 @@ func testInfoHandler(t *testing.T, when spec.G, it spec.S) {
 					QuotaDefinitionGuid: "ignition-quota-definition-guid",
 				},
 			}, nil)
-			handler = api.InfoHandler("Test Company", "Test Space", "ignition-quota-definition-guid", a)
+			handler = api.InfoHandler("Test Company", "Test Space", "ignition-quota-definition-guid", time.Minute, a)
 		})
 
 		it("returns the configured company name, space name, and ignition org count", func() {
@@ -71,7 +108,7 @@ func testInfoHandler(t *testing.T, when spec.G, it spec.S) {
 		it.Before(func() {
 			a := &cloudfoundryfakes.FakeAPI{}
 			a.ListOrgsByQueryReturns([]cfclient.Org{}, errors.New("Some unknown CC API error"))
-			handler = api.InfoHandler("Test Company", "Test Space", "orgprefix", a)
+			handler = api.InfoHandler("Test Company", "Test Space", "orgprefix", time.Minute, a)
 		})
 
 		it("returns the configured company name, space name, and defaults the org count to 0", func() {

@@ -1,7 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"log"
 	"strings"
+	"time"
 
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
 	"github.com/kelseyhightower/envconfig"
@@ -14,10 +17,11 @@ const defaultQuota string = "default"
 // Experimenter is the metadata required to vend a Cloud Foundry organization
 // and space for developer experimentation
 type Experimenter struct {
-	OrgPrefix string `envconfig:"org_prefix" default:"ignition"`   // IGNITION_ORG_PREFIX
-	SpaceName string `envconfig:"space_name" default:"playground"` // IGNITION_SPACE_NAME
-	QuotaName string `envconfig:"quota_name" default:"ignition"`   // IGNITION_QUOTA_NAME
-	QuotaID   string `ignored:"true"`
+	OrgPrefix              string        `envconfig:"org_prefix" default:"ignition"`          // IGNITION_ORG_PREFIX
+	OrgCountUpdateInterval time.Duration `envconfig:"org_count_update_interval" default:"1m"` // IGNITION_ORG_COUNT_UPDATE_INTERVAL
+	SpaceName              string        `envconfig:"space_name" default:"playground"`        // IGNITION_SPACE_NAME
+	QuotaName              string        `envconfig:"quota_name" default:"ignition"`          // IGNITION_QUOTA_NAME
+	QuotaID                string        `ignored:"true"`
 }
 
 // NewExperimenter uses environment variables to populate an Experimenter
@@ -34,6 +38,15 @@ func NewExperimenter(name string, q cloudfoundry.QuotaQuerier) (*Experimenter, e
 			orgPrefix, ok := service.CredentialString("org_prefix")
 			if ok && strings.TrimSpace(orgPrefix) != "" {
 				e.OrgPrefix = orgPrefix
+			}
+			updateInterval, ok := service.CredentialString("org_count_update_interval")
+			if ok && strings.TrimSpace(updateInterval) != "" {
+				d, err := time.ParseDuration(updateInterval)
+				if err != nil {
+					log.Println(fmt.Sprintf("[WARN] [%s] is an invalid time.Duration, defaulting org update interval to 1m", updateInterval))
+				} else {
+					e.OrgCountUpdateInterval = d
+				}
 			}
 			quotaName, ok := service.CredentialString("quota_name")
 			if ok && strings.TrimSpace(quotaName) != "" {

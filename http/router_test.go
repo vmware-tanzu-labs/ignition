@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
+	"github.com/pivotalservices/ignition/cloudfoundry/cloudfoundryfakes"
 	"github.com/pivotalservices/ignition/config"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
@@ -19,8 +20,10 @@ func testAPI(t *testing.T, when spec.G, it spec.S) {
 		RegisterTestingT(t)
 		api = &API{
 			Ignition: &config.Ignition{
-				Authorizer:   &config.Authorizer{},
-				Deployment:   &config.Deployment{},
+				Authorizer: &config.Authorizer{},
+				Deployment: &config.Deployment{
+					CC: &cloudfoundryfakes.FakeAPI{},
+				},
 				Experimenter: &config.Experimenter{},
 				Server:       &config.Server{},
 			},

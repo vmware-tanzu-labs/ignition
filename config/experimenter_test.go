@@ -2,8 +2,10 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	cfclient "github.com/cloudfoundry-community/go-cfclient"
 	. "github.com/onsi/gomega"
@@ -24,14 +26,18 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("PORT")
 
 		os.Unsetenv("IGNITION_ORG_PREFIX")
+		os.Unsetenv("IGNITION_ORG_COUNT_UPDATE_INTERVAL")
 		os.Unsetenv("IGNITION_QUOTA_NAME")
 		os.Unsetenv("IGNITION_SPACE_NAME")
 	}
 
 	it.Before(func() {
 		RegisterTestingT(t)
-		f = &cloudfoundryfakes.FakeAPI{}
 		reset()
+		f = &cloudfoundryfakes.FakeAPI{}
+		f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
+			Guid: "test-quota-id",
+		}, nil)
 	})
 
 	it.After(func() {
@@ -40,26 +46,18 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 
 	when("not running on CF", func() {
 		it("succeeds when no variables are set", func() {
-			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-				Guid: "test-quota-id",
-			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
+			e := createExperimenter(f)
 			Expect(e.OrgPrefix).To(Equal("ignition"))
+			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
 			Expect(e.QuotaName).To(Equal("ignition"))
 			Expect(e.QuotaID).NotTo(BeZero())
 			Expect(e.SpaceName).To(Equal("playground"))
 		})
 
 		it("looks up the Quota ID if it is missing", func() {
-			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-				Guid: "test-quota-id",
-			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
+			e := createExperimenter(f)
 			Expect(e.OrgPrefix).To(Equal("ignition"))
+			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
 			Expect(e.QuotaName).To(Equal("ignition"))
 			Expect(e.QuotaID).To(Equal("test-quota-id"))
 			Expect(e.SpaceName).To(Equal("playground"))
@@ -70,10 +68,9 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 			f.GetOrgQuotaByNameReturnsOnCall(1, cfclient.OrgQuota{
 				Guid: "default-quota-id",
 			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
+			e := createExperimenter(f)
 			Expect(e.OrgPrefix).To(Equal("ignition"))
+			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
 			Expect(e.QuotaName).To(Equal("default"))
 			Expect(e.QuotaID).To(Equal("default-quota-id"))
 			Expect(e.SpaceName).To(Equal("playground"))
@@ -86,25 +83,34 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 			Expect(e).To(BeNil())
 		})
 
+		when("the ignition environment variables are set", func() {
+			it.Before(func() {
+				os.Setenv("IGNITION_ORG_PREFIX", "env-org")
+				os.Setenv("IGNITION_ORG_COUNT_UPDATE_INTERVAL", "5m")
+				os.Setenv("IGNITION_SPACE_NAME", "env-space")
+				os.Setenv("IGNITION_QUOTA_NAME", "env-quota-name")
+			})
+
+			it("uses the values specified in the individual environment variables", func() {
+				e := createExperimenter(f)
+				Expect(e.OrgPrefix).To(Equal("env-org"))
+				Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute * 5))
+				Expect(e.QuotaName).To(Equal("env-quota-name"))
+				Expect(e.QuotaID).To(Equal("test-quota-id"))
+				Expect(e.SpaceName).To(Equal("env-space"))
+			})
+		})
+
 		when("the quota name is set but empty", func() {
 			it.Before(func() {
 				os.Setenv("IGNITION_QUOTA_NAME", "   ")
 			})
 
-			it.After(func() {
-				os.Unsetenv("IGNITION_QUOTA_NAME")
-			})
-
 			it("uses the default quota", func() {
-				f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-					Guid: "default-quota-id",
-				}, nil)
-				e, err := NewExperimenter("ignition-config", f)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(e).NotTo(BeNil())
+				e := createExperimenter(f)
 				Expect(e.OrgPrefix).To(Equal("ignition"))
 				Expect(e.QuotaName).To(Equal("default"))
-				Expect(e.QuotaID).To(Equal("default-quota-id"))
+				Expect(e.QuotaID).To(Equal("test-quota-id"))
 				Expect(e.SpaceName).To(Equal("playground"))
 			})
 		})
@@ -124,74 +130,60 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 			Expect(e).To(BeNil())
 		})
 
-		it("succeeds when no config exists", func() {
-			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-				Guid: "test-quota-id",
-			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
+		it("succeeds and uses the defaults when no config exists", func() {
+			e := createExperimenter(f)
 			Expect(e.OrgPrefix).To(Equal("ignition"))
+			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
 			Expect(e.QuotaName).To(Equal("ignition"))
 			Expect(e.QuotaID).To(Equal("test-quota-id"))
 			Expect(e.SpaceName).To(Equal("playground"))
 		})
 
 		it("uses an org prefix specified in ignition-config", func() {
-			os.Setenv("VCAP_SERVICES", `{"user-provided": [{
-				"name": "ignition-config",
-				"instance_name": "ignition-config",
-				"credentials": {
-					"org_prefix": "test-org-prefix"
-				}}]}`)
-			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-				Guid: "test-quota-id",
-			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
+			stubCupsService("org_prefix", "test-org-prefix")
+			e := createExperimenter(f)
 			Expect(e.OrgPrefix).To(Equal("test-org-prefix"))
-			Expect(e.QuotaName).To(Equal("ignition"))
-			Expect(e.QuotaID).NotTo(BeZero())
-			Expect(e.SpaceName).To(Equal("playground"))
 		})
 
 		it("uses a quota name specified in ignition-config", func() {
-			os.Setenv("VCAP_SERVICES", `{"user-provided": [{
-				"name": "ignition-config",
-				"instance_name": "ignition-config",
-				"credentials": {
-					"quota_name": "test-ignition-quota-name"
-				}}]}`)
-			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-				Guid: "test-quota-id",
-			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
-			Expect(e.OrgPrefix).To(Equal("ignition"))
+			stubCupsService("quota_name", "test-ignition-quota-name")
+			e := createExperimenter(f)
 			Expect(e.QuotaName).To(Equal("test-ignition-quota-name"))
-			Expect(e.QuotaID).NotTo(BeZero())
-			Expect(e.SpaceName).To(Equal("playground"))
+			Expect(e.QuotaID).To(Equal("test-quota-id"))
 		})
 
 		it("uses a space name specified in ignition-config", func() {
-			os.Setenv("VCAP_SERVICES", `{"user-provided": [{
-				"name": "ignition-config",
-				"instance_name": "ignition-config",
-				"credentials": {
-					"space_name": "test-ignition-space-name"
-				}}]}`)
-			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
-				Guid: "test-space-id",
-			}, nil)
-			e, err := NewExperimenter("ignition-config", f)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(e).NotTo(BeNil())
-			Expect(e.OrgPrefix).To(Equal("ignition"))
-			Expect(e.QuotaName).To(Equal("ignition"))
-			Expect(e.QuotaID).NotTo(BeZero())
+			stubCupsService("space_name", "test-ignition-space-name")
+			e := createExperimenter(f)
 			Expect(e.SpaceName).To(Equal("test-ignition-space-name"))
 		})
+
+		it("uses the org count update interval specified in ignition-config", func() {
+			stubCupsService("org_count_update_interval", "3m")
+			e := createExperimenter(f)
+			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute * 3))
+		})
+
+		it("defaults the org count update interval to 1m when given an invalid duration", func() {
+			stubCupsService("org_count_update_interval", "garbage")
+			e := createExperimenter(f)
+			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
+		})
 	})
+}
+
+func createExperimenter(f *cloudfoundryfakes.FakeAPI) *Experimenter {
+	e, err := NewExperimenter("ignition-config", f)
+	Expect(err).NotTo(HaveOccurred())
+	Expect(e).NotTo(BeNil())
+	return e
+}
+
+func stubCupsService(key, value string) {
+	os.Setenv("VCAP_SERVICES", fmt.Sprintf(`{"user-provided": [{
+		"name": "ignition-config",
+		"instance_name": "ignition-config",
+		"credentials": {
+			"%s": "%s"
+		}}]}`, key, value))
 }
