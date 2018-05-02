@@ -2,13 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Home from './home'
 import Forbidden from './forbidden'
+import NotFound from './notfound'
 import withRoot from '../withRoot'
 
 class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      forbidden: false
+      forbidden: false,
+      notFound: false
     }
   }
 
@@ -29,7 +31,9 @@ class App extends React.Component {
           this.setState({ forbidden: true })
         }
       })
-      .then(info => { this.setState({info: info}) })
+      .then(info => {
+        this.setState({ info: info })
+      })
     window
       .fetch('/api/v1/profile', {
         credentials: 'same-origin'
@@ -39,16 +43,23 @@ class App extends React.Component {
           return response.json()
         }
       })
-      .then(profile => { this.setState({ profile: profile }) })
+      .then(profile => {
+        this.setState({ profile: profile })
+      })
+    if (window.location.pathname !== '/') {
+      this.setState({ notFound: true })
+    }
   }
 
   render () {
     if (this.state.forbidden) {
-      return (<Forbidden profile={this.state.profile} />)
+      return <Forbidden profile={this.state.profile} />
+    } else if (this.state.notFound) {
+      return <NotFound />
     } else if (this.state.info && this.state.profile) {
-      return (<Home info={this.state.info} profile={this.state.profile} />)
+      return <Home info={this.state.info} profile={this.state.profile} />
     } else {
-      return (<div>&nbsp;</div>)
+      return <div>&nbsp;</div>
     }
   }
 }
