@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import App from './app'
 import Forbidden from './forbidden'
 import NotFound from './notFound'
