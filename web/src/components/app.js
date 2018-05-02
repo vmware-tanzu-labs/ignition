@@ -2,11 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Home from './home'
 import withRoot from '../withRoot'
+import { Redirect } from 'react-router-dom'
 
 class App extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      forbidden: false,
+      redirect: false
+    }
   }
 
   componentDidMount () {
@@ -23,10 +27,7 @@ class App extends React.Component {
         } else if (response.status === 401) {
           window.location.replace('/login')
         } else if (response.status === 403) {
-          window.location.replace('/403')
-          // TODO:
-          // need to send profile={this.state.profile} to /403
-          // in order to see the email address that was attempted
+          this.setState({ forbidden: true })
         }
       })
       .then(info => {
@@ -43,10 +44,23 @@ class App extends React.Component {
       })
       .then(profile => {
         this.setState({ profile: profile })
+        if (this.state.forbidden) {
+          this.setState({ redirect: true })
+        }
       })
   }
 
   render () {
+    if (this.state.redirect) {
+      return (
+        <Redirect
+          to={{
+            pathname: '/403',
+            state: { profile: this.state.profile }
+          }}
+        />
+      )
+    }
     if (this.state.info && this.state.profile) {
       return <Home info={this.state.info} profile={this.state.profile} />
     } else {
@@ -56,7 +70,8 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  testing: PropTypes.bool
+  testing: PropTypes.bool,
+  router: PropTypes.func
 }
 
 export default withRoot(App)

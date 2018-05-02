@@ -84,13 +84,17 @@ const styles = theme => ({
 })
 
 class Forbidden extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {}
+  }
   handleTryAgainButtonClick = async () => {
     window.location.replace('/logout')
   }
 
   render () {
     const { classes } = this.props
-    const email = this.props.profile.Email
+    const email = this.props.location.state.profile.Email
     return (
       <div className={classes.forbidden}>
         <div className={classes.info}>
@@ -118,15 +122,19 @@ class Forbidden extends React.Component {
 }
 
 Forbidden.defaultProps = {
-  profile: {
-    Email: 'an unknown email'
+  location: {
+    state: {
+      profile: {
+        Email: 'an unknown email'
+      }
+    }
   }
 }
 
 Forbidden.propTypes = {
   classes: PropTypes.object.isRequired,
   testing: PropTypes.bool,
-  profile: PropTypes.object
+  location: PropTypes.object
 }
 
 export default withStyles(styles)(Forbidden)
