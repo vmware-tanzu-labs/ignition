@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles'
 import bkgd404 from './../../images/bkgd_404_v1.svg'
 
 const styles = theme => ({
-  notFound: {
+  page: {
     backgroundImage: `url("${bkgd404}")`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
@@ -17,7 +17,7 @@ const styles = theme => ({
 class NotFound extends React.Component {
   render () {
     const { classes } = this.props
-    return <div className={classes.notFound} />
+    return <div className={classes.page} />
   }
 }
 
