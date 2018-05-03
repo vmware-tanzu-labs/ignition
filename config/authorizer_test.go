@@ -40,6 +40,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("IGNITION_CLIENT_SECRET")
 		os.Unsetenv("IGNITION_AUTH_URL")
 		os.Unsetenv("IGNITION_AUTHORIZED_DOMAIN")
+		os.Unsetenv("IGNITION_SKIP_TLS_VALIDATION")
 	}
 
 	it.Before(func() {
@@ -48,7 +49,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 		responseCode = http.StatusOK
 		called = false
 		wellKnownFile = "well-known.json"
-		s = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			called = true
 			wellKnown := internal.StringFromTestdata(t, wellKnownFile)
 			wellKnown = strings.Replace(wellKnown, "{{url}}", s.URL, -1)
@@ -77,6 +78,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 			os.Setenv("IGNITION_CLIENT_ID", "test-ignition-client-id")
 			os.Setenv("IGNITION_CLIENT_SECRET", "test-ignition-client-secret")
 			os.Setenv("IGNITION_AUTH_URL", s.URL)
+			os.Setenv("IGNITION_SKIP_TLS_VALIDATION", "true")
 			os.Setenv("IGNITION_AUTHORIZED_DOMAIN", "test-ignition-authorized-domain")
 		})
 
@@ -195,6 +197,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 								"auth_scopes": "testscope,anotherscope",
 								"authorized_domain": "test-service-authorized-domain",
 								"auth_url": "%s",
+								"skip_tls_validation": "true",
 								"client_id": "test-service-client-id",
 								"client_secret": "test-service-client-secret",
 								"auth_servicename": "test-service-client-servicename"
@@ -229,6 +232,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 									"auth_variant": "p-identity",
 									"authorized_domain": "test-service-authorized-domain",
 									"auth_url": "test-service-auth-url",
+									"skip_tls_validation": "true",
 									"client_id": "test-service-client-id",
 									"client_secret": "test-service-client-secret"
 								}
@@ -277,6 +281,7 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 									"auth_variant": "p-identity",
 									"authorized_domain": "test-service-authorized-domain",
 									"auth_url": "test-service-auth-url",
+									"skip_tls_validation": "true",
 									"client_id": "test-service-client-id",
 									"client_secret": "test-service-client-secret"
 								}

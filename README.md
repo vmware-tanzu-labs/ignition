@@ -111,6 +111,7 @@ export IGNITION_API_CLIENT_ID="cf" # IGNITION_API_CLIENT_ID is almost always cf
 export IGNITION_API_CLIENT_SECRET="" # IGNITION_API_CLIENT_SECRET is almost always blank
 export IGNITION_API_USERNAME="ignition" # IGNITION_API_USERNAME is the username for the user that can create Cloud Foundry organizations
 export IGNITION_API_PASSWORD="password" # IGNITION_API_PASSWORD is the password for the user that can create Cloud Foundry organizations
+export IGNITION_SKIP_TLS_VALIDATION="false" # IGNITION_SKIP_TLS_VALIDATION can be set to true if your Cloud Foundry presents a self signed cert
 
 ### Developer Experimentation ###
 export IGNITION_ORG_PREFIX="ignition" # IGNITION_ORG_PREFIX is used to generate a developer's org name (e.g. ignition-testuser)

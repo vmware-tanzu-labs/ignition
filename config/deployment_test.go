@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
+	"github.com/pivotalservices/ignition/cloudfoundry"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -25,6 +26,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("IGNITION_API_CLIENT_SECRET")
 		os.Unsetenv("IGNITION_API_USERNAME")
 		os.Unsetenv("IGNITION_API_PASSWORD")
+		os.Unsetenv("IGNITION_SKIP_TLS_VALIDATION")
 	}
 
 	it.Before(func() {
@@ -95,6 +97,8 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				Expect(d.ClientSecret).To(BeZero())
 				Expect(d.Username).To(Equal("test-username"))
 				Expect(d.Password).To(Equal("test-password"))
+				cc := d.CC.(*cloudfoundry.Client)
+				Expect(cc.Config.SkipSslValidation).To(BeFalse())
 			})
 
 			it("can generate an oauth2.Config", func() {
@@ -109,6 +113,19 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				Expect(c.Endpoint.TokenURL).To(Equal("https://login.run.example.com/oauth/token"))
 				Expect(c.Scopes).To(HaveLen(1))
 				Expect(c.Scopes).To(ConsistOf("cloud_controller.admin"))
+			})
+
+			when("skip tls validation is true", func() {
+				it.Before(func() {
+					os.Setenv("IGNITION_SKIP_TLS_VALIDATION", "true")
+				})
+
+				it("configures the cf client to skip ssl validation", func() {
+					d, err := NewDeployment("ignition-config")
+					Expect(err).ToNot(HaveOccurred())
+					cc := d.CC.(*cloudfoundry.Client)
+					Expect(cc.Config.SkipSslValidation).To(BeTrue())
+				})
 			})
 
 			when("the system domain is empty", func() {
@@ -209,6 +226,48 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				d, err := NewDeployment("ignition-config")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(d).NotTo(BeNil())
+				Expect(d.SystemDomain).To(Equal("https://run.example.com"))
+				Expect(d.UAAOrigin).To(Equal("okta"))
+				Expect(d.ClientID).To(Equal("test-client-id"))
+				Expect(d.ClientSecret).To(Equal("test-client-secret"))
+				Expect(d.Username).To(Equal("test-username"))
+				Expect(d.Password).To(Equal("test-password"))
+				cc := d.CC.(*cloudfoundry.Client)
+				Expect(cc.Config.SkipSslValidation).To(BeFalse())
+			})
+		})
+
+		when("skip tls validation is true", func() {
+			it.Before(func() {
+				os.Setenv("VCAP_SERVICES", `{
+				  "user-provided": [
+				    {
+				      "name": "ignition-config",
+				      "instance_name": "ignition-config",
+				      "binding_name": null,
+				      "credentials": {
+				        "system_domain": "run.example.com",
+				        "uaa_origin": "okta",
+				        "api_client_id": "test-client-id",
+				        "api_client_secret": "test-client-secret",
+				        "api_username": "test-username",
+								"api_password": "test-password",
+								"skip_tls_validation": "true"
+				      },
+				      "syslog_drain_url": "",
+				      "volume_mounts": [],
+				      "label": "user-provided",
+				      "tags": []
+				    }
+				  ]
+				}`)
+			})
+
+			it("configures the cf client to skip ssl validation", func() {
+				d, err := NewDeployment("ignition-config")
+				Expect(err).ToNot(HaveOccurred())
+				cc := d.CC.(*cloudfoundry.Client)
+				Expect(cc.Config.SkipSslValidation).To(BeTrue())
 			})
 		})
 

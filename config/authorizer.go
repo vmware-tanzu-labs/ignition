@@ -1,10 +1,12 @@
 package config
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
@@ -17,17 +19,18 @@ import (
 
 // Authorizer is used to authenticate and authorize the user
 type Authorizer struct {
-	Variant      string          `envconfig:"auth_variant" default:"p-identity"`                    // IGNITION_AUTH_VARIANT
-	ServiceName  string          `envconfig:"auth_servicename" default:"ignition-identity"`         // IGNITION_AUTH_SERVICENAME
-	ClientID     string          `envconfig:"client_id"`                                            // IGNITION_CLIENT_ID << REQUIRED
-	ClientSecret string          `envconfig:"client_secret"`                                        // IGNITION_CLIENT_SECRET << REQUIRED
-	URL          string          `envconfig:"auth_url"`                                             // IGNITION_AUTH_URL << REQUIRED
-	Domain       string          `envconfig:"authorized_domain"`                                    // IGNITION_AUTHORIZED_DOMAIN << REQUIRED
-	Scopes       []string        `envconfig:"auth_scopes" default:"openid,profile,user_attributes"` // IGNITION_AUTH_SCOPES
-	Provider     *Provider       `ignored:"true"`
-	Verifier     openid.Verifier `ignored:"true"`
-	Fetcher      user.Fetcher    `ignored:"true"`
-	Config       *oauth2.Config  `ignored:"true"`
+	Variant           string          `envconfig:"auth_variant" default:"p-identity"`                    // IGNITION_AUTH_VARIANT
+	ServiceName       string          `envconfig:"auth_servicename" default:"ignition-identity"`         // IGNITION_AUTH_SERVICENAME
+	ClientID          string          `envconfig:"client_id"`                                            // IGNITION_CLIENT_ID << REQUIRED
+	ClientSecret      string          `envconfig:"client_secret"`                                        // IGNITION_CLIENT_SECRET << REQUIRED
+	URL               string          `envconfig:"auth_url"`                                             // IGNITION_AUTH_URL << REQUIRED
+	Domain            string          `envconfig:"authorized_domain"`                                    // IGNITION_AUTHORIZED_DOMAIN << REQUIRED
+	Scopes            []string        `envconfig:"auth_scopes" default:"openid,profile,user_attributes"` // IGNITION_AUTH_SCOPES
+	SkipTLSValidation bool            `envconfig:"skip_tls_validation" default:"false"`                  // IGNITION_SKIP_TLS_VALIDATION
+	Provider          *Provider       `ignored:"true"`
+	Verifier          openid.Verifier `ignored:"true"`
+	Fetcher           user.Fetcher    `ignored:"true"`
+	Config            *oauth2.Config  `ignored:"true"`
 }
 
 // Provider is an OpenID Connect provider
@@ -72,6 +75,13 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 		authURL, ok := s.CredentialString("auth_url")
 		if ok && strings.TrimSpace(authURL) != "" {
 			a.URL = authURL
+		}
+
+		skipTLSValidation, ok := s.CredentialString("skip_tls_validation")
+		if ok {
+			if b, err := strconv.ParseBool(skipTLSValidation); err == nil {
+				a.SkipTLSValidation = b
+			}
 		}
 
 		clientID, ok := s.CredentialString("client_id")
@@ -129,7 +139,11 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 	}
 
 	wellKnown := strings.TrimSuffix(a.URL, "/") + "/.well-known/openid-configuration"
-	resp, err := http.Get(wellKnown)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: a.SkipTLSValidation},
+	}
+	client := &http.Client{Transport: tr}
+	resp, err := client.Get(wellKnown)
 	if err != nil {
 		return nil, err
 	}

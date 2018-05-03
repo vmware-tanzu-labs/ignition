@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	cfclient "github.com/cloudfoundry-community/go-cfclient"
@@ -18,17 +19,18 @@ import (
 
 // Deployment is a Cloud Foundry Deployment
 type Deployment struct {
-	SystemDomain string           `envconfig:"system_domain"`                // IGNITION_SYSTEM_DOMAIN << REQUIRED
-	AppsURL      string           `ignored:"true"`                           // Ignored
-	APIURL       string           `ignored:"true"`                           // Ignored
-	UAAURL       string           `ignored:"true"`                           // Ignored
-	UAAOrigin    string           `envconfig:"uaa_origin"`                   // IGNITION_UAA_ORIGIN << REQUIRED
-	ClientID     string           `envconfig:"api_client_id" default:"cf"`   // IGNITION_API_CLIENT_ID
-	ClientSecret string           `envconfig:"api_client_secret" default:""` // IGNITION_API_CLIENT_SECRET
-	Username     string           `envconfig:"api_username"`                 // IGNITION_API_USERNAME << REQUIRED
-	Password     string           `envconfig:"api_password"`                 // IGNITION_API_PASSWORD << REQUIRED
-	CC           cloudfoundry.API `ignored:"true"`                           // Ignored
-	UAA          uaa.API          `ignored:"true"`                           // Ignored
+	SystemDomain      string           `envconfig:"system_domain"`                       // IGNITION_SYSTEM_DOMAIN << REQUIRED
+	AppsURL           string           `ignored:"true"`                                  // Ignored
+	APIURL            string           `ignored:"true"`                                  // Ignored
+	UAAURL            string           `ignored:"true"`                                  // Ignored
+	UAAOrigin         string           `envconfig:"uaa_origin"`                          // IGNITION_UAA_ORIGIN << REQUIRED
+	ClientID          string           `envconfig:"api_client_id" default:"cf"`          // IGNITION_API_CLIENT_ID
+	ClientSecret      string           `envconfig:"api_client_secret" default:""`        // IGNITION_API_CLIENT_SECRET
+	Username          string           `envconfig:"api_username"`                        // IGNITION_API_USERNAME << REQUIRED
+	Password          string           `envconfig:"api_password"`                        // IGNITION_API_PASSWORD << REQUIRED
+	SkipTLSValidation bool             `envconfig:"skip_tls_validation" default:"false"` // IGNITION_SKIP_TLS_VALIDATION
+	CC                cloudfoundry.API `ignored:"true"`                                  // Ignored
+	UAA               uaa.API          `ignored:"true"`                                  // Ignored
 }
 
 // NewDeployment uses environment variables to populate a Deployment
@@ -48,6 +50,13 @@ func NewDeployment(name string) (*Deployment, error) {
 		systemDomain, ok := s.CredentialString("system_domain")
 		if ok && strings.TrimSpace(systemDomain) != "" {
 			d.SystemDomain = systemDomain
+		}
+
+		skipTLSValidation, ok := s.CredentialString("skip_tls_validation")
+		if ok {
+			if b, err := strconv.ParseBool(skipTLSValidation); err == nil {
+				d.SkipTLSValidation = b
+			}
 		}
 
 		uaaOrigin, ok := s.CredentialString("uaa_origin")
@@ -94,7 +103,7 @@ func NewDeployment(name string) (*Deployment, error) {
 		Username:          d.Username,
 		Password:          d.Password,
 		UserAgent:         "ignition-api",
-		SkipSslValidation: false,
+		SkipSslValidation: d.SkipTLSValidation,
 		HttpClient:        http.DefaultClient,
 	}
 
