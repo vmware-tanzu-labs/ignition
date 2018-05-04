@@ -10,7 +10,7 @@ const Routes = () => (
     <Switch>
       <Route exact path="/" component={App} />
       <Route path="/404" component={NotFound} />
-      <Route path="/403" component={Forbidden} />
+      <Route path="/forbidden" component={Forbidden} />
       <Redirect from="/*" to="/404" />
     </Switch>
   </BrowserRouter>

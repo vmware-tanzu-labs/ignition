@@ -55,7 +55,7 @@ class App extends React.Component {
       return (
         <Redirect
           to={{
-            pathname: '/403',
+            pathname: '/forbidden',
             state: { profile: this.state.profile }
           }}
         />
