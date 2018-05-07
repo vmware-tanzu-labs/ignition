@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/bitly/go-simplejson"
 	cfclient "github.com/cloudfoundry-community/go-cfclient"
 	. "github.com/onsi/gomega"
 	"github.com/pivotalservices/ignition/api"
@@ -131,7 +132,14 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 				it("creates the org when there is no name or quota match", func() {
 					api.OrganizationHandler("http://example.net", "ignition1", "test-quota2-id", "playground", c).ServeHTTP(w, r)
 					Expect(w.Code).To(Equal(http.StatusOK))
-					Expect(w.Body.String()).To(ContainSubstring("ignition1-testuser"))
+					j, err := simplejson.NewFromReader(w.Body)
+					if err != nil {
+						t.Errorf("Error while reading response JSON: %s", err)
+					}
+					Expect(j.GetPath("guid").MustString()).To(Equal("test-org-guid"))
+					Expect(j.GetPath("name").MustString()).To(Equal("ignition1-testuser"))
+					Expect(j.GetPath("quota_definition_guid").MustString()).To(Equal("test-quota2-id"))
+					Expect(j.GetPath("default_isolation_segment_guid").MustString()).To(Equal("test-iso-segment-id"))
 				})
 			})
 
