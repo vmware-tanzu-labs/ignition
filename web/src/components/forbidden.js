@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
+import { Redirect } from 'react-router-dom'
 
 import bkgd403 from './../../images/bkgd_403.svg'
 
@@ -86,38 +87,56 @@ const styles = theme => ({
 class Forbidden extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      redirect: false
+    }
   }
+
   handleTryAgainButtonClick = async () => {
     window.location.replace('/logout')
   }
 
   render () {
     const { classes } = this.props
-    const email = this.props.location.state.profile.Email
-    return (
-      <div className={classes.forbidden}>
-        <div className={classes.info}>
-          <div>
-            <div className={classes.text}>
-              You&apos;ve attempted to sign in with {email} which does not grant
-              you access.
+    let email
+    if (this.props.location.state !== undefined) {
+      email = this.props.location.state.profile.Email
+    } else {
+      this.setState({ redirect: true })
+    }
+    if (this.state.redirect) {
+      return (
+        <Redirect
+          to={{
+            pathname: '/'
+          }}
+        />
+      )
+    } else {
+      return (
+        <div className={classes.forbidden}>
+          <div className={classes.info}>
+            <div>
+              <div className={classes.text}>
+                You&apos;ve attempted to sign in with {email} which does not
+                grant you access.
+              </div>
+              <div className={classes.text}>
+                Please sign in with your company email account.
+              </div>
             </div>
-            <div className={classes.text}>
-              Please sign in with your company email account.
-            </div>
+            <Button
+              size="large"
+              variant="raised"
+              className={this.props.classes.button}
+              onClick={this.handleTryAgainButtonClick}
+            >
+              Try Again
+            </Button>
           </div>
-          <Button
-            size="large"
-            variant="raised"
-            className={this.props.classes.button}
-            onClick={this.handleTryAgainButtonClick}
-          >
-            Try Again
-          </Button>
         </div>
-      </div>
-    )
+      )
+    }
   }
 }
 
