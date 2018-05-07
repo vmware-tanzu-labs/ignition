@@ -8,8 +8,7 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      forbidden: false,
-      redirect: false
+      forbidden: false
     }
   }
 
@@ -44,14 +43,11 @@ class App extends React.Component {
       })
       .then(profile => {
         this.setState({ profile: profile })
-        if (this.state.forbidden) {
-          this.setState({ redirect: true })
-        }
       })
   }
 
   render () {
-    if (this.state.redirect) {
+    if (this.state.forbidden && this.state.profile) {
       return (
         <Redirect
           to={{
