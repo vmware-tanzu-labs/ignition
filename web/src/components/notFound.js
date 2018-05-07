@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
 
-import bkgd404 from './../../images/bkgd_404_v1.svg'
+import bkgd404 from './../../images/bkgd_404_v2.svg'
 
 const styles = theme => ({
   page: {
