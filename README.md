@@ -6,6 +6,12 @@ A landing page for developers to self-service their way onto your Pivotal Cloud 
 * Authenticates the user via OpenID Connect (which implicitly uses OAuth 2.0)
 * Allows the user to access Apps Manager and view their personal PCF org
 
+### Installation Instructions
+We recommend you use the [Single Sign-On for PCF](https://network.pivotal.io/products/pivotal_single_sign-on_service) service to authenticate and authorize users for the application. It is possible that an OpenID Connect compliant provider can be used directly, but it is not recommended.
+
+- [Single Sign-On for PCF configured to use LDAP](./docs/ldap.md)
+- [External OpenID Connect provider](./docs/oidc.md)
+
 ### Contribute
 
 This application is a combination of a JavaScript single-page app (built with React) and a Go web app. The JavaScript app is built into a JavaScript bundle that the Go web app serves up. The Go web app also provides an API that the JavaScript app uses to function.
@@ -32,61 +38,6 @@ We welcome pull requests to add additional functionality or fix issues. Please f
 1. Make your changes, ensure you add tests to cover the changes, and then validate that all changes pass (see `Run all tests` below)
 1. Push your feature branch to your fork: `git push fork your initials-your-feature-name` (e.g. `git push fork jf-add-logo`)
 1. Make a pull request: `https://github.com/pivotalservices/ignition/compare/master...YOUR-USERNAME-HERE:your-initials-your-feature-name`
-
-### Configure the application
-#### Authentication
-We recommend you use the [Single Sign-On for PCF](https://network.pivotal.io/products/pivotal_single_sign-on_service) service to authenticate and authorize users for the application. It is possible that an OpenID Connect compliant provider can be used directly, but it is not recommended.
-
-To authenticate users with the Single Sign-On for PCF service:
-1. Configure the Single Sign-On for PCF tile in your PCF foundation http://docs.pivotal.io/p-identity/
-
-   Single Sign-On service is a multi tenancy openid connect server. It can integrate with other openid connect, ldap and saml servers as identity providers
-1. Create a Single Sign-On service instance named `ignition-identity` in your space.
-1. Create a user provided service `cf cups ignition-config -p /path/to/ignition-config.json` (see below for an `ignition-config.json` template)
-1. Build ignition `./build_local.sh`
-1. Push Ignition to Cloud Foundry and bind both services
-
-  ```
-  cf push ignition -p build -c './ignition-linux' -b binary_buildpack --no-start
-  cf bind-service ignition ignition-config
-  cf bind-service ignition ignition-identity
-  cf start ignition
-  ```
-
-#### Templates For `ignition-config.json`
-
-When you have a bound Single Sign-On service instance:
-
-```json
-{
-  "session_secret": "encrypt the secure cookie used to store a user's session",
-  "system_domain": "system domain of PAS",
-  "uaa_origin": "okta|saml|ldap",
-  "api_username": "cloud controller username",
-  "api_password": "cloud controller password",
-  "authorized_domain": "@example.net make sure open id token user profile email domain"
-}
-```
-
-When you want to use Google (or an equivalent OpenID Connect provider) to authenticate users (i.e. you do _not_ have a bound Single Sign-On service instance):
-
-Generate a Google [OAuth2 Client ID and Secret](https://console.developers.google.com/apis/credentials), and use them below:
-
-```json
-{
-  "session_secret": "",
-  "system_domain": "run.example.net",
-  "uaa_origin": "okta",
-  "api_username": "ignition",
-  "api_password": "password",
-  "authorized_domain": "@example.net",
-  "auth_variant": "openid",
-  "auth_scopes": "openid,profile,email",
-  "auth_url": "https://accounts.google.com",
-  "client_id": "your-client-id-here",
-  "client_secret": "your-client-secret-here"  
-}
-```
 
 ### Run the application locally
 
