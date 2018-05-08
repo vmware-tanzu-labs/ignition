@@ -1,0 +1,58 @@
+resources:
+- name: ignition-github-release
+  type: github-release
+  source:
+    owner: pivotalservices
+    repository: ignition
+    access_token: {{github-access-token}}
+
+- name: ignition-app
+  type: cf
+  source:
+    api: {{cf-api}}
+    organization: {{cf-org}}
+    space: {{cf-space}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    skip_cert_check: false
+
+- name: ignition-code
+  type: git
+  source:
+    uri: https://github.com/pivotalservices/ignition.git
+
+
+jobs:
+- name: download-and-push
+  plan:
+  - aggregate:
+    - get: ignition-github-release
+      trigger: true
+    - get: ignition-code
+
+  - task: unzip-release
+    config:
+      platform: linux
+
+      image_resource:
+        type: docker-image
+        source:
+          repository: ubuntu
+          tag: 'trusty'
+
+      inputs:
+      - name: ignition-github-release
+
+      outputs:
+      - name: ignition-unzipped
+
+      run:
+        path: sh
+        args:
+        - -exc
+        - tar xf ignition-github-release/*.tar.gz -C ignition-unzipped
+
+  - put: ignition-app
+    params:
+      manifest: ignition-code/manifests/ignition.yml
+      path: ignition-unzipped

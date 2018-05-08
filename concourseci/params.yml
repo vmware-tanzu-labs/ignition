@@ -1,0 +1,6 @@
+cf-api: # for example: api.run.pivotal.io
+cf-org:
+cf-space:
+cf-username:
+cf-password:
+github-access-token: # optional, use if rate limit kicks in
