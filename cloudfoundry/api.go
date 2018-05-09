@@ -7,12 +7,14 @@ import (
 )
 
 // API is a Cloud Controller API
+// counterfeiter ./cloudfoundry API
 type API interface {
 	OrganizationCreator
 	OrganizationQuerier
 	SpaceCreator
 	RoleGrantor
 	QuotaQuerier
+	ISOSegmentQuerier
 	GetToken() (string, error)
 }
 
@@ -73,6 +75,24 @@ func (c *Client) ListOrgsByQuery(query url.Values) ([]cfclient.Org, error) {
 	return c.CF.ListOrgsByQuery(query)
 }
 
+// ListIsolationSegmentsByQuery uses the given query to request a filtered list of isolation segments
+func (c *Client) ListIsolationSegmentsByQuery(query url.Values) ([]cfclient.IsolationSegment, error) {
+	err := c.checkAuthentication()
+	if err != nil {
+		return nil, err
+	}
+	return c.CF.ListIsolationSegmentsByQuery(query)
+}
+
+// AddIsolationSegmentToOrg assigns the specified isolation segment to the specific org
+func (c *Client) AddIsolationSegmentToOrg(isolationSegmentID, orgID string) error {
+	err := c.checkAuthentication()
+	if err != nil {
+		return err
+	}
+	return c.CF.AddIsolationSegmentToOrg(isolationSegmentID, orgID)
+}
+
 // CreateOrg creates a Cloud Foundry organization with the given OrgRequest
 func (c *Client) CreateOrg(req cfclient.OrgRequest) (cfclient.Org, error) {
 	err := c.checkAuthentication()
@@ -80,6 +100,14 @@ func (c *Client) CreateOrg(req cfclient.OrgRequest) (cfclient.Org, error) {
 		return cfclient.Org{}, err
 	}
 	return c.CF.CreateOrg(req)
+}
+
+func (c *Client) UpdateOrg(orgGUID string, orgRequest cfclient.OrgRequest) (cfclient.Org, error) {
+	err := c.checkAuthentication()
+	if err != nil {
+		return cfclient.Org{}, err
+	}
+	return c.CF.UpdateOrg(orgGUID, orgRequest)
 }
 
 // AssociateOrgUser grants the given user the org user role for the given

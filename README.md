@@ -68,6 +68,7 @@ export IGNITION_SKIP_TLS_VALIDATION="false" # IGNITION_SKIP_TLS_VALIDATION can b
 export IGNITION_ORG_PREFIX="ignition" # IGNITION_ORG_PREFIX is used to generate a developer's org name (e.g. ignition-testuser)
 export IGNITION_QUOTA_NAME="ignition" # IGNITION_QUOTA_NAME is used to generate a developer's org with the appropriate quota
 export IGNITION_SPACE_NAME="playground" # IGNITION_SPACE_NAME is used to create the initial space in a developer's org
+export IGNITION_ISO_SEGMENT_NAME="shared" #IGNITION_ISO_SEGMENT_NAME is used to assign an orgs default iso segment
 
 ### Authorization ###
 export IGNITION_AUTHORIZED_DOMAIN="@example.net" # IGNITION_AUTHORIZED_DOMAIN is used to validate that users are allowed to access the application

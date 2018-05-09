@@ -36,7 +36,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 	when("there is no profile in the context", func() {
 		it("is not found", func() {
 			r = httptest.NewRequest(http.MethodGet, "/", nil)
-			api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "playground", c).ServeHTTP(w, r)
+			api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 			Expect(w.Code).To(Equal(http.StatusNotFound))
 		})
 	})
@@ -48,7 +48,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 				AccountName: "testuser@test.com",
 			}
 			r = r.WithContext(user.WithProfile(r.Context(), profile))
-			api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "playground", c).ServeHTTP(w, r)
+			api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 			Expect(w.Code).To(Equal(http.StatusNotFound))
 		})
 	})
@@ -68,7 +68,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 			})
 
 			it("is not found", func() {
-				api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "playground", c).ServeHTTP(w, r)
+				api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 				Expect(w.Code).To(Equal(http.StatusNotFound))
 			})
 		})
@@ -85,7 +85,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 					QuotaDefinitionGuid:         "test-quota-id",
 					DefaultIsolationSegmentGuid: "test-iso-segment-id",
 				}, nil)
-				api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "playground", c).ServeHTTP(w, r)
+				api.OrganizationHandler("http://example.net", "ignition", "test-quota-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
 				Expect(w.Body.String()).To(ContainSubstring("ignition-testuser"))
 			})
@@ -98,7 +98,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 						Guid:                        "test-org-2",
 						Name:                        "ignition-testuser1",
 						QuotaDefinitionGuid:         "ignition-quota2-id",
-						DefaultIsolationSegmentGuid: "default-iso-guid",
+						DefaultIsolationSegmentGuid: "test-iso-segment-id",
 						CreatedAt:                   "created-at",
 						UpdatedAt:                   "updated-at",
 					},
@@ -106,7 +106,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 						Guid:                        "test-org-1",
 						Name:                        "ignition-testuser",
 						QuotaDefinitionGuid:         "ignition-quota-id",
-						DefaultIsolationSegmentGuid: "default-iso-guid",
+						DefaultIsolationSegmentGuid: "test-iso-segment-id",
 						CreatedAt:                   "created-at",
 						UpdatedAt:                   "updated-at",
 					},
@@ -114,7 +114,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 			})
 
 			it("selects the correct org when there is a name match", func() {
-				api.OrganizationHandler("http://example.net", "ignition", "test-quota2-id", "playground", c).ServeHTTP(w, r)
+				api.OrganizationHandler("http://example.net", "ignition", "test-quota2-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
 				Expect(w.Body.String()).To(ContainSubstring("test-org-1"))
 			})
@@ -130,7 +130,7 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 				})
 
 				it("creates the org when there is no name or quota match", func() {
-					api.OrganizationHandler("http://example.net", "ignition1", "test-quota2-id", "playground", c).ServeHTTP(w, r)
+					api.OrganizationHandler("http://example.net", "ignition1", "test-quota2-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 					Expect(w.Code).To(Equal(http.StatusOK))
 					j, err := simplejson.NewFromReader(w.Body)
 					if err != nil {
@@ -149,13 +149,13 @@ func testHandler(t *testing.T, when spec.G, it spec.S) {
 				})
 
 				it("is not found", func() {
-					api.OrganizationHandler("http://example.net", "ignition1", "test-quota2-id", "playground", c).ServeHTTP(w, r)
+					api.OrganizationHandler("http://example.net", "ignition1", "test-quota2-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 					Expect(w.Code).To(Equal(http.StatusNotFound))
 				})
 			})
 
 			it("selects the correct org when there is a quota match (but not a name match)", func() {
-				api.OrganizationHandler("http://example.net", "ignition2", "ignition-quota-id", "playground", c).ServeHTTP(w, r)
+				api.OrganizationHandler("http://example.net", "ignition2", "ignition-quota-id", "test-iso-segment-id", "playground", c).ServeHTTP(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
 				Expect(w.Body.String()).To(ContainSubstring("test-org-1"))
 			})

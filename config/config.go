@@ -30,7 +30,7 @@ func New() (*Ignition, error) {
 		return nil, err
 	}
 	i.Deployment = d
-	e, err := NewExperimenter(s.ServiceName, i.Deployment.CC)
+	e, err := NewExperimenter(s.ServiceName, i.Deployment.CC, i.Deployment.CC)
 	if err != nil {
 		return nil, err
 	}

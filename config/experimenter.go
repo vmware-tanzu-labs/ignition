@@ -13,6 +13,7 @@ import (
 )
 
 const defaultQuota string = "default"
+const defaultIsolationSegment string = "shared"
 
 // Experimenter is the metadata required to vend a Cloud Foundry organization
 // and space for developer experimentation
@@ -22,10 +23,12 @@ type Experimenter struct {
 	SpaceName              string        `envconfig:"space_name" default:"playground"`        // IGNITION_SPACE_NAME
 	QuotaName              string        `envconfig:"quota_name" default:"ignition"`          // IGNITION_QUOTA_NAME
 	QuotaID                string        `ignored:"true"`
+	ISOSegmentName         string        `envconfig:"iso_segment_name" default:"shared"` // IGNITION_ISO_SEGMENT_NAME
+	ISOSegmentID           string        `ignored:"true"`
 }
 
 // NewExperimenter uses environment variables to populate an Experimenter
-func NewExperimenter(name string, q cloudfoundry.QuotaQuerier) (*Experimenter, error) {
+func NewExperimenter(name string, qq cloudfoundry.QuotaQuerier, iq cloudfoundry.ISOSegmentQuerier) (*Experimenter, error) {
 	var e Experimenter
 	envconfig.Process(ignition, &e)
 	if cfenv.IsRunningOnCF() {
@@ -56,24 +59,38 @@ func NewExperimenter(name string, q cloudfoundry.QuotaQuerier) (*Experimenter, e
 			if ok && strings.TrimSpace(spaceName) != "" {
 				e.SpaceName = spaceName
 			}
+			isoSegmentName, ok := service.CredentialString("iso_segment_name")
+			if ok && strings.TrimSpace(isoSegmentName) != "" {
+				e.ISOSegmentName = isoSegmentName
+			}
 		}
 	}
 	e.OrgPrefix = strings.TrimSpace(e.OrgPrefix)
 	e.QuotaName = strings.TrimSpace(e.QuotaName)
 	e.SpaceName = strings.TrimSpace(e.SpaceName)
+	e.ISOSegmentName = strings.TrimSpace(e.ISOSegmentName)
 
 	if e.QuotaName == "" {
 		e.QuotaName = defaultQuota
 	}
-	id, err := cloudfoundry.QuotaIDForName(e.QuotaName, q)
+	quotaID, err := cloudfoundry.QuotaIDForName(e.QuotaName, qq)
 	if err != nil {
 		var defaultErr error
-		id, defaultErr = cloudfoundry.QuotaIDForName(defaultQuota, q)
+		quotaID, defaultErr = cloudfoundry.QuotaIDForName(defaultQuota, qq)
 		if defaultErr != nil {
 			return nil, errors.Wrapf(err, "could not find quota id for quota with name [%s], nor for the default quota", e.QuotaName)
 		}
 		e.QuotaName = defaultQuota
 	}
-	e.QuotaID = id
+	e.QuotaID = quotaID
+
+	if e.ISOSegmentName == "" {
+		e.ISOSegmentName = defaultIsolationSegment
+	}
+	isoSegmentID, err := cloudfoundry.ISOSegmentIDForName(e.ISOSegmentName, iq)
+	if err != nil {
+		return nil, err
+	}
+	e.ISOSegmentID = isoSegmentID
 	return &e, nil
 }

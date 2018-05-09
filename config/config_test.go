@@ -78,11 +78,13 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 
 	when("not running on CF and all required env vars are set", func() {
 		var (
-			quotaFile     string
-			wellKnownFile string
+			isoSegmentFile string
+			quotaFile      string
+			wellKnownFile  string
 		)
 
 		it.Before(func() {
+			isoSegmentFile = "isolation-segments.json"
 			quotaFile = "quota.json"
 			wellKnownFile = "well-known.json"
 
@@ -94,6 +96,11 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 				}
 				if strings.Contains(r.URL.Path, "quota") {
 					handler := internal.HandleTestdata(t, quotaFile, func() {})
+					handler.ServeHTTP(w, r)
+					return
+				}
+				if strings.Contains(r.URL.Path, "isolation_segments") {
+					handler := internal.HandleTestdata(t, isoSegmentFile, func() {})
 					handler.ServeHTTP(w, r)
 					return
 				}

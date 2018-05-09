@@ -12,7 +12,7 @@ import (
 )
 
 // OrganizationHandler retrieves or creates the user's development organization
-func OrganizationHandler(appsURL string, orgPrefix string, quotaID string, spaceName string, a cloudfoundry.API) http.Handler {
+func OrganizationHandler(appsURL, orgPrefix, quotaID, isoSegmentID, spaceName string, a cloudfoundry.API) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		userID, accountName, err := userInfoFromContext(req.Context())
@@ -32,7 +32,7 @@ func OrganizationHandler(appsURL string, orgPrefix string, quotaID string, space
 		if err != nil {
 			switch err.(type) {
 			case OrgNotFoundError:
-				org, err = CreateOrgForUser(orgName, appsURL, userID, quotaID, spaceName, a)
+				org, err = CreateOrgForUser(orgName, appsURL, userID, quotaID, isoSegmentID, spaceName, a)
 				if err != nil {
 					log.Println(err)
 					w.WriteHeader(http.StatusNotFound)
@@ -61,7 +61,7 @@ func (o OrgNotFoundError) Error() string {
 // CreateOrgForUser creates an org, a default space, and creates or retrieves
 // the user and then assigns that user to org manager, org auditor, space manager,
 // space developer, and space auditor roles
-func CreateOrgForUser(name string, appsURL string, userID string, quotaID string, spaceName string, a cloudfoundry.API) (*cloudfoundry.Organization, error) {
+func CreateOrgForUser(name, appsURL, userID, quotaID, isoSegmentID, spaceName string, a cloudfoundry.API) (*cloudfoundry.Organization, error) {
 	// create the user if needed
 	if strings.TrimSpace(userID) == "" {
 		return nil, errors.New("cannot create an org without a valid userID")
@@ -70,7 +70,7 @@ func CreateOrgForUser(name string, appsURL string, userID string, quotaID string
 	// check for org existence by name
 
 	// create the org
-	org, err := cloudfoundry.CreateOrg(name, appsURL, quotaID, a)
+	org, err := cloudfoundry.CreateOrg(name, appsURL, quotaID, isoSegmentID, a)
 	if err != nil {
 		return nil, err
 	}

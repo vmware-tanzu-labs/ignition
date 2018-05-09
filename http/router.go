@@ -48,7 +48,13 @@ func (a *API) createRouter() *mux.Router {
 		a.Ignition.Deployment.CC)
 	r.Handle("/api/v1/info", Secure(infoHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore))
 
-	orgHandler := api.OrganizationHandler(a.Ignition.Deployment.AppsURL, a.Ignition.Experimenter.OrgPrefix, a.Ignition.Experimenter.QuotaID, a.Ignition.Experimenter.SpaceName, a.Ignition.Deployment.CC)
+	orgHandler := api.OrganizationHandler(
+		a.Ignition.Deployment.AppsURL,
+		a.Ignition.Experimenter.OrgPrefix,
+		a.Ignition.Experimenter.QuotaID,
+		a.Ignition.Experimenter.ISOSegmentID,
+		a.Ignition.Experimenter.SpaceName,
+		a.Ignition.Deployment.CC)
 	orgHandler = ensureUser(orgHandler, a.Ignition.Deployment.UAA, a.Ignition.Deployment.UAAOrigin, a.Ignition.Server.SessionStore)
 	orgHandler = Secure(orgHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore)
 	r.Handle("/api/v1/organization", orgHandler)

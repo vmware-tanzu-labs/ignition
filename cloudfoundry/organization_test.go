@@ -67,7 +67,7 @@ func testCreateOrg(t *testing.T, when spec.G, it spec.S) {
 	it("returns an error if the creator returns an error", func() {
 		a := &cloudfoundryfakes.FakeAPI{}
 		a.CreateOrgReturns(cfclient.Org{}, errors.New("test error"))
-		org, err := cloudfoundry.CreateOrg("test-org", "appsurl", "quotaID", a)
+		org, err := cloudfoundry.CreateOrg("test-org", "appsurl", "quotaID", "isoSegmentID", a)
 		Expect(err).To(HaveOccurred())
 		Expect(org).To(BeNil())
 	})
@@ -80,9 +80,9 @@ func testCreateOrg(t *testing.T, when spec.G, it spec.S) {
 			QuotaDefinitionGuid:         "quotaID",
 			CreatedAt:                   "created-at",
 			UpdatedAt:                   "updated-at",
-			DefaultIsolationSegmentGuid: "default-iso-seg",
+			DefaultIsolationSegmentGuid: "isoSegmentID",
 		}, nil)
-		org, err := cloudfoundry.CreateOrg("test-org", "appsurl", "quotaID", a)
+		org, err := cloudfoundry.CreateOrg("test-org", "appsurl", "quotaID", "isoSegmentID", a)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(org).NotTo(BeNil())
 		expected := cloudfoundry.Organization{
@@ -91,7 +91,7 @@ func testCreateOrg(t *testing.T, when spec.G, it spec.S) {
 			QuotaDefinitionGUID:         "quotaID",
 			CreatedAt:                   "created-at",
 			UpdatedAt:                   "updated-at",
-			DefaultIsolationSegmentGUID: "default-iso-seg",
+			DefaultIsolationSegmentGUID: "isoSegmentID",
 			URL: "appsurl/organizations/test-org-guid",
 		}
 		Expect(*org).To(BeEquivalentTo(expected))

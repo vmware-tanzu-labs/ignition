@@ -28,6 +28,8 @@ type OrganizationQuerier interface {
 // OrganizationCreator creates orgs
 type OrganizationCreator interface {
 	CreateOrg(req cfclient.OrgRequest) (cfclient.Org, error)
+	UpdateOrg(orgGUID string, orgRequest cfclient.OrgRequest) (cfclient.Org, error)
+	AddIsolationSegmentToOrg(isolationSegmentGUID, orgGUID string) error
 }
 
 // RoleGrantor allows for users to be granted org and space roles
@@ -55,7 +57,7 @@ func OrgsForUserID(id string, appsURL string, q OrganizationQuerier) ([]Organiza
 
 // CreateOrg creates an organization with the given name and quota for
 // the given user
-func CreateOrg(name string, appsURL string, quotaID string, a OrganizationCreator) (*Organization, error) {
+func CreateOrg(name, appsURL, quotaID, isoSegmentID string, a OrganizationCreator) (*Organization, error) {
 	req := cfclient.OrgRequest{
 		Name:                strings.ToLower(name),
 		QuotaDefinitionGuid: quotaID,
@@ -64,6 +66,20 @@ func CreateOrg(name string, appsURL string, quotaID string, a OrganizationCreato
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not create org with name [%s] and quota [%s]", name, quotaID)
 	}
+
+	// enable the org to use the iso segment
+	err = a.AddIsolationSegmentToOrg(isoSegmentID, org.Guid)
+	if err != nil {
+		return nil, errors.Wrapf(err, "could not assign isolation segment [%s] to org [%s]", isoSegmentID, name)
+	}
+
+	// make the iso segment the default for the org
+	req.DefaultIsolationSegmentGuid = isoSegmentID
+	_, err = a.UpdateOrg(org.Guid, req)
+	if err != nil {
+		return nil, errors.Wrapf(err, "could not make isolation segment [%s] the default for org [%s]", isoSegmentID, name)
+	}
+
 	o := convertOrg(org, appsURL)
 	return &o, nil
 }

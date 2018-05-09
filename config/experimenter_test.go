@@ -29,6 +29,7 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("IGNITION_ORG_COUNT_UPDATE_INTERVAL")
 		os.Unsetenv("IGNITION_QUOTA_NAME")
 		os.Unsetenv("IGNITION_SPACE_NAME")
+		os.Unsetenv("IGNITION_ISO_SEGMENT_NAME")
 	}
 
 	it.Before(func() {
@@ -37,6 +38,12 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 		f = &cloudfoundryfakes.FakeAPI{}
 		f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{
 			Guid: "test-quota-id",
+		}, nil)
+		f.ListIsolationSegmentsByQueryReturns([]cfclient.IsolationSegment{
+			cfclient.IsolationSegment{
+				Name: "shared",
+				GUID: "shared-iso-segment-id",
+			},
 		}, nil)
 	})
 
@@ -52,15 +59,18 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 			Expect(e.QuotaName).To(Equal("ignition"))
 			Expect(e.QuotaID).NotTo(BeZero())
 			Expect(e.SpaceName).To(Equal("playground"))
+			Expect(e.ISOSegmentName).To(Equal("shared"))
+			Expect(e.ISOSegmentID).NotTo(BeZero())
 		})
 
 		it("looks up the Quota ID if it is missing", func() {
 			e := createExperimenter(f)
-			Expect(e.OrgPrefix).To(Equal("ignition"))
-			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
-			Expect(e.QuotaName).To(Equal("ignition"))
 			Expect(e.QuotaID).To(Equal("test-quota-id"))
-			Expect(e.SpaceName).To(Equal("playground"))
+		})
+
+		it("looks up the ISO Segment ID if it is missing", func() {
+			e := createExperimenter(f)
+			Expect(e.ISOSegmentID).To(Equal("shared-iso-segment-id"))
 		})
 
 		it("falls back to the default quota if the quota cannot be found", func() {
@@ -78,7 +88,7 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 
 		it("errors if the named and the default quota cannot be found", func() {
 			f.GetOrgQuotaByNameReturns(cfclient.OrgQuota{}, errors.New("not found"))
-			e, err := NewExperimenter("ignition-config", f)
+			e, err := NewExperimenter("ignition-config", f, f)
 			Expect(err).To(HaveOccurred())
 			Expect(e).To(BeNil())
 		})
@@ -89,6 +99,13 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 				os.Setenv("IGNITION_ORG_COUNT_UPDATE_INTERVAL", "5m")
 				os.Setenv("IGNITION_SPACE_NAME", "env-space")
 				os.Setenv("IGNITION_QUOTA_NAME", "env-quota-name")
+				os.Setenv("IGNITION_ISO_SEGMENT_NAME", "env-iso-segment-name")
+				f.ListIsolationSegmentsByQueryReturns([]cfclient.IsolationSegment{
+					cfclient.IsolationSegment{
+						Name: "env-iso-segment-name",
+						GUID: "env-iso-segment-id",
+					},
+				}, nil)
 			})
 
 			it("uses the values specified in the individual environment variables", func() {
@@ -98,6 +115,8 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 				Expect(e.QuotaName).To(Equal("env-quota-name"))
 				Expect(e.QuotaID).To(Equal("test-quota-id"))
 				Expect(e.SpaceName).To(Equal("env-space"))
+				Expect(e.ISOSegmentName).To(Equal("env-iso-segment-name"))
+				Expect(e.ISOSegmentID).To(Equal("env-iso-segment-id"))
 			})
 		})
 
@@ -125,7 +144,7 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 
 		it("errors when VCAP_APPLICATION contents are invalid", func() {
 			os.Setenv("VCAP_APPLICATION", "%&^%@")
-			e, err := NewExperimenter("ignition-config", f)
+			e, err := NewExperimenter("ignition-config", f, f)
 			Expect(err).To(HaveOccurred())
 			Expect(e).To(BeNil())
 		})
@@ -139,20 +158,20 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 			Expect(e.SpaceName).To(Equal("playground"))
 		})
 
-		it("uses an org prefix specified in ignition-config", func() {
+		it("uses the org prefix specified in ignition-config", func() {
 			stubCupsService("org_prefix", "test-org-prefix")
 			e := createExperimenter(f)
 			Expect(e.OrgPrefix).To(Equal("test-org-prefix"))
 		})
 
-		it("uses a quota name specified in ignition-config", func() {
+		it("uses the quota name specified in ignition-config", func() {
 			stubCupsService("quota_name", "test-ignition-quota-name")
 			e := createExperimenter(f)
 			Expect(e.QuotaName).To(Equal("test-ignition-quota-name"))
 			Expect(e.QuotaID).To(Equal("test-quota-id"))
 		})
 
-		it("uses a space name specified in ignition-config", func() {
+		it("uses the space name specified in ignition-config", func() {
 			stubCupsService("space_name", "test-ignition-space-name")
 			e := createExperimenter(f)
 			Expect(e.SpaceName).To(Equal("test-ignition-space-name"))
@@ -169,11 +188,31 @@ func testNewExperimenter(t *testing.T, when spec.G, it spec.S) {
 			e := createExperimenter(f)
 			Expect(e.OrgCountUpdateInterval).To(Equal(time.Minute))
 		})
+
+		it("uses the isolation segment name specified in ignition-config", func() {
+			stubCupsService("iso_segment_name", "test-ignition-iso-segment-name")
+			f.ListIsolationSegmentsByQueryReturns([]cfclient.IsolationSegment{
+				cfclient.IsolationSegment{
+					Name: "test-ignition-iso-segment-name",
+					GUID: "test-iso-segment-id",
+				},
+			}, nil)
+			e := createExperimenter(f)
+			Expect(e.ISOSegmentName).To(Equal("test-ignition-iso-segment-name"))
+			Expect(e.ISOSegmentID).To(Equal("test-iso-segment-id"))
+		})
+
+		it("defaults the isolation segment name to shared", func() {
+			stubCupsService("iso_segment_name", "")
+			e := createExperimenter(f)
+			Expect(e.ISOSegmentName).To(Equal("shared"))
+			Expect(e.ISOSegmentID).To(Equal("shared-iso-segment-id"))
+		})
 	})
 }
 
 func createExperimenter(f *cloudfoundryfakes.FakeAPI) *Experimenter {
-	e, err := NewExperimenter("ignition-config", f)
+	e, err := NewExperimenter("ignition-config", f, f)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(e).NotTo(BeNil())
 	return e
