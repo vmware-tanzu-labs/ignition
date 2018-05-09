@@ -1,10 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+let FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const path = require('path')
 
 module.exports = {
-  entry: [
-    './src/index.js'
-  ],
+  entry: ['./src/index.js'],
   devtool: 'none',
   module: {
     rules: [
@@ -38,6 +37,10 @@ module.exports = {
     hints: false
   },
   plugins: [
+    new FaviconsWebpackPlugin({
+      logo: './images/logo.png',
+      prefix: 'assets/icons-[hash]/'
+    }),
     new HtmlWebpackPlugin({
       title: 'Pivotal Ignition',
       template: 'src/index.html',
