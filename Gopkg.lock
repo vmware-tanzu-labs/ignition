@@ -14,10 +14,10 @@
   version = "v0.5.0"
 
 [[projects]]
-  branch = "master"
+  branch = "fix-iso-org-httpstatus"
   name = "github.com/cloudfoundry-community/go-cfclient"
   packages = ["."]
-  revision = "5065c14614fcd887ab13d39ea3327a0fd44ce133"
+  revision = "16694c0581ea929956bfe4409debafe0bd6c3fa2"
 
 [[projects]]
   name = "github.com/cloudfoundry-community/go-cfenv"
@@ -283,6 +283,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8446d7f7eb840b2866d06d75e2e7a840414092793c56614756e59bc573cb3105"
+  inputs-digest = "e31a51a6162bc8ea0f9114f7fc8c67bac643b5db7879bd90d0438ec6400f2357"
   solver-name = "gps-cdcl"
   solver-version = 1
