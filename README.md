@@ -9,8 +9,8 @@ A landing page for developers to self-service their way onto your Pivotal Cloud 
 ### Installation Instructions
 We recommend you use the [Single Sign-On for PCF](https://network.pivotal.io/products/pivotal_single_sign-on_service) service to authenticate and authorize users for the application. It is possible that an OpenID Connect compliant provider can be used directly, but it is not recommended.
 
-- [Single Sign-On for PCF configured to use LDAP](./docs/ldap.md)
-- [External OpenID Connect provider](./docs/oidc.md)
+* [Single Sign-On for PCF configured to use LDAP](./docs/ldap.md)
+* [External OpenID Connect provider](./docs/oidc.md)
 
 ### Contribute
 
@@ -39,6 +39,16 @@ We welcome pull requests to add additional functionality or fix issues. Please f
 1. Push your feature branch to your fork: `git push fork your initials-your-feature-name` (e.g. `git push fork jf-add-logo`)
 1. Make a pull request: `https://github.com/pivotalservices/ignition/compare/master...YOUR-USERNAME-HERE:your-initials-your-feature-name`
 
+### Prerequisites
+
+1. Create a UAA client id and secret for ignition:
+  * `go get code.cloudfoundry.org/uaa-cli`
+  * `cd $GOPATH/src/code.cloudfoundry.org/uaa-cli`
+  * `make && make install`
+  * `uaa create-client ignition -s <GENERATE-YOUR-OWN-CLIENT-SECRET> --authorized_grant_types client_credentials --scope cloud_controller.admin,scim.write,scim.read --authorities cloud_controller.admin,scim.write,scim.read`
+1. Create a Cloud Foundry quota for ignition:
+  * `cf create-quota ignition -m 10G -i -1 -r 1000 -s 100 --allow-paid-service-plans -a -1 --reserved-route-ports 1`
+
 ### Run the application locally
 
 You will need to ensure your environment contains the relevant variables for the app to run. Here is an example `$GOPATH/src/github.com/pivotalservices/ignition/credentials/export.sh`:
@@ -58,10 +68,8 @@ export IGNITION_COMPANY_NAME="Company Name" # IGNITION_COMPANY_NAME is used to w
 ### Your CF Deployment ###
 export IGNITION_SYSTEM_DOMAIN="run.example.net" # IGNITION_SYSTEM_DOMAIN is what you get when you take the "api." away from the Cloud Controller API URL
 export IGNITION_UAA_ORIGIN="okta" # IGNITION_UAA_ORIGIN is the origin for a user that logs in to Cloud Foundry with your single sign on solution of choice
-export IGNITION_API_CLIENT_ID="cf" # IGNITION_API_CLIENT_ID is almost always cf
-export IGNITION_API_CLIENT_SECRET="" # IGNITION_API_CLIENT_SECRET is almost always blank
-export IGNITION_API_USERNAME="ignition" # IGNITION_API_USERNAME is the username for the user that can create Cloud Foundry organizations
-export IGNITION_API_PASSWORD="password" # IGNITION_API_PASSWORD is the password for the user that can create Cloud Foundry organizations
+export IGNITION_API_CLIENT_ID="ignition" # IGNITION_API_CLIENT_ID is required
+export IGNITION_API_CLIENT_SECRET="insert-your-api-client-secret-here" # IGNITION_API_CLIENT_SECRET is required
 export IGNITION_SKIP_TLS_VALIDATION="false" # IGNITION_SKIP_TLS_VALIDATION can be set to true if your Cloud Foundry presents a self signed cert
 
 ### Developer Experimentation ###

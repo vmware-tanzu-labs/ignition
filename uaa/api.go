@@ -6,7 +6,7 @@ import (
 
 	"github.com/cloudfoundry-incubator/uaa-cli/uaa"
 	"github.com/pkg/errors"
-	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 // API is used to access a UAA server
@@ -18,25 +18,30 @@ type API interface {
 // Authenticate will authenticate with a UAA server and set the Token and Client
 // for the UAAAPI
 func (a *Client) Authenticate() error {
-	if a.Token == nil || a.Client == nil || !a.Token.Valid() {
-		config := oauth2.Config{
+	if a.Config == nil {
+		a.Config = &clientcredentials.Config{
 			ClientID:     a.ClientID,
 			ClientSecret: a.ClientSecret,
-			Endpoint: oauth2.Endpoint{
-				AuthURL:  fmt.Sprintf("%s/oauth/authorize", a.URL),
-				TokenURL: fmt.Sprintf("%s/oauth/token", a.URL),
-			},
+			TokenURL:     fmt.Sprintf("%s/oauth/token", a.URL),
+			Scopes:       []string{"cloud_controller.admin", "scim.write", "scim.read"},
 		}
-
-		t, err := config.PasswordCredentialsToken(context.Background(), a.Username, a.Password)
-		if err != nil {
-			return errors.Wrap(err, "could not retrieve UAA token")
-		}
-		a.Token = t
-		a.Client = config.Client(context.Background(), a.Token)
 	}
 
-	if a.userManager == nil {
+	if a.Client == nil {
+		a.Client = a.Config.Client(context.Background())
+	}
+
+	newToken := false
+	if a.Token == nil || !a.Token.Valid() {
+		token, err := a.Config.Token(context.Background())
+		if err != nil {
+			return errors.Wrap(err, "uaa: could not refresh token")
+		}
+		a.Token = token
+		newToken = true
+	}
+
+	if newToken || a.userManager == nil {
 		uaaConfig := uaa.NewConfig()
 		uaaConfig.AddTarget(uaa.Target{BaseUrl: a.URL})
 		uaaConfig.AddContext(uaa.NewContextWithToken(a.Token.AccessToken))
@@ -45,5 +50,6 @@ func (a *Client) Authenticate() error {
 			HttpClient: a.Client,
 		}
 	}
+
 	return nil
 }

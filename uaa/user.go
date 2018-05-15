@@ -7,6 +7,7 @@ import (
 	"github.com/cloudfoundry-incubator/uaa-cli/uaa"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 // Client provides access to the UAA API
@@ -14,12 +15,10 @@ type Client struct {
 	URL          string
 	ClientID     string
 	ClientSecret string
-	Username     string
-	Password     string
-	Token        *oauth2.Token
 	Client       *http.Client
-
-	userManager *uaa.UserManager
+	Config       *clientcredentials.Config
+	Token        *oauth2.Token
+	userManager  *uaa.UserManager
 }
 
 // UserIDForAccountName queries the UAA API for users filtered by account name
@@ -34,7 +33,7 @@ func (a *Client) UserIDForAccountName(accountName string) (string, error) {
 	}
 	user, err := a.userManager.GetByUsername(accountName, "", "")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "uaa: cannot get user")
 	}
 	if strings.TrimSpace(user.ID) == "" {
 		return "", errors.Errorf("cannot find user with account name: [%s]", accountName)

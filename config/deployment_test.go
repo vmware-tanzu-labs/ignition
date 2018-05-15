@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	"github.com/pivotalservices/ignition/cloudfoundry"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -24,8 +23,6 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("IGNITION_UAA_ORIGIN")
 		os.Unsetenv("IGNITION_API_CLIENT_ID")
 		os.Unsetenv("IGNITION_API_CLIENT_SECRET")
-		os.Unsetenv("IGNITION_API_USERNAME")
-		os.Unsetenv("IGNITION_API_PASSWORD")
 		os.Unsetenv("IGNITION_SKIP_TLS_VALIDATION")
 	}
 
@@ -83,8 +80,8 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 			it.Before(func() {
 				os.Setenv("IGNITION_SYSTEM_DOMAIN", "run.example.com")
 				os.Setenv("IGNITION_UAA_ORIGIN", "okta")
-				os.Setenv("IGNITION_API_USERNAME", "test-username")
-				os.Setenv("IGNITION_API_PASSWORD", "test-password")
+				os.Setenv("IGNITION_API_CLIENT_ID", "test-client-id")
+				os.Setenv("IGNITION_API_CLIENT_SECRET", "test-client-secret")
 			})
 
 			it("succeeds", func() {
@@ -93,12 +90,8 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				Expect(d).NotTo(BeNil())
 				Expect(d.SystemDomain).To(Equal("https://run.example.com"))
 				Expect(d.UAAOrigin).To(Equal("okta"))
-				Expect(d.ClientID).To(Equal("cf"))
-				Expect(d.ClientSecret).To(BeZero())
-				Expect(d.Username).To(Equal("test-username"))
-				Expect(d.Password).To(Equal("test-password"))
-				cc := d.CC.(*cloudfoundry.Client)
-				Expect(cc.Config.SkipSslValidation).To(BeFalse())
+				Expect(d.ClientID).To(Equal("test-client-id"))
+				Expect(d.ClientSecret).To(Equal("test-client-secret"))
 			})
 
 			it("can generate an oauth2.Config", func() {
@@ -107,12 +100,11 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				Expect(d).NotTo(BeNil())
 				c := d.Config()
 				Expect(c).NotTo(BeNil())
-				Expect(c.ClientID).To(Equal("cf"))
-				Expect(c.ClientSecret).To(BeZero())
-				Expect(c.Endpoint.AuthURL).To(Equal("https://login.run.example.com/oauth/authorize"))
-				Expect(c.Endpoint.TokenURL).To(Equal("https://login.run.example.com/oauth/token"))
-				Expect(c.Scopes).To(HaveLen(1))
-				Expect(c.Scopes).To(ConsistOf("cloud_controller.admin"))
+				Expect(c.ClientID).To(Equal("test-client-id"))
+				Expect(c.ClientSecret).To(Equal("test-client-secret"))
+				Expect(c.TokenURL).To(Equal("https://login.run.example.com/oauth/token"))
+				Expect(c.Scopes).To(HaveLen(3))
+				Expect(c.Scopes).To(ConsistOf("cloud_controller.admin", "scim.write", "scim.read"))
 			})
 
 			when("skip tls validation is true", func() {
@@ -123,8 +115,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				it("configures the cf client to skip ssl validation", func() {
 					d, err := NewDeployment("ignition-config")
 					Expect(err).ToNot(HaveOccurred())
-					cc := d.CC.(*cloudfoundry.Client)
-					Expect(cc.Config.SkipSslValidation).To(BeTrue())
+					Expect(d.SkipTLSValidation).To(BeTrue())
 				})
 			})
 
@@ -152,9 +143,9 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				})
 			})
 
-			when("the api username is empty", func() {
+			when("the api client id is empty", func() {
 				it.Before(func() {
-					os.Setenv("IGNITION_API_USERNAME", "")
+					os.Setenv("IGNITION_API_CLIENT_ID", "")
 				})
 
 				it("errors", func() {
@@ -164,9 +155,9 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				})
 			})
 
-			when("the api password is empty", func() {
+			when("the api client secret is empty", func() {
 				it.Before(func() {
-					os.Setenv("IGNITION_API_PASSWORD", "")
+					os.Setenv("IGNITION_API_CLIENT_SECRET", "")
 				})
 
 				it("errors", func() {
@@ -209,9 +200,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				        "system_domain": "run.example.com",
 				        "uaa_origin": "okta",
 				        "api_client_id": "test-client-id",
-				        "api_client_secret": "test-client-secret",
-				        "api_username": "test-username",
-				        "api_password": "test-password"
+				        "api_client_secret": "test-client-secret"
 				      },
 				      "syslog_drain_url": "",
 				      "volume_mounts": [],
@@ -230,10 +219,6 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				Expect(d.UAAOrigin).To(Equal("okta"))
 				Expect(d.ClientID).To(Equal("test-client-id"))
 				Expect(d.ClientSecret).To(Equal("test-client-secret"))
-				Expect(d.Username).To(Equal("test-username"))
-				Expect(d.Password).To(Equal("test-password"))
-				cc := d.CC.(*cloudfoundry.Client)
-				Expect(cc.Config.SkipSslValidation).To(BeFalse())
 			})
 		})
 
@@ -250,8 +235,6 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				        "uaa_origin": "okta",
 				        "api_client_id": "test-client-id",
 				        "api_client_secret": "test-client-secret",
-				        "api_username": "test-username",
-								"api_password": "test-password",
 								"skip_tls_validation": "true"
 				      },
 				      "syslog_drain_url": "",
@@ -266,8 +249,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 			it("configures the cf client to skip ssl validation", func() {
 				d, err := NewDeployment("ignition-config")
 				Expect(err).ToNot(HaveOccurred())
-				cc := d.CC.(*cloudfoundry.Client)
-				Expect(cc.Config.SkipSslValidation).To(BeTrue())
+				Expect(d.SkipTLSValidation).To(BeTrue())
 			})
 		})
 
@@ -282,9 +264,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				      "credentials": {
 				        "uaa_origin": "okta",
 				        "api_client_id": "test-client-id",
-				        "api_client_secret": "test-client-secret",
-				        "api_username": "test-username",
-				        "api_password": "test-password"
+				        "api_client_secret": "test-client-secret"
 				      },
 				      "syslog_drain_url": "",
 				      "volume_mounts": [],
@@ -313,9 +293,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				      "credentials": {
 								"system_domain": "run.example.com",
 				        "api_client_id": "test-client-id",
-				        "api_client_secret": "test-client-secret",
-				        "api_username": "test-username",
-				        "api_password": "test-password"
+				        "api_client_secret": "test-client-secret"
 				      },
 				      "syslog_drain_url": "",
 				      "volume_mounts": [],
@@ -344,41 +322,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				      "credentials": {
 								"system_domain": "run.example.com",
 								"uaa_origin": "okta",
-				        "api_client_secret": "test-client-secret",
-				        "api_username": "test-username",
-				        "api_password": "test-password"
-				      },
-				      "syslog_drain_url": "",
-				      "volume_mounts": [],
-				      "label": "user-provided",
-				      "tags": []
-				    }
-				  ]
-				}`)
-			})
-
-			it("uses the default value (cf)", func() {
-				d, err := NewDeployment("ignition-config")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(d).NotTo(BeNil())
-				Expect(d.ClientID).To(Equal("cf"))
-			})
-		})
-
-		when("the service is missing the api username", func() {
-			it.Before(func() {
-				os.Setenv("VCAP_SERVICES", `{
-				  "user-provided": [
-				    {
-				      "name": "ignition-config",
-				      "instance_name": "ignition-config",
-				      "binding_name": null,
-				      "credentials": {
-								"system_domain": "run.example.com",
-								"uaa_origin": "okta",
-								"api_client_id": "test-client-id",
-				        "api_client_secret": "test-client-secret",
-				        "api_password": "test-password"
+				        "api_client_secret": "test-client-secret"
 				      },
 				      "syslog_drain_url": "",
 				      "volume_mounts": [],
@@ -396,7 +340,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 			})
 		})
 
-		when("the service is missing the api password", func() {
+		when("the service is missing the api client secret", func() {
 			it.Before(func() {
 				os.Setenv("VCAP_SERVICES", `{
 				  "user-provided": [
@@ -407,9 +351,7 @@ func testDeployment(t *testing.T, when spec.G, it spec.S) {
 				      "credentials": {
 								"system_domain": "run.example.com",
 								"uaa_origin": "okta",
-								"api_client_id": "test-client-id",
-				        "api_client_secret": "test-client-secret",
-				        "api_username": "test-username"
+								"api_client_id": "test-client-id"
 				      },
 				      "syslog_drain_url": "",
 				      "volume_mounts": [],

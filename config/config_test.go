@@ -41,12 +41,10 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("IGNITION_SESSION_SECRET") // REQUIRED
 
 		// Deployment
-		os.Unsetenv("IGNITION_SYSTEM_DOMAIN") // REQUIRED
-		os.Unsetenv("IGNITION_UAA_ORIGIN")    // REQUIRED
-		os.Unsetenv("IGNITION_API_CLIENT_ID")
-		os.Unsetenv("IGNITION_API_CLIENT_SECRET")
-		os.Unsetenv("IGNITION_API_USERNAME") // REQUIRED
-		os.Unsetenv("IGNITION_API_PASSWORD") // REQUIRED
+		os.Unsetenv("IGNITION_SYSTEM_DOMAIN")     // REQUIRED
+		os.Unsetenv("IGNITION_UAA_ORIGIN")        // REQUIRED
+		os.Unsetenv("IGNITION_API_CLIENT_ID")     // REQUIRED
+		os.Unsetenv("IGNITION_API_CLIENT_SECRET") // REQUIRED
 
 		// Experimenter
 		os.Unsetenv("IGNITION_ORG_PREFIX")
@@ -128,8 +126,8 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 			os.Setenv("IGNITION_SESSION_SECRET", "test-ignition-session-secret")
 			os.Setenv("IGNITION_SYSTEM_DOMAIN", s.URL)
 			os.Setenv("IGNITION_UAA_ORIGIN", "test-ignition-uaa-origin")
-			os.Setenv("IGNITION_API_USERNAME", "test-ignition-api-username")
-			os.Setenv("IGNITION_API_PASSWORD", "test-ignition-api-password")
+			os.Setenv("IGNITION_API_CLIENT_ID", "test-ignition-api-client-id")
+			os.Setenv("IGNITION_API_CLIENT_SECRET", "test-ignition-api-client-secret")
 			os.Setenv("IGNITION_CLIENT_ID", "test-ignition-client-id")
 			os.Setenv("IGNITION_CLIENT_SECRET", "test-ignition-client-secret")
 			os.Setenv("IGNITION_AUTH_URL", s.URL)
@@ -226,9 +224,9 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 			})
 		})
 
-		when("IGNITION_API_USERNAME is not set", func() {
+		when("IGNITION_API_CLIENT_ID is not set", func() {
 			it.Before(func() {
-				os.Unsetenv("IGNITION_API_USERNAME")
+				os.Unsetenv("IGNITION_API_CLIENT_ID")
 			})
 
 			it("errors", func() {
@@ -238,9 +236,9 @@ func testNew(t *testing.T, when spec.G, it spec.S) {
 			})
 		})
 
-		when("IGNITION_API_PASSWORD is not set", func() {
+		when("IGNITION_API_CLIENT_SECRET is not set", func() {
 			it.Before(func() {
-				os.Unsetenv("IGNITION_API_PASSWORD")
+				os.Unsetenv("IGNITION_API_CLIENT_SECRET")
 			})
 
 			it("errors", func() {

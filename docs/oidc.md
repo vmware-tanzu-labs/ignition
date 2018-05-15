@@ -15,8 +15,8 @@ Generate a Google [OAuth2 Client ID and Secret](https://console.developers.googl
   "session_secret": "",
   "system_domain": "run.example.net",
   "uaa_origin": "okta",
-  "api_username": "ignition",
-  "api_password": "password",
+  "api_client_id": "ignition",
+  "api_client_secret": "client secret",
   "authorized_domain": "@example.net",
   "auth_variant": "openid",
   "auth_scopes": "openid,profile,email",
@@ -26,7 +26,7 @@ Generate a Google [OAuth2 Client ID and Secret](https://console.developers.googl
 }
 ```
 
-The `session_secret` can be anything unique. The `api_username` and password are the username and password, or more appropriately the client id and secret that ignition uses to talk to the Cloud Foundry API.
+The `session_secret` can be anything unique. The `api_client_id` and `api_client_secret` are the client id and secret that ignition uses to talk to the Cloud Controller API and to UAA.
 
 Lastly the `authorized_domain` controls what email domains are allowed to use ignition to create organizations. This is useful especially when you're using a OAuth provider that supports non-corporate domains - you don't want people creating orgs in PCF with their personal email accounts.
 

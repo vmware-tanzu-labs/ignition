@@ -1,10 +1,9 @@
 package config
 
 import (
-	"errors"
+	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -14,7 +13,8 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pivotalservices/ignition/cloudfoundry"
 	"github.com/pivotalservices/ignition/uaa"
-	"golang.org/x/oauth2"
+	"github.com/pkg/errors"
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 // Deployment is a Cloud Foundry Deployment
@@ -24,10 +24,8 @@ type Deployment struct {
 	APIURL            string           `ignored:"true"`                                  // Ignored
 	UAAURL            string           `ignored:"true"`                                  // Ignored
 	UAAOrigin         string           `envconfig:"uaa_origin"`                          // IGNITION_UAA_ORIGIN << REQUIRED
-	ClientID          string           `envconfig:"api_client_id" default:"cf"`          // IGNITION_API_CLIENT_ID
-	ClientSecret      string           `envconfig:"api_client_secret" default:""`        // IGNITION_API_CLIENT_SECRET
-	Username          string           `envconfig:"api_username"`                        // IGNITION_API_USERNAME << REQUIRED
-	Password          string           `envconfig:"api_password"`                        // IGNITION_API_PASSWORD << REQUIRED
+	ClientID          string           `envconfig:"api_client_id"`                       // IGNITION_API_CLIENT_ID << REQUIRED
+	ClientSecret      string           `envconfig:"api_client_secret"`                   // IGNITION_API_CLIENT_SECRET << REQUIRED
 	SkipTLSValidation bool             `envconfig:"skip_tls_validation" default:"false"` // IGNITION_SKIP_TLS_VALIDATION
 	CC                cloudfoundry.API `ignored:"true"`                                  // Ignored
 	UAA               uaa.API          `ignored:"true"`                                  // Ignored
@@ -72,16 +70,6 @@ func NewDeployment(name string) (*Deployment, error) {
 		if ok && strings.TrimSpace(clientSecret) != "" {
 			d.ClientSecret = clientSecret
 		}
-
-		username, ok := s.CredentialString("api_username")
-		if ok && strings.TrimSpace(username) != "" {
-			d.Username = username
-		}
-
-		password, ok := s.CredentialString("api_password")
-		if ok && strings.TrimSpace(password) != "" {
-			d.Password = password
-		}
 	}
 	if strings.TrimSpace(d.SystemDomain) == "" {
 		return nil, errors.New("system_domain is required")
@@ -91,51 +79,52 @@ func NewDeployment(name string) (*Deployment, error) {
 	if d.UAAOrigin == "" {
 		return nil, errors.New("uaa_origin is required")
 	}
-	if strings.TrimSpace(d.Username) == "" {
-		return nil, errors.New("api_username is required")
+	if strings.TrimSpace(d.ClientID) == "" {
+		return nil, errors.New("api_client_id is required")
 	}
-	if strings.TrimSpace(d.Password) == "" {
-		return nil, errors.New("api_password is required")
-	}
-
-	config := &cfclient.Config{
-		ApiAddress:        d.APIURL,
-		Username:          d.Username,
-		Password:          d.Password,
-		UserAgent:         "ignition-api",
-		SkipSslValidation: d.SkipTLSValidation,
-		HttpClient:        http.DefaultClient,
+	if strings.TrimSpace(d.ClientSecret) == "" {
+		return nil, errors.New("api_client_secret is required")
 	}
 
-	if d.ClientSecret != "" {
-		config.ClientID = d.ClientID
-		config.ClientSecret = d.ClientSecret
-	}
+	uaaConfig := d.Config()
+	uaaClient := uaaConfig.Client(context.Background())
 
-	d.CC = &cloudfoundry.Client{
-		Config: config,
-	}
 	uaaAPI := &uaa.Client{
 		URL:          d.UAAURL,
 		ClientID:     d.ClientID,
 		ClientSecret: d.ClientSecret,
-		Username:     d.Username,
-		Password:     d.Password,
+		Client:       uaaClient,
+		Config:       uaaConfig,
 	}
+
+	config := &cfclient.Config{
+		ApiAddress:        d.APIURL,
+		ClientID:          d.ClientID,
+		ClientSecret:      d.ClientSecret,
+		UserAgent:         "ignition-api",
+		SkipSslValidation: d.SkipTLSValidation,
+		HttpClient:        uaaClient,
+		TokenSource:       uaaConfig.TokenSource(context.Background()),
+	}
+
+	d.CC = &cfclient.Client{
+		Config: *config,
+		Endpoint: cfclient.Endpoint{
+			TokenEndpoint: uaaConfig.TokenURL,
+		},
+	}
+
 	d.UAA = uaaAPI
 	return &d, nil
 }
 
 // Config builds an oauth2.Config for the Deployment
-func (d *Deployment) Config() *oauth2.Config {
-	return &oauth2.Config{
+func (d *Deployment) Config() *clientcredentials.Config {
+	return &clientcredentials.Config{
 		ClientID:     d.ClientID,
 		ClientSecret: d.ClientSecret,
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  fmt.Sprintf("%s/oauth/authorize", d.UAAURL),
-			TokenURL: fmt.Sprintf("%s/oauth/token", d.UAAURL),
-		},
-		Scopes: []string{"cloud_controller.admin"},
+		TokenURL:     fmt.Sprintf("%s/oauth/token", d.UAAURL),
+		Scopes:       []string{"cloud_controller.admin", "scim.write", "scim.read"},
 	}
 }
 

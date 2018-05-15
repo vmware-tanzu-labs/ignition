@@ -55,7 +55,7 @@ func testUserIDForAccountName(t *testing.T, when spec.G, it spec.S) {
 		})
 	})
 
-	when("there is a valid token and a client", func() {
+	when("there is a valid client and token", func() {
 		var (
 			s      *httptest.Server
 			called bool
@@ -63,12 +63,11 @@ func testUserIDForAccountName(t *testing.T, when spec.G, it spec.S) {
 
 		it.Before(func() {
 			called = false
-
-			a.Token = &oauth2.Token{
-				AccessToken: "test-token",
-				Expiry:      time.Now().Add(24 * time.Hour),
-			}
 			a.Client = http.DefaultClient
+			a.Token = &oauth2.Token{
+				Expiry:      time.Now().Add(24 * time.Hour),
+				AccessToken: "test-token",
+			}
 		})
 
 		it.After(func() {
@@ -150,7 +149,6 @@ func testCreateUser(t *testing.T, when spec.G, it spec.S) {
 
 	when("there are not valid credentials, and no token or client", func() {
 		it("fails to create the user when there are invalid credentials", func() {
-			a.Token = nil
 			a.Client = nil
 			_, err := a.CreateUser("user", "uaa", "external-user", "user@example.com")
 			Expect(err).To(HaveOccurred())
@@ -159,11 +157,11 @@ func testCreateUser(t *testing.T, when spec.G, it spec.S) {
 
 	when("there is a valid token and client", func() {
 		it.Before(func() {
-			a.Token = &oauth2.Token{
-				AccessToken: "test-token",
-				Expiry:      time.Now().Add(24 * time.Hour),
-			}
 			a.Client = http.DefaultClient
+			a.Token = &oauth2.Token{
+				Expiry:      time.Now().Add(24 * time.Hour),
+				AccessToken: "test-token",
+			}
 		})
 
 		when("the user is created successfully", func() {

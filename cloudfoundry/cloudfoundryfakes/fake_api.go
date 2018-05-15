@@ -5,36 +5,36 @@ import (
 	"net/url"
 	"sync"
 
-	go_cfclient "github.com/cloudfoundry-community/go-cfclient"
+	"github.com/cloudfoundry-community/go-cfclient"
 	"github.com/pivotalservices/ignition/cloudfoundry"
 )
 
 type FakeAPI struct {
-	CreateOrgStub        func(req go_cfclient.OrgRequest) (go_cfclient.Org, error)
+	CreateOrgStub        func(req cfclient.OrgRequest) (cfclient.Org, error)
 	createOrgMutex       sync.RWMutex
 	createOrgArgsForCall []struct {
-		req go_cfclient.OrgRequest
+		req cfclient.OrgRequest
 	}
 	createOrgReturns struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
 	createOrgReturnsOnCall map[int]struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
-	UpdateOrgStub        func(orgGUID string, orgRequest go_cfclient.OrgRequest) (go_cfclient.Org, error)
+	UpdateOrgStub        func(orgGUID string, orgRequest cfclient.OrgRequest) (cfclient.Org, error)
 	updateOrgMutex       sync.RWMutex
 	updateOrgArgsForCall []struct {
 		orgGUID    string
-		orgRequest go_cfclient.OrgRequest
+		orgRequest cfclient.OrgRequest
 	}
 	updateOrgReturns struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
 	updateOrgReturnsOnCall map[int]struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
 	AddIsolationSegmentToOrgStub        func(isolationSegmentGUID, orgGUID string) error
@@ -49,120 +49,109 @@ type FakeAPI struct {
 	addIsolationSegmentToOrgReturnsOnCall map[int]struct {
 		result1 error
 	}
-	ListOrgsByQueryStub        func(query url.Values) ([]go_cfclient.Org, error)
+	ListOrgsByQueryStub        func(query url.Values) ([]cfclient.Org, error)
 	listOrgsByQueryMutex       sync.RWMutex
 	listOrgsByQueryArgsForCall []struct {
 		query url.Values
 	}
 	listOrgsByQueryReturns struct {
-		result1 []go_cfclient.Org
+		result1 []cfclient.Org
 		result2 error
 	}
 	listOrgsByQueryReturnsOnCall map[int]struct {
-		result1 []go_cfclient.Org
+		result1 []cfclient.Org
 		result2 error
 	}
-	CreateSpaceStub        func(req go_cfclient.SpaceRequest) (go_cfclient.Space, error)
+	CreateSpaceStub        func(req cfclient.SpaceRequest) (cfclient.Space, error)
 	createSpaceMutex       sync.RWMutex
 	createSpaceArgsForCall []struct {
-		req go_cfclient.SpaceRequest
+		req cfclient.SpaceRequest
 	}
 	createSpaceReturns struct {
-		result1 go_cfclient.Space
+		result1 cfclient.Space
 		result2 error
 	}
 	createSpaceReturnsOnCall map[int]struct {
-		result1 go_cfclient.Space
+		result1 cfclient.Space
 		result2 error
 	}
-	AssociateOrgUserStub        func(orgGUID, userGUID string) (go_cfclient.Org, error)
+	AssociateOrgUserStub        func(orgGUID, userGUID string) (cfclient.Org, error)
 	associateOrgUserMutex       sync.RWMutex
 	associateOrgUserArgsForCall []struct {
 		orgGUID  string
 		userGUID string
 	}
 	associateOrgUserReturns struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
 	associateOrgUserReturnsOnCall map[int]struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
-	AssociateOrgAuditorStub        func(orgGUID, userGUID string) (go_cfclient.Org, error)
+	AssociateOrgAuditorStub        func(orgGUID, userGUID string) (cfclient.Org, error)
 	associateOrgAuditorMutex       sync.RWMutex
 	associateOrgAuditorArgsForCall []struct {
 		orgGUID  string
 		userGUID string
 	}
 	associateOrgAuditorReturns struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
 	associateOrgAuditorReturnsOnCall map[int]struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
-	AssociateOrgManagerStub        func(orgGUID, userGUID string) (go_cfclient.Org, error)
+	AssociateOrgManagerStub        func(orgGUID, userGUID string) (cfclient.Org, error)
 	associateOrgManagerMutex       sync.RWMutex
 	associateOrgManagerArgsForCall []struct {
 		orgGUID  string
 		userGUID string
 	}
 	associateOrgManagerReturns struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
 	associateOrgManagerReturnsOnCall map[int]struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}
-	GetOrgQuotaByNameStub        func(name string) (go_cfclient.OrgQuota, error)
+	GetOrgQuotaByNameStub        func(name string) (cfclient.OrgQuota, error)
 	getOrgQuotaByNameMutex       sync.RWMutex
 	getOrgQuotaByNameArgsForCall []struct {
 		name string
 	}
 	getOrgQuotaByNameReturns struct {
-		result1 go_cfclient.OrgQuota
+		result1 cfclient.OrgQuota
 		result2 error
 	}
 	getOrgQuotaByNameReturnsOnCall map[int]struct {
-		result1 go_cfclient.OrgQuota
+		result1 cfclient.OrgQuota
 		result2 error
 	}
-	ListIsolationSegmentsByQueryStub        func(query url.Values) ([]go_cfclient.IsolationSegment, error)
+	ListIsolationSegmentsByQueryStub        func(query url.Values) ([]cfclient.IsolationSegment, error)
 	listIsolationSegmentsByQueryMutex       sync.RWMutex
 	listIsolationSegmentsByQueryArgsForCall []struct {
 		query url.Values
 	}
 	listIsolationSegmentsByQueryReturns struct {
-		result1 []go_cfclient.IsolationSegment
+		result1 []cfclient.IsolationSegment
 		result2 error
 	}
 	listIsolationSegmentsByQueryReturnsOnCall map[int]struct {
-		result1 []go_cfclient.IsolationSegment
-		result2 error
-	}
-	GetTokenStub        func() (string, error)
-	getTokenMutex       sync.RWMutex
-	getTokenArgsForCall []struct{}
-	getTokenReturns     struct {
-		result1 string
-		result2 error
-	}
-	getTokenReturnsOnCall map[int]struct {
-		result1 string
+		result1 []cfclient.IsolationSegment
 		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAPI) CreateOrg(req go_cfclient.OrgRequest) (go_cfclient.Org, error) {
+func (fake *FakeAPI) CreateOrg(req cfclient.OrgRequest) (cfclient.Org, error) {
 	fake.createOrgMutex.Lock()
 	ret, specificReturn := fake.createOrgReturnsOnCall[len(fake.createOrgArgsForCall)]
 	fake.createOrgArgsForCall = append(fake.createOrgArgsForCall, struct {
-		req go_cfclient.OrgRequest
+		req cfclient.OrgRequest
 	}{req})
 	fake.recordInvocation("CreateOrg", []interface{}{req})
 	fake.createOrgMutex.Unlock()
@@ -181,40 +170,40 @@ func (fake *FakeAPI) CreateOrgCallCount() int {
 	return len(fake.createOrgArgsForCall)
 }
 
-func (fake *FakeAPI) CreateOrgArgsForCall(i int) go_cfclient.OrgRequest {
+func (fake *FakeAPI) CreateOrgArgsForCall(i int) cfclient.OrgRequest {
 	fake.createOrgMutex.RLock()
 	defer fake.createOrgMutex.RUnlock()
 	return fake.createOrgArgsForCall[i].req
 }
 
-func (fake *FakeAPI) CreateOrgReturns(result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) CreateOrgReturns(result1 cfclient.Org, result2 error) {
 	fake.CreateOrgStub = nil
 	fake.createOrgReturns = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) CreateOrgReturnsOnCall(i int, result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) CreateOrgReturnsOnCall(i int, result1 cfclient.Org, result2 error) {
 	fake.CreateOrgStub = nil
 	if fake.createOrgReturnsOnCall == nil {
 		fake.createOrgReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.Org
+			result1 cfclient.Org
 			result2 error
 		})
 	}
 	fake.createOrgReturnsOnCall[i] = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) UpdateOrg(orgGUID string, orgRequest go_cfclient.OrgRequest) (go_cfclient.Org, error) {
+func (fake *FakeAPI) UpdateOrg(orgGUID string, orgRequest cfclient.OrgRequest) (cfclient.Org, error) {
 	fake.updateOrgMutex.Lock()
 	ret, specificReturn := fake.updateOrgReturnsOnCall[len(fake.updateOrgArgsForCall)]
 	fake.updateOrgArgsForCall = append(fake.updateOrgArgsForCall, struct {
 		orgGUID    string
-		orgRequest go_cfclient.OrgRequest
+		orgRequest cfclient.OrgRequest
 	}{orgGUID, orgRequest})
 	fake.recordInvocation("UpdateOrg", []interface{}{orgGUID, orgRequest})
 	fake.updateOrgMutex.Unlock()
@@ -233,30 +222,30 @@ func (fake *FakeAPI) UpdateOrgCallCount() int {
 	return len(fake.updateOrgArgsForCall)
 }
 
-func (fake *FakeAPI) UpdateOrgArgsForCall(i int) (string, go_cfclient.OrgRequest) {
+func (fake *FakeAPI) UpdateOrgArgsForCall(i int) (string, cfclient.OrgRequest) {
 	fake.updateOrgMutex.RLock()
 	defer fake.updateOrgMutex.RUnlock()
 	return fake.updateOrgArgsForCall[i].orgGUID, fake.updateOrgArgsForCall[i].orgRequest
 }
 
-func (fake *FakeAPI) UpdateOrgReturns(result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) UpdateOrgReturns(result1 cfclient.Org, result2 error) {
 	fake.UpdateOrgStub = nil
 	fake.updateOrgReturns = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) UpdateOrgReturnsOnCall(i int, result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) UpdateOrgReturnsOnCall(i int, result1 cfclient.Org, result2 error) {
 	fake.UpdateOrgStub = nil
 	if fake.updateOrgReturnsOnCall == nil {
 		fake.updateOrgReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.Org
+			result1 cfclient.Org
 			result2 error
 		})
 	}
 	fake.updateOrgReturnsOnCall[i] = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
@@ -310,7 +299,7 @@ func (fake *FakeAPI) AddIsolationSegmentToOrgReturnsOnCall(i int, result1 error)
 	}{result1}
 }
 
-func (fake *FakeAPI) ListOrgsByQuery(query url.Values) ([]go_cfclient.Org, error) {
+func (fake *FakeAPI) ListOrgsByQuery(query url.Values) ([]cfclient.Org, error) {
 	fake.listOrgsByQueryMutex.Lock()
 	ret, specificReturn := fake.listOrgsByQueryReturnsOnCall[len(fake.listOrgsByQueryArgsForCall)]
 	fake.listOrgsByQueryArgsForCall = append(fake.listOrgsByQueryArgsForCall, struct {
@@ -339,33 +328,33 @@ func (fake *FakeAPI) ListOrgsByQueryArgsForCall(i int) url.Values {
 	return fake.listOrgsByQueryArgsForCall[i].query
 }
 
-func (fake *FakeAPI) ListOrgsByQueryReturns(result1 []go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) ListOrgsByQueryReturns(result1 []cfclient.Org, result2 error) {
 	fake.ListOrgsByQueryStub = nil
 	fake.listOrgsByQueryReturns = struct {
-		result1 []go_cfclient.Org
+		result1 []cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) ListOrgsByQueryReturnsOnCall(i int, result1 []go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) ListOrgsByQueryReturnsOnCall(i int, result1 []cfclient.Org, result2 error) {
 	fake.ListOrgsByQueryStub = nil
 	if fake.listOrgsByQueryReturnsOnCall == nil {
 		fake.listOrgsByQueryReturnsOnCall = make(map[int]struct {
-			result1 []go_cfclient.Org
+			result1 []cfclient.Org
 			result2 error
 		})
 	}
 	fake.listOrgsByQueryReturnsOnCall[i] = struct {
-		result1 []go_cfclient.Org
+		result1 []cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) CreateSpace(req go_cfclient.SpaceRequest) (go_cfclient.Space, error) {
+func (fake *FakeAPI) CreateSpace(req cfclient.SpaceRequest) (cfclient.Space, error) {
 	fake.createSpaceMutex.Lock()
 	ret, specificReturn := fake.createSpaceReturnsOnCall[len(fake.createSpaceArgsForCall)]
 	fake.createSpaceArgsForCall = append(fake.createSpaceArgsForCall, struct {
-		req go_cfclient.SpaceRequest
+		req cfclient.SpaceRequest
 	}{req})
 	fake.recordInvocation("CreateSpace", []interface{}{req})
 	fake.createSpaceMutex.Unlock()
@@ -384,35 +373,35 @@ func (fake *FakeAPI) CreateSpaceCallCount() int {
 	return len(fake.createSpaceArgsForCall)
 }
 
-func (fake *FakeAPI) CreateSpaceArgsForCall(i int) go_cfclient.SpaceRequest {
+func (fake *FakeAPI) CreateSpaceArgsForCall(i int) cfclient.SpaceRequest {
 	fake.createSpaceMutex.RLock()
 	defer fake.createSpaceMutex.RUnlock()
 	return fake.createSpaceArgsForCall[i].req
 }
 
-func (fake *FakeAPI) CreateSpaceReturns(result1 go_cfclient.Space, result2 error) {
+func (fake *FakeAPI) CreateSpaceReturns(result1 cfclient.Space, result2 error) {
 	fake.CreateSpaceStub = nil
 	fake.createSpaceReturns = struct {
-		result1 go_cfclient.Space
+		result1 cfclient.Space
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) CreateSpaceReturnsOnCall(i int, result1 go_cfclient.Space, result2 error) {
+func (fake *FakeAPI) CreateSpaceReturnsOnCall(i int, result1 cfclient.Space, result2 error) {
 	fake.CreateSpaceStub = nil
 	if fake.createSpaceReturnsOnCall == nil {
 		fake.createSpaceReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.Space
+			result1 cfclient.Space
 			result2 error
 		})
 	}
 	fake.createSpaceReturnsOnCall[i] = struct {
-		result1 go_cfclient.Space
+		result1 cfclient.Space
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) AssociateOrgUser(orgGUID string, userGUID string) (go_cfclient.Org, error) {
+func (fake *FakeAPI) AssociateOrgUser(orgGUID string, userGUID string) (cfclient.Org, error) {
 	fake.associateOrgUserMutex.Lock()
 	ret, specificReturn := fake.associateOrgUserReturnsOnCall[len(fake.associateOrgUserArgsForCall)]
 	fake.associateOrgUserArgsForCall = append(fake.associateOrgUserArgsForCall, struct {
@@ -442,29 +431,29 @@ func (fake *FakeAPI) AssociateOrgUserArgsForCall(i int) (string, string) {
 	return fake.associateOrgUserArgsForCall[i].orgGUID, fake.associateOrgUserArgsForCall[i].userGUID
 }
 
-func (fake *FakeAPI) AssociateOrgUserReturns(result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) AssociateOrgUserReturns(result1 cfclient.Org, result2 error) {
 	fake.AssociateOrgUserStub = nil
 	fake.associateOrgUserReturns = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) AssociateOrgUserReturnsOnCall(i int, result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) AssociateOrgUserReturnsOnCall(i int, result1 cfclient.Org, result2 error) {
 	fake.AssociateOrgUserStub = nil
 	if fake.associateOrgUserReturnsOnCall == nil {
 		fake.associateOrgUserReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.Org
+			result1 cfclient.Org
 			result2 error
 		})
 	}
 	fake.associateOrgUserReturnsOnCall[i] = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) AssociateOrgAuditor(orgGUID string, userGUID string) (go_cfclient.Org, error) {
+func (fake *FakeAPI) AssociateOrgAuditor(orgGUID string, userGUID string) (cfclient.Org, error) {
 	fake.associateOrgAuditorMutex.Lock()
 	ret, specificReturn := fake.associateOrgAuditorReturnsOnCall[len(fake.associateOrgAuditorArgsForCall)]
 	fake.associateOrgAuditorArgsForCall = append(fake.associateOrgAuditorArgsForCall, struct {
@@ -494,29 +483,29 @@ func (fake *FakeAPI) AssociateOrgAuditorArgsForCall(i int) (string, string) {
 	return fake.associateOrgAuditorArgsForCall[i].orgGUID, fake.associateOrgAuditorArgsForCall[i].userGUID
 }
 
-func (fake *FakeAPI) AssociateOrgAuditorReturns(result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) AssociateOrgAuditorReturns(result1 cfclient.Org, result2 error) {
 	fake.AssociateOrgAuditorStub = nil
 	fake.associateOrgAuditorReturns = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) AssociateOrgAuditorReturnsOnCall(i int, result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) AssociateOrgAuditorReturnsOnCall(i int, result1 cfclient.Org, result2 error) {
 	fake.AssociateOrgAuditorStub = nil
 	if fake.associateOrgAuditorReturnsOnCall == nil {
 		fake.associateOrgAuditorReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.Org
+			result1 cfclient.Org
 			result2 error
 		})
 	}
 	fake.associateOrgAuditorReturnsOnCall[i] = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) AssociateOrgManager(orgGUID string, userGUID string) (go_cfclient.Org, error) {
+func (fake *FakeAPI) AssociateOrgManager(orgGUID string, userGUID string) (cfclient.Org, error) {
 	fake.associateOrgManagerMutex.Lock()
 	ret, specificReturn := fake.associateOrgManagerReturnsOnCall[len(fake.associateOrgManagerArgsForCall)]
 	fake.associateOrgManagerArgsForCall = append(fake.associateOrgManagerArgsForCall, struct {
@@ -546,29 +535,29 @@ func (fake *FakeAPI) AssociateOrgManagerArgsForCall(i int) (string, string) {
 	return fake.associateOrgManagerArgsForCall[i].orgGUID, fake.associateOrgManagerArgsForCall[i].userGUID
 }
 
-func (fake *FakeAPI) AssociateOrgManagerReturns(result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) AssociateOrgManagerReturns(result1 cfclient.Org, result2 error) {
 	fake.AssociateOrgManagerStub = nil
 	fake.associateOrgManagerReturns = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) AssociateOrgManagerReturnsOnCall(i int, result1 go_cfclient.Org, result2 error) {
+func (fake *FakeAPI) AssociateOrgManagerReturnsOnCall(i int, result1 cfclient.Org, result2 error) {
 	fake.AssociateOrgManagerStub = nil
 	if fake.associateOrgManagerReturnsOnCall == nil {
 		fake.associateOrgManagerReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.Org
+			result1 cfclient.Org
 			result2 error
 		})
 	}
 	fake.associateOrgManagerReturnsOnCall[i] = struct {
-		result1 go_cfclient.Org
+		result1 cfclient.Org
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) GetOrgQuotaByName(name string) (go_cfclient.OrgQuota, error) {
+func (fake *FakeAPI) GetOrgQuotaByName(name string) (cfclient.OrgQuota, error) {
 	fake.getOrgQuotaByNameMutex.Lock()
 	ret, specificReturn := fake.getOrgQuotaByNameReturnsOnCall[len(fake.getOrgQuotaByNameArgsForCall)]
 	fake.getOrgQuotaByNameArgsForCall = append(fake.getOrgQuotaByNameArgsForCall, struct {
@@ -597,29 +586,29 @@ func (fake *FakeAPI) GetOrgQuotaByNameArgsForCall(i int) string {
 	return fake.getOrgQuotaByNameArgsForCall[i].name
 }
 
-func (fake *FakeAPI) GetOrgQuotaByNameReturns(result1 go_cfclient.OrgQuota, result2 error) {
+func (fake *FakeAPI) GetOrgQuotaByNameReturns(result1 cfclient.OrgQuota, result2 error) {
 	fake.GetOrgQuotaByNameStub = nil
 	fake.getOrgQuotaByNameReturns = struct {
-		result1 go_cfclient.OrgQuota
+		result1 cfclient.OrgQuota
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) GetOrgQuotaByNameReturnsOnCall(i int, result1 go_cfclient.OrgQuota, result2 error) {
+func (fake *FakeAPI) GetOrgQuotaByNameReturnsOnCall(i int, result1 cfclient.OrgQuota, result2 error) {
 	fake.GetOrgQuotaByNameStub = nil
 	if fake.getOrgQuotaByNameReturnsOnCall == nil {
 		fake.getOrgQuotaByNameReturnsOnCall = make(map[int]struct {
-			result1 go_cfclient.OrgQuota
+			result1 cfclient.OrgQuota
 			result2 error
 		})
 	}
 	fake.getOrgQuotaByNameReturnsOnCall[i] = struct {
-		result1 go_cfclient.OrgQuota
+		result1 cfclient.OrgQuota
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) ListIsolationSegmentsByQuery(query url.Values) ([]go_cfclient.IsolationSegment, error) {
+func (fake *FakeAPI) ListIsolationSegmentsByQuery(query url.Values) ([]cfclient.IsolationSegment, error) {
 	fake.listIsolationSegmentsByQueryMutex.Lock()
 	ret, specificReturn := fake.listIsolationSegmentsByQueryReturnsOnCall[len(fake.listIsolationSegmentsByQueryArgsForCall)]
 	fake.listIsolationSegmentsByQueryArgsForCall = append(fake.listIsolationSegmentsByQueryArgsForCall, struct {
@@ -648,67 +637,24 @@ func (fake *FakeAPI) ListIsolationSegmentsByQueryArgsForCall(i int) url.Values {
 	return fake.listIsolationSegmentsByQueryArgsForCall[i].query
 }
 
-func (fake *FakeAPI) ListIsolationSegmentsByQueryReturns(result1 []go_cfclient.IsolationSegment, result2 error) {
+func (fake *FakeAPI) ListIsolationSegmentsByQueryReturns(result1 []cfclient.IsolationSegment, result2 error) {
 	fake.ListIsolationSegmentsByQueryStub = nil
 	fake.listIsolationSegmentsByQueryReturns = struct {
-		result1 []go_cfclient.IsolationSegment
+		result1 []cfclient.IsolationSegment
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAPI) ListIsolationSegmentsByQueryReturnsOnCall(i int, result1 []go_cfclient.IsolationSegment, result2 error) {
+func (fake *FakeAPI) ListIsolationSegmentsByQueryReturnsOnCall(i int, result1 []cfclient.IsolationSegment, result2 error) {
 	fake.ListIsolationSegmentsByQueryStub = nil
 	if fake.listIsolationSegmentsByQueryReturnsOnCall == nil {
 		fake.listIsolationSegmentsByQueryReturnsOnCall = make(map[int]struct {
-			result1 []go_cfclient.IsolationSegment
+			result1 []cfclient.IsolationSegment
 			result2 error
 		})
 	}
 	fake.listIsolationSegmentsByQueryReturnsOnCall[i] = struct {
-		result1 []go_cfclient.IsolationSegment
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAPI) GetToken() (string, error) {
-	fake.getTokenMutex.Lock()
-	ret, specificReturn := fake.getTokenReturnsOnCall[len(fake.getTokenArgsForCall)]
-	fake.getTokenArgsForCall = append(fake.getTokenArgsForCall, struct{}{})
-	fake.recordInvocation("GetToken", []interface{}{})
-	fake.getTokenMutex.Unlock()
-	if fake.GetTokenStub != nil {
-		return fake.GetTokenStub()
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fake.getTokenReturns.result1, fake.getTokenReturns.result2
-}
-
-func (fake *FakeAPI) GetTokenCallCount() int {
-	fake.getTokenMutex.RLock()
-	defer fake.getTokenMutex.RUnlock()
-	return len(fake.getTokenArgsForCall)
-}
-
-func (fake *FakeAPI) GetTokenReturns(result1 string, result2 error) {
-	fake.GetTokenStub = nil
-	fake.getTokenReturns = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAPI) GetTokenReturnsOnCall(i int, result1 string, result2 error) {
-	fake.GetTokenStub = nil
-	if fake.getTokenReturnsOnCall == nil {
-		fake.getTokenReturnsOnCall = make(map[int]struct {
-			result1 string
-			result2 error
-		})
-	}
-	fake.getTokenReturnsOnCall[i] = struct {
-		result1 string
+		result1 []cfclient.IsolationSegment
 		result2 error
 	}{result1, result2}
 }
@@ -736,8 +682,6 @@ func (fake *FakeAPI) Invocations() map[string][][]interface{} {
 	defer fake.getOrgQuotaByNameMutex.RUnlock()
 	fake.listIsolationSegmentsByQueryMutex.RLock()
 	defer fake.listIsolationSegmentsByQueryMutex.RUnlock()
-	fake.getTokenMutex.RLock()
-	defer fake.getTokenMutex.RUnlock()
 	return fake.invocations
 }
 

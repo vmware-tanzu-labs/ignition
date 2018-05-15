@@ -1,17 +1,14 @@
 package uaa_test
 
 import (
-	"context"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	. "github.com/onsi/gomega"
 	"github.com/pivotalservices/ignition/internal"
 	"github.com/pivotalservices/ignition/uaa"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
-	"golang.org/x/oauth2"
 )
 
 func TestAuthenticate(t *testing.T) {
@@ -23,29 +20,6 @@ func testAuthenticate(t *testing.T, when spec.G, it spec.S) {
 
 	it.Before(func() {
 		RegisterTestingT(t)
-	})
-
-	when("there is a valid client and token", func() {
-		it.Before(func() {
-			config := &oauth2.Config{
-				ClientID:     "cf",
-				ClientSecret: "",
-			}
-			t := &oauth2.Token{
-				AccessToken:  "test-access-token",
-				RefreshToken: "test-refresh-token",
-				Expiry:       time.Now().Add(24 * time.Hour),
-			}
-			a = &uaa.Client{
-				Client: config.Client(context.Background(), t),
-				Token:  t,
-			}
-		})
-
-		it("succeeds", func() {
-			err := a.Authenticate()
-			Expect(err).NotTo(HaveOccurred())
-		})
 	})
 
 	when("there is a need to authenticate but the token is empty", func() {
@@ -62,10 +36,8 @@ func testAuthenticate(t *testing.T, when spec.G, it spec.S) {
 			s = internal.ServeFromTestdata(t, "empty-token.json", calledFunc)
 			a = &uaa.Client{
 				URL:          s.URL,
-				ClientID:     "cf",
-				ClientSecret: "",
-				Username:     "test-user",
-				Password:     "test-password",
+				ClientID:     "test-client-id",
+				ClientSecret: "test-client-secret",
 			}
 		})
 
@@ -76,7 +48,7 @@ func testAuthenticate(t *testing.T, when spec.G, it spec.S) {
 		it("returns an error", func() {
 			err := a.Authenticate()
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("could not retrieve UAA token"))
+			Expect(err.Error()).To(ContainSubstring("uaa: could not refresh token"))
 			Expect(called).To(BeTrue())
 		})
 	})
@@ -95,10 +67,8 @@ func testAuthenticate(t *testing.T, when spec.G, it spec.S) {
 			s = internal.ServeFromTestdata(t, "token.json", calledFunc)
 			a = &uaa.Client{
 				URL:          s.URL,
-				ClientID:     "cf",
-				ClientSecret: "",
-				Username:     "test-user",
-				Password:     "test-password",
+				ClientID:     "test-client-id",
+				ClientSecret: "test-client-secret",
 			}
 		})
 
