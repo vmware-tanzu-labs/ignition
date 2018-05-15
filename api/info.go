@@ -72,7 +72,7 @@ func startBackgroundOrgCountUpdater(
 		for {
 			time.Sleep(updateFreq)
 			oc := getIgnitionOrgCount(orgQuotaID, orgQuerier)
-			if *oc > 0 {
+			if oc != nil && *oc > 0 {
 				*(orgCount) = oc
 			}
 		}
