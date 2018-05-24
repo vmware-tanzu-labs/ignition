@@ -38,7 +38,7 @@ module.exports = {
   },
   plugins: [
     new FaviconsWebpackPlugin({
-      logo: './images/logo.png',
+      logo: './images/favicon_ignition.png',
       prefix: 'assets/icons-[hash]/'
     }),
     new HtmlWebpackPlugin({
