@@ -29,6 +29,35 @@ jobs:
     - get: ignition-github-release
       trigger: true
     - get: ignition-code
+    - task: set-quota
+      config:
+        platform: linux
+
+        image_resource:
+          type: docker-image
+          source:
+            repository: concourse/cf-resource
+            tag: 'latest'
+
+        params:
+          CF_API: {{cf-api}}
+          CF_USERNAME: {{cf-username}}
+          CF_PASSWORD: {{cf-password}}
+          CF_ORG: {{cf-org}}
+          CF_SPACE: {{cf-space}}
+          
+        run:
+          path: sh
+          args:
+          - -c
+          - |
+            cf login -a $CF_API -u $CF_USERNAME -p $CF_PASSWORD -o $CF_ORG -s $CF_SPACE
+            if ! cf quota ignition
+              then
+              cf create-quota ignition -m 10G -i -1 -r 1000 -s 100 -a -1 \
+                --allow-paid-service-plans --reserved-route-ports 1
+            fi
+
 
   - task: unzip-release
     config:
