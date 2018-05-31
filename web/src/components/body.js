@@ -331,7 +331,7 @@ class Body extends React.Component {
               you like. {this.props.info.IgnitionOrgCount} people in your company are
               already using PCF!
             </p>
-            {this.renderButton('Give Me an Org!', classes.speechButton)}
+            {this.renderButton('Take me to my Org!', classes.speechButton)}
           </div>
         </div>
         <div className={classes.rocketMan} />
