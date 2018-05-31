@@ -49,7 +49,6 @@ required = ["github.com/maxbrunsfeld/counterfeiter"]
   version = "1.3.0"
 
 [[constraint]]
-  branch = "fix-iso-org-httpstatus"
   name = "github.com/cloudfoundry-community/go-cfclient"
 
 [[constraint]]
