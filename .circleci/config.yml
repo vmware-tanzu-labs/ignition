@@ -34,7 +34,7 @@ jobs:
           working_directory: web
           command: |
             yarn install
-            
+
       - save_cache:
           paths:
             - web/node_modules
@@ -95,9 +95,11 @@ jobs:
           working_directory: ~/ignition
           command: |
             echo 'ignition.tar.gz' > .cfignore
-            ./../cf login -a $CF_API -u $CF_USERNAME -p "$CF_PASSWORD" -o $CF_ORG -s $CF_SPACE
+            ./../cf login -a $CF_STAGING_API -u $CF_STAGING_USERNAME -p "$CF_STAGING_PASSWORD" -o $CF_STAGING_ORG -s $CF_STAGING_SPACE
             ./../cf push ignition -f /go/src/github.com/pivotalservices/ignition/manifests/ignition.yml
             ./../cf push ignition-google -f /go/src/github.com/pivotalservices/ignition/manifests/ignition-google.yml
+            ./../cf login -a $CF_PROD_API -u $CF_PROD_USERNAME -p "$CF_PROD_PASSWORD" -o $CF_PROD_ORG -s $CF_PROD_SPACE
+            ./../cf push ignition -f /go/src/github.com/pivotalservices/ignition/manifests/ignition.yml
 workflows:
   version: 2
 
