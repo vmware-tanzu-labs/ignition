@@ -13,15 +13,16 @@ import (
 
 // Server is an HTTP/S web server
 type Server struct {
-	ServiceName   string         `envconfig:"config_servicename" default:"ignition-config"` // IGNITION_CONFIG_SERVICENAME
-	Scheme        string         `envconfig:"scheme" default:"http"`                        // IGNITION_SCHEME
-	Domain        string         `envconfig:"domain" default:"localhost"`                   // IGNITION_DOMAIN
-	Port          int            `envconfig:"port" default:"3000"`                          // IGNITION_PORT
-	ServePort     int            `envconfig:"serve_port" default:"3000"`                    // IGNITION_SERVE_PORT
-	WebRoot       string         `ignored:"true"`                                           // Not configurable
-	SessionSecret string         `envconfig:"session_secret"`                               // IGNITION_SESSION_SECRET << REQUIRED
-	CompanyName   string         `envconfig:"company_name" default:"Your Company"`          // IGNITION_COMPANY_NAME
-	SessionStore  sessions.Store `ignored:"true"`                                           // Not configurable
+	CollectAnalytics bool           `envconfig:"collect_analytics"`                            // IGNITION_COLLECT_ANALYTICS (default false)
+	ServiceName      string         `envconfig:"config_servicename" default:"ignition-config"` // IGNITION_CONFIG_SERVICENAME
+	Scheme           string         `envconfig:"scheme" default:"http"`                        // IGNITION_SCHEME
+	Domain           string         `envconfig:"domain" default:"localhost"`                   // IGNITION_DOMAIN
+	Port             int            `envconfig:"port" default:"3000"`                          // IGNITION_PORT
+	ServePort        int            `envconfig:"serve_port" default:"3000"`                    // IGNITION_SERVE_PORT
+	WebRoot          string         `ignored:"true"`                                           // Not configurable
+	SessionSecret    string         `envconfig:"session_secret"`                               // IGNITION_SESSION_SECRET << REQUIRED
+	CompanyName      string         `envconfig:"company_name" default:"Your Company"`          // IGNITION_COMPANY_NAME
+	SessionStore     sessions.Store `ignored:"true"`                                           // Not configurable
 }
 
 // NewServer uses environment variables to populate a Server
@@ -86,6 +87,11 @@ func (s *Server) ConfigureServer(name string) error {
 		companyName, ok := service.CredentialString("company_name")
 		if ok && strings.TrimSpace(companyName) != "" {
 			s.CompanyName = companyName
+		}
+
+		collectAnalytics, ok := service.CredentialString("collect_analytics")
+		if ok && strings.TrimSpace(collectAnalytics) != "" && strings.ToLower(strings.TrimSpace(collectAnalytics)) != "false" {
+			s.CollectAnalytics = true
 		}
 	}
 	d := strings.TrimSpace(strings.ToLower(s.Domain))

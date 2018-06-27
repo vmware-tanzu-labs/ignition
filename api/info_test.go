@@ -30,7 +30,7 @@ func testInfoHandler(t *testing.T, when spec.G, it spec.S) {
 		it.Before(func() {
 			a := &cloudfoundryfakes.FakeAPI{}
 			handler = api.InfoHandler(
-				"Test Company", "Test Space", "ignition-quota-definition-guid", 100*time.Millisecond, a)
+				"Test Company", "Test Space", "ignition-quota-definition-guid", false, 100*time.Millisecond, a)
 
 			// stub this out after the handler has initialized, the goroutine will update
 			a.ListOrgsByQueryReturns([]cfclient.Org{
@@ -83,7 +83,7 @@ func testInfoHandler(t *testing.T, when spec.G, it spec.S) {
 					QuotaDefinitionGuid: "ignition-quota-definition-guid",
 				},
 			}, nil)
-			handler = api.InfoHandler("Test Company", "Test Space", "ignition-quota-definition-guid", time.Minute, a)
+			handler = api.InfoHandler("Test Company", "Test Space", "ignition-quota-definition-guid", false, time.Minute, a)
 		})
 
 		it("returns the configured company name, space name, and ignition org count", func() {
@@ -108,7 +108,7 @@ func testInfoHandler(t *testing.T, when spec.G, it spec.S) {
 		it.Before(func() {
 			a := &cloudfoundryfakes.FakeAPI{}
 			a.ListOrgsByQueryReturns([]cfclient.Org{}, errors.New("Some unknown CC API error"))
-			handler = api.InfoHandler("Test Company", "Test Space", "orgprefix", time.Minute, a)
+			handler = api.InfoHandler("Test Company", "Test Space", "orgprefix", false, time.Minute, a)
 		})
 
 		it("returns the configured company name, space name, and defaults the org count to 0", func() {

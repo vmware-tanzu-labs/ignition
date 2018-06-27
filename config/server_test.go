@@ -26,6 +26,7 @@ func testServer(t *testing.T, when spec.G, it spec.S) {
 		os.Unsetenv("IGNITION_WEB_ROOT")
 		os.Unsetenv("IGNITION_SESSION_SECRET")
 		os.Unsetenv("IGNITION_COMPANY_NAME")
+		os.Unsetenv("IGNITION_COLLECT_ANALYTICS")
 	}
 	it.Before(func() {
 		RegisterTestingT(t)
@@ -234,6 +235,38 @@ func testServer(t *testing.T, when spec.G, it spec.S) {
 					Expect(err).NotTo(HaveOccurred())
 					Expect(s).NotTo(BeNil())
 					Expect(s.CompanyName).To(Equal("test-config-company-name"))
+				})
+			})
+		})
+
+		when("collect analytics is set in ignition-config", func() {
+			it.Before(func() {
+				os.Setenv("VCAP_SERVICES", `{"user-provided": [{
+					"name": "ignition-config",
+					"instance_name": "ignition-config",
+					"credentials": {
+						"session_secret": "test-config-session-secret",
+						"collect_analytics": "true"
+					}}]}`)
+			})
+
+			it("succeeds", func() {
+				s, err := NewServer()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(s).NotTo(BeNil())
+				Expect(s.CollectAnalytics).To(BeTrue())
+			})
+
+			when("the company name is also set in the environment", func() {
+				it.Before(func() {
+					os.Setenv("IGNITION_COLLECT_ANALYTICS", "false")
+				})
+
+				it("still uses the company name from ignition-config", func() {
+					s, err := NewServer()
+					Expect(err).NotTo(HaveOccurred())
+					Expect(s).NotTo(BeNil())
+					Expect(s.CollectAnalytics).To(BeTrue())
 				})
 			})
 		})

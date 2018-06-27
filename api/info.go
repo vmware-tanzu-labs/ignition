@@ -16,13 +16,18 @@ type Info struct {
 	CompanyName              string
 	ExperimentationSpaceName string
 	IgnitionOrgCount         int
+	CollectAnalytics         bool
 }
 
 // InfoHandler writes the contents of the provided Info to the response
 func InfoHandler(
-	companyName, spaceName, orgQuotaID string,
+	companyName string,
+	spaceName string,
+	orgQuotaID string,
+	collectAnalytics bool,
 	updateFreq time.Duration,
-	orgQuerier cloudfoundry.OrganizationQuerier) http.Handler {
+	orgQuerier cloudfoundry.OrganizationQuerier,
+) http.Handler {
 
 	orgCount := getIgnitionOrgCount(orgQuotaID, orgQuerier)
 	startBackgroundOrgCountUpdater(orgQuotaID, orgQuerier, &orgCount, updateFreq)
@@ -33,6 +38,7 @@ func InfoHandler(
 			CompanyName:              companyName,
 			ExperimentationSpaceName: spaceName,
 			IgnitionOrgCount:         orgCountOrDefault(orgCount),
+			CollectAnalytics:         collectAnalytics,
 		}
 		json.NewEncoder(w).Encode(i)
 	}

@@ -3,6 +3,8 @@ package http
 import (
 	_ "expvar" // metrics
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"os"
 	"path"
@@ -44,6 +46,7 @@ func (a *API) createRouter() *mux.Router {
 		a.Ignition.Server.CompanyName,
 		a.Ignition.Experimenter.SpaceName,
 		a.Ignition.Experimenter.QuotaID,
+		a.Ignition.Server.CollectAnalytics,
 		a.Ignition.Experimenter.OrgCountUpdateInterval,
 		a.Ignition.Deployment.CC)
 	r.Handle("/api/v1/info", Secure(infoHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore))
@@ -61,10 +64,22 @@ func (a *API) createRouter() *mux.Router {
 
 	a.handleAuth(r)
 	r.Handle("/debug/vars", http.DefaultServeMux)
+	var t *template.Template
 
 	// If the API can't handle the route, let the SPA handle it
 	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		http.ServeFile(w, req, filepath.Join(a.Ignition.Server.WebRoot, "index.html"))
+		if t == nil {
+			var err error
+			t, err = template.ParseFiles(filepath.Join(a.Ignition.Server.WebRoot, "index.html"))
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				log.Println(err)
+				return
+			}
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		t.Execute(w, a.Ignition.Server)
 	})
 
 	return r
