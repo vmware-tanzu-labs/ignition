@@ -24,7 +24,7 @@ func TestNewAuthorizer(t *testing.T) {
 func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 	var (
 		s             *httptest.Server
-		called        bool
+		// called        bool
 		responseCode  int
 		wellKnownFile string
 	)
@@ -47,10 +47,10 @@ func testNewAuthorizer(t *testing.T, when spec.G, it spec.S) {
 		RegisterTestingT(t)
 		reset()
 		responseCode = http.StatusOK
-		called = false
+		// called := false
 		wellKnownFile = "well-known.json"
 		s = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			called = true
+			// called = true
 			wellKnown := internal.StringFromTestdata(t, wellKnownFile)
 			wellKnown = strings.Replace(wellKnown, "{{url}}", s.URL, -1)
 			w.WriteHeader(responseCode)
