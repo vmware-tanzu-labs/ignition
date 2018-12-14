@@ -41,7 +41,7 @@ func (a *API) Run() error {
 func (a *API) createRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(a.Ignition.Server.WebRoot, "assets")+string(os.PathSeparator))))).Name("assets")
-	r.Handle("/api/v1/profile", ensureHTTPS(session.PopulateContext(Authenticate(api.ProfileHandler()), a.Ignition.Server.SessionStore)))
+	r.Handle("/api/v1/profile", ensureHTTPClient(a.Ignition.Authorizer.SkipTLSValidation, ensureHTTPS(session.PopulateContext(Authenticate(api.ProfileHandler()), a.Ignition.Server.SessionStore))))
 	infoHandler := api.InfoHandler(
 		a.Ignition.Server.CompanyName,
 		a.Ignition.Experimenter.SpaceName,
@@ -49,7 +49,7 @@ func (a *API) createRouter() *mux.Router {
 		a.Ignition.Server.CollectAnalytics,
 		a.Ignition.Experimenter.OrgCountUpdateInterval,
 		a.Ignition.Deployment.CC)
-	r.Handle("/api/v1/info", Secure(infoHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore))
+	r.Handle("/api/v1/info", ensureHTTPClient(a.Ignition.Authorizer.SkipTLSValidation, Secure(infoHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore)))
 
 	orgHandler := api.OrganizationHandler(
 		a.Ignition.Deployment.AppsURL,
@@ -60,7 +60,7 @@ func (a *API) createRouter() *mux.Router {
 		a.Ignition.Deployment.CC)
 	orgHandler = ensureUser(orgHandler, a.Ignition.Deployment.UAA, a.Ignition.Deployment.UAAOrigin, a.Ignition.Server.SessionStore)
 	orgHandler = Secure(orgHandler, a.Ignition.Authorizer.Domain, a.Ignition.Server.SessionStore)
-	r.Handle("/api/v1/organization", orgHandler)
+	r.Handle("/api/v1/organization", ensureHTTPClient(a.Ignition.Authorizer.SkipTLSValidation, orgHandler))
 
 	a.handleAuth(r)
 	r.Handle("/debug/vars", http.DefaultServeMux)

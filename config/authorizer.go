@@ -160,7 +160,7 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 	}
 	a.Provider = &p
 	// TODO: Warn when a.Scopes includes items that are not in p.ScopesSupported
-	a.Verifier = openid.NewVerifier(p.Issuer, a.ClientID, p.JWKSURL)
+	a.Verifier = openid.NewVerifier(p.Issuer, a.ClientID, p.JWKSURL, a.SkipTLSValidation)
 	a.Fetcher = &openid.Fetcher{
 		Verifier: a.Verifier,
 	}

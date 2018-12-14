@@ -1,6 +1,8 @@
 package http
 
 import (
+	"context"
+	"crypto/tls"
 	"net/http"
 	"strings"
 	"time"
@@ -21,8 +23,21 @@ func (a *API) handleAuth(r *mux.Router) {
 	if a.Ignition.Server.Domain == "localhost" {
 		stateConfig = gologin.DebugOnlyCookieConfig
 	}
-	r.Handle("/login", ensureHTTPS(dgoauth2.StateHandler(stateConfig, dgoauth2.LoginHandler(a.Ignition.Authorizer.Config, nil)))).Name("login")
-	r.Handle("/oauth2", ensureHTTPS(dgoauth2.StateHandler(stateConfig, CallbackHandler(a.Ignition.Authorizer.Config, a.Ignition.Authorizer.Fetcher, session.IssueSession(a.Ignition.Server.SessionStore, a.Ignition.Deployment.UAA), session.LogoutHandler(a.Ignition.Server.SessionStore))))).Name("oauth2")
+
+	oauth2SuccessHandler := session.IssueSession(a.Ignition.Server.SessionStore, a.Ignition.Deployment.UAA)
+	oauth2FailureHandler := session.LogoutHandler(a.Ignition.Server.SessionStore)
+	oauth2Handler := CallbackHandler(a.Ignition.Authorizer.Config, a.Ignition.Authorizer.Fetcher, oauth2SuccessHandler, oauth2FailureHandler)
+	oauth2Handler = dgoauth2.StateHandler(stateConfig, oauth2Handler)
+	oauth2Handler = ensureHTTPClient(a.Ignition.Authorizer.SkipTLSValidation, oauth2Handler)
+	oauth2Handler = ensureHTTPS(oauth2Handler)
+
+	loginHandler := dgoauth2.LoginHandler(a.Ignition.Authorizer.Config, nil)
+	loginHandler = dgoauth2.StateHandler(stateConfig, loginHandler)
+	loginHandler = ensureHTTPClient(a.Ignition.Authorizer.SkipTLSValidation, loginHandler)
+	loginHandler = ensureHTTPS(loginHandler)
+
+	r.Handle("/login", loginHandler).Name("login")
+	r.Handle("/oauth2", oauth2Handler).Name("oauth2")
 	r.Handle("/logout", ensureHTTPS(session.LogoutHandler(a.Ignition.Server.SessionStore))).Name("logout")
 }
 
@@ -139,4 +154,23 @@ func validateResponse(profile *user.Profile, err error) error {
 		return errors.New("could not validate Profile")
 	}
 	return nil
+}
+
+func ensureHTTPClient(skipTLSValidation bool, next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
+		hc := &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: skipTLSValidation,
+				},
+			},
+		}
+
+		ctx = context.WithValue(ctx, oauth2.HTTPClient, hc)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+
+	return http.HandlerFunc(fn)
 }

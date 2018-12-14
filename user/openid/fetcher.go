@@ -2,7 +2,10 @@ package openid
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"log"
+	"net/http"
 	"strings"
 
 	oidc "github.com/coreos/go-oidc"
@@ -85,8 +88,17 @@ func (o *OIDCIDVerifier) Verify(ctx context.Context, rawIDToken string) (*Claims
 }
 
 // NewVerifier returns a Verifier that uses a keySet fetched from the jwksURL
-func NewVerifier(issuerURL string, clientID string, jwksURL string) Verifier {
-	keySet := oidc.NewRemoteKeySet(context.Background(), jwksURL)
+func NewVerifier(issuerURL string, clientID string, jwksURL string, skipTLSValidation bool) Verifier {
+	hc := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: skipTLSValidation,
+			},
+		},
+	}
+
+	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, hc)
+	keySet := oidc.NewRemoteKeySet(ctx, jwksURL)
 	return &OIDCIDVerifier{
 		Verifier: oidc.NewVerifier(issuerURL, keySet, &oidc.Config{
 			ClientID: clientID,
