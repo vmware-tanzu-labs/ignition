@@ -117,7 +117,7 @@ func testFetcher(t *testing.T, when spec.G, it spec.S) {
 	})
 
 	it("creates a valid verifier", func() {
-		v := openid.NewVerifier("", "", "")
+		v := openid.NewVerifier("", "", "", false)
 		Expect(v).NotTo(BeNil())
 	})
 
@@ -132,7 +132,7 @@ func testFetcher(t *testing.T, when spec.G, it spec.S) {
 
 	when("the verifier is valid", func() {
 		it.Before(func() {
-			f.Verifier = openid.NewVerifier("", "", "")
+			f.Verifier = openid.NewVerifier("", "", "", false)
 		})
 
 		when("the token is nil", func() {
