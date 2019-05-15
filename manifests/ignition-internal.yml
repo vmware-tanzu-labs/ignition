@@ -1,0 +1,9 @@
+---
+applications:
+- name: ignition
+  memory: 128M
+  instances: 2
+  buildpack: binary_buildpack
+  command: ./ignition
+  services:
+    - ignition-config

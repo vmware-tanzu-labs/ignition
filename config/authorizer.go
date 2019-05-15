@@ -107,7 +107,7 @@ func NewAuthorizer(name string) (*Authorizer, error) {
 
 			authURL, ok := i.CredentialString("auth_domain")
 			if !ok {
-				return nil, fmt.Errorf("could not retrieve the client_id; make sure you have created and bound a Single Sign On service instance with the name \"%s\"", a.ServiceName)
+				return nil, fmt.Errorf("could not retrieve the auth_domain; make sure you have created and bound a Single Sign On service instance with the name \"%s\"", a.ServiceName)
 			}
 			a.URL = strings.TrimSpace(authURL)
 			clientid, ok := i.CredentialString("client_id")
