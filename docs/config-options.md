@@ -8,6 +8,7 @@
 | `api_client_id` | The client created [here](./README.md#create-the-ignition-uaa-client) | YES | `null` | `ignition` |
 | `api_client_secret` | The secret for the client created [here](./README.md#create-the-ignition-uaa-client) | YES | `null` | `supersecretvalue` |
 | `authorized_domain` | This is the email domain that valid users belong to | YES | `null` | ` @example.net` |
+| `company_name` | The name of your company, which will show up on the Ignition front page | NO | `Your Company` | `My Company` |
 | `auth_variant` | Determines whether you are using the SSO tile or OpenID | NO | `p-identity` | `p-identity` or `openid` |
 | `auth_scopes` | Only change this if you have a specific reason to. | NO | `openid,profile,user_attributes` | `openid,profile,user_attributes` |
 | `auth_servicename` | The name of the SSO service instance | NO | `ignition-identity` | `myssosi` |
