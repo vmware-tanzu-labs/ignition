@@ -4,7 +4,7 @@ import AppBar from './app-bar'
 import Body from './body'
 
 const Home = (props) => {
-  const {profile, info} = props
+  const { profile, info } = props
   return (
     <div>
       <AppBar profile={profile} />
