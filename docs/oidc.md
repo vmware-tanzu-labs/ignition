@@ -18,7 +18,7 @@ follow these instructions.
      "session_secret": "REQUIRED",
      "system_domain": "run.example.net",
      "api_client_id": "ignition",
-     "api_client_secret": "REQUIRED",
+     "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
    }
    ```
@@ -28,7 +28,7 @@ follow these instructions.
      "session_secret": "REQUIRED",
      "system_domain": "run.example.net",
      "api_client_id": "ignition",
-     "api_client_secret": "REQUIRED",
+     "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
      "uaa_origin": "google",
      "auth_variant": "openid",
