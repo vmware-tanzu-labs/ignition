@@ -79,7 +79,7 @@ for your authentication method:
 Once you have set your authentication method, add any [optional fields](./config-options.md)
 you need for your deployment.
 
-1. Ensure the correct space is targetted by running
+1. Ensure the correct space is targeted by running
    ```shell
    $ cf target -o ignition -s production
    api endpoint:   https://api.sys.example.net
@@ -111,7 +111,7 @@ you need for your deployment.
      - ignition-config
      - ignition-identity # Only include this line if you chose SSO as your auth method
    ```
-1. Ensure the correct space is targetted by running:
+1. Ensure the correct space is targeted by running:
    ```shell
    $ cf target -o ignition -s production
    api endpoint:   https://api.sys.example.net
