@@ -16,7 +16,7 @@ follow these instructions.
    ```json
    {
      "session_secret": "YOUR_SESSION_SECRET",
-     "system_domain": "run.example.net",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
@@ -26,7 +26,7 @@ follow these instructions.
    ```json
    {
      "session_secret": "YOUR_SESSION_SECRET",
-     "system_domain": "run.example.net",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",

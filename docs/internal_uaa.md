@@ -30,7 +30,7 @@ system as a whole, with no external dependencies required.
    ```json
    {
      "session_secret": "YOUR_SESSION_SECRET",
-     "system_domain": "run.example.net",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
@@ -40,14 +40,14 @@ system as a whole, with no external dependencies required.
    ```json
    {
      "session_secret": "YOUR_SESSION_SECRET",
-     "system_domain": "run.example.net",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
      "uaa_origin": "<variant>",
      "auth_variant": "openid",
      "auth_scopes": "openid,profile,email",
-     "auth_url": "https://login.YOURSYSTEMDOMAIN",
+     "auth_url": "https://login.YOUR-SYSTEM-DOMAIN",
      "client_id": "ignition-login",
      "client_secret": "REQUIRED"
    }

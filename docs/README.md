@@ -6,6 +6,10 @@
 [`Pivotal Application Service`](https://network.pivotal.io/products/elastic-runtime)
 (PAS) tile
 
+PAS is now configured with:
+- a system domain of `YOUR-SYSTEM-DOMAIN` (i.e. `run.example.net`)
+- an applications domain of `YOUR-APPS-DOMAIN` (i.e. `apps.example.net`)
+
 ## Create necessary artifacts
 1. Create an `ignition` org: `cf create-org ignition`. This will grant your user
    `OrgManager` permissions.
@@ -41,7 +45,7 @@ attributes:
 ```json
 {
   "session_secret": "YOUR_SESSION_SECRET",
-  "system_domain": "run.example.net",
+  "system_domain": "YOUR-SYSTEM-DOMAIN",
   "api_client_id": "ignition",
   "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
   "authorized_domain": "@example.net",

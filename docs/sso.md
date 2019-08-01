@@ -9,7 +9,7 @@ tile.
 
 ## Create a Dev Service Plan
 Once the SSO tile is installed, you'll need to create a service plan for the
-ignition app. Navigate to `https://p-identity.YOURSYSTEMDOMAIN` and log in using
+ignition app. Navigate to `https://p-identity.YOUR-SYSTEM-DOMAIN` and log in using
 PAS tile admin level credentials. If your PAS account is not an admin you can
 use the UAA `Admin Credentials` found in the PAS tile Credentials tab in Ops
 Manager.
@@ -87,13 +87,13 @@ $ cf create-service p-identity sso ignition-identity
    $ cf push ignition --no-start
    $ cf bind-service ignition ignition-identity
    ```
-1. Go to the Apps Manager at `https://apps.YOURSYSTEMDOMAIN` and navigate to the
+1. Go to the Apps Manager at `https://apps.YOUR-SYSTEM-DOMAIN` and navigate to the
    `ignition` app. Click on the `Services` tab at the top. Find `ignition-identity`
    and click the `Manage` link.
 1. Click the `New App` button/link and the fill in the following details:
    * **App Name**: `ignition`
-   * **App Launch Url**: Your ignition app URL, for example:
-   `https://ignition.apps.example.com`
+   * **App Launch Url**: Your ignition app URL of `https://ignition.YOUR-APPS-DOMAIN` (for example,
+   `https://ignition.apps.example.net`)
    * **Identity Providers**: Select your ldap sso identity provider, and unselect
    the internal user store.
    * **Auth Redirect URIs**: Enter the same URL you used for the App Launch Url
@@ -112,7 +112,7 @@ $ cf create-service p-identity sso ignition-identity
    ```json
    {
      "session_secret": "YOUR_SESSION_SECRET",
-     "system_domain": "run.example.net",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
@@ -122,7 +122,7 @@ $ cf create-service p-identity sso ignition-identity
    ```json
    {
      "session_secret": "YOUR_SESSION_SECRET",
-     "system_domain": "run.example.net",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
      "authorized_domain": "@example.net",
