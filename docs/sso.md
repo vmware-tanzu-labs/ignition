@@ -70,7 +70,7 @@ Create a Single Sign-On service instance named `ignition-identity` in your space
 
 ```bash
 $ cf target -o ignition -s production
-api endpoint:   https://api.run.example.net
+api endpoint:   https://api.sys.example.net
 api version:    2.131.0
 user:           admin
 org:            ignition

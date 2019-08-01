@@ -7,7 +7,7 @@
 (PAS) tile
 
 PAS is now configured with:
-- a system domain of `YOUR-SYSTEM-DOMAIN` (i.e. `run.example.net`)
+- a system domain of `YOUR-SYSTEM-DOMAIN` (i.e. `sys.example.net`)
 - an applications domain of `YOUR-APPS-DOMAIN` (i.e. `apps.example.net`)
 
 ## Create necessary artifacts
@@ -69,7 +69,7 @@ Once you have set your authentication method, add any [optional fields](./config
 you need for your deployment. Create the service in PAS by running the commands:
 ```shell
 $ cf target -o ignition -s production
-api endpoint:   https://api.run.example.net
+api endpoint:   https://api.sys.example.net
 api version:    2.131.0
 user:           admin
 org:            ignition
@@ -100,7 +100,7 @@ OK
 1. Deploy the app to the correct org and space:
    ```shell
    $ cf target -o ignition -s production
-   api endpoint:   https://api.run.example.net
+   api endpoint:   https://api.sys.example.net
    api version:    2.131.0
    user:           admin
    org:            ignition
