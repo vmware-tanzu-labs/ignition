@@ -4,9 +4,9 @@
 | --- | --- | --- | --- | --- |
 | `session_secret` | Used to secure the user's session cookie. You should randomly generate the contents of this value and limit access to it. | YES | `null` | `somegeneratedvalue` |
 | `system_domain` | The PAS installation's system domain | YES | `null` | `sys.example.net` |
-| `uaa_origin` | Where a user in UAA originated from. See [here](./README.md#choose-your-authentication-method) for more information | YES | `null` | `ldap` |
-| `api_client_id` | The client created [here](./README.md#create-the-ignition-uaa-client) | YES | `null` | `ignition` |
-| `api_client_secret` | The secret for the client created [here](./README.md#create-the-ignition-uaa-client) | YES | `null` | `supersecretvalue` |
+| `uaa_origin` | Where a user in UAA originated from. See [here](./README.md#5-choose-your-authentication-method) for more information | YES | `null` | `ldap` |
+| `api_client_id` | The client created [here](./README.md#3-create-the-ignition-uaa-client) | YES | `null` | `ignition` |
+| `api_client_secret` | The secret for the client created [here](./README.md#3-create-the-ignition-uaa-client) | YES | `null` | `supersecretvalue` |
 | `authorized_domain` | This is the email domain that valid users belong to | YES | `null` | ` @example.net` |
 | `company_name` | The name of your company, which will show up on the Ignition front page | NO | `Your Company` | `My Company` |
 | `auth_variant` | Determines whether you are using the SSO tile or OpenID | NO | `p-identity` | `p-identity` or `openid` |

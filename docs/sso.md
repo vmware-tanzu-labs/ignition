@@ -3,11 +3,11 @@ The Pivotal SSO tile provides a way to allow subsets of your users to use
 `ignition`; for example, allowing one development team access to the Ignition app
 then letting others on as they onboard.
 
-## Prepare Cloud Foundry
+## 1. Prepare Cloud Foundry
 Install the [`Pivotal Single Sign-On for PCF`](https://network.pivotal.io/products/pivotal_single_sign-on_service)
 tile.
 
-## Create a Dev Service Plan
+## 2. Create a Dev Service Plan
 Once the SSO tile is installed, you'll need to create a service plan for the
 ignition app. Navigate to `https://p-identity.YOUR-SYSTEM-DOMAIN` and log in using
 PAS tile admin level credentials. If your PAS account is not an admin you can
@@ -65,7 +65,7 @@ mappings:
 
 Click `Save Identity Provider`.
 
-## Create Ignition-Identity SSO Service Instance
+## 3. Create Ignition-Identity SSO Service Instance
 Create a Single Sign-On service instance named `ignition-identity` in your space.
 
 ```bash
@@ -79,9 +79,9 @@ space:          production
 $ cf create-service p-identity sso ignition-identity
 ```
 
-## Create the App for Ignition
+## 4. Create the App for Ignition
 1. Follow step 1 (and **only** step 1) from the [main installation
-   guide](./README.md#deploy-ignition)
+   guide](./README.md#7-deploy-ignition)
 1. In the directory from the previous step, run
    ```shell
    $ cf push ignition --no-start
@@ -105,9 +105,9 @@ $ cf create-service p-identity sso ignition-identity
 
    Click `Save Config`.
 
-## Modify Ignition Config for SSO
+## 5. Modify Ignition Config for SSO
 1. Complete the steps located
-   [here](./README.md#create-the-ignition-config-user-provided-service)
+   [here](./README.md#4-create-the-ignition-config-user-provided-service)
 1. Modify `ignition-config.json` from this:
    ```json
    {
@@ -131,7 +131,7 @@ $ cf create-service p-identity sso ignition-identity
    ```
 
 Return to the [main installation
-instructions](./README.md#finish-the-json-and-create-the-service-in-pas)
+instructions](./README.md#6-finish-the-json-and-create-the-service-in-pas)
 and finish the instructions on that page.
 
 ## Links

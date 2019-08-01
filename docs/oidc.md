@@ -10,7 +10,7 @@ authenticate users (i.e. you do _not_ want to use the SSO service or the interna
 follow these instructions.
 
 1. Complete the steps located
-   [here](./README.md#create-the-ignition-config-user-provided-service)
+   [here](./README.md#4-create-the-ignition-config-user-provided-service)
 1. Generate a Google [OAuth2 Client ID and Secret](https://console.developers.google.com/apis/credentials),
    and add them to the existing json like below:
    ```json
@@ -39,5 +39,5 @@ follow these instructions.
    }
    ```
 Return to the [main installation
-instructions](./README.md#finish-the-json-and-create-the-service-in-pas)
+instructions](./README.md#6-finish-the-json-and-create-the-service-in-pas)
 and finish the instructions on that page.

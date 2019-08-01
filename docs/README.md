@@ -1,6 +1,6 @@
 # How to Install Ignition
 
-## Prepare Cloud Foundry
+## 1. Prepare Cloud Foundry
 
 1. Install the
 [`Pivotal Application Service`](https://network.pivotal.io/products/elastic-runtime)
@@ -10,7 +10,7 @@ PAS is now configured with:
 - a system domain of `YOUR-SYSTEM-DOMAIN` (i.e. `sys.example.net`)
 - an applications domain of `YOUR-APPS-DOMAIN` (i.e. `apps.example.net`)
 
-## Create necessary artifacts
+## 2. Create necessary artifacts
 1. Create an `ignition` org: `cf create-org ignition`. This will grant your user
    `OrgManager` permissions.
 1. Create a `production` space in the ignition org: `cf create-space production
@@ -21,7 +21,7 @@ PAS is now configured with:
    `ignition` creates orgs for users, it will set this quota on the newly created
    org.
 
-## Create the `ignition` UAA client
+## 3. Create the `ignition` UAA client
 Any UAA commands will be run with the `uaa` CLI, which can be found
 [here](https://github.com/cloudfoundry-incubator/uaa-cli). Equivalent `uaac`
 commands exist but are out of scope for this document and may be omitted.
@@ -49,7 +49,7 @@ $ uaac client add ignition -s <UAA-IGNITION-CLIENT-SECRET> \
     --authorities cloud_controller.admin,scim.write,scim.read
 ```
 
-## Create the Ignition Config User Provided Service
+## 4. Create the Ignition Config User Provided Service
 This user provided service instance configures ignition for your environment.
 Create a file called `ignition-config.json`, and include the following required
 attributes:
@@ -67,7 +67,7 @@ where:
 
 Please see the [glossary](./config-options.md) for definitions for available fields.
 
-## Choose Your Authentication Method
+## 5. Choose Your Authentication Method
 Before creating the service in PAS, you must choose which authentication method
 you wish to use, and further configure the JSON file. Choose the appropriate link
 for your authentication method:
@@ -75,7 +75,7 @@ for your authentication method:
 1. [Internal PAS UAA](./internal_uaa.md)
 1. [External OpenID Connect Provider](./oidc.md)
 
-## Finish the JSON and Create the Service in PAS
+## 6. Finish the JSON and Create the Service in PAS
 Once you have set your authentication method, add any [optional fields](./config-options.md)
 you need for your deployment.
 
@@ -95,7 +95,7 @@ you need for your deployment.
    OK
    ```
 
-## Deploy `ignition`
+## 7. Deploy `ignition`
 1. Download the [latest release](https://github.com/pivotalservices/ignition/releases/latest)
    from Github and expand it **into its own directory**.
 1. In that directory, create a file called `manifest.yml` that looks like this:
