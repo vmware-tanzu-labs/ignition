@@ -111,7 +111,7 @@ $ cf create-service p-identity sso ignition-identity
 1. Modify `ignition-config.json` from this:
    ```json
    {
-     "session_secret": "REQUIRED",
+     "session_secret": "YOUR_SESSION_SECRET",
      "system_domain": "run.example.net",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
@@ -121,7 +121,7 @@ $ cf create-service p-identity sso ignition-identity
    to look like this
    ```json
    {
-     "session_secret": "REQUIRED",
+     "session_secret": "YOUR_SESSION_SECRET",
      "system_domain": "run.example.net",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",

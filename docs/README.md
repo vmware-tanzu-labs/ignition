@@ -40,13 +40,16 @@ Create a file called `ignition-config.json`, and include the following required
 attributes:
 ```json
 {
-  "session_secret": "REQUIRED",
+  "session_secret": "YOUR_SESSION_SECRET",
   "system_domain": "run.example.net",
   "api_client_id": "ignition",
   "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
   "authorized_domain": "@example.net",
 }
 ```
+where:
+- `YOUR_SESSION_SECRET` is a randomly generated string you choose
+
 Please see the [glossary](./config-options.md) for definitions for available fields.
 
 ## Choose Your Authentication Method

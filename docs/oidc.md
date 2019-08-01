@@ -15,7 +15,7 @@ follow these instructions.
    and add them to the existing json like below:
    ```json
    {
-     "session_secret": "REQUIRED",
+     "session_secret": "YOUR_SESSION_SECRET",
      "system_domain": "run.example.net",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
@@ -25,7 +25,7 @@ follow these instructions.
    should become
    ```json
    {
-     "session_secret": "REQUIRED",
+     "session_secret": "YOUR_SESSION_SECRET",
      "system_domain": "run.example.net",
      "api_client_id": "ignition",
      "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
