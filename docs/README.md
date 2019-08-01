@@ -24,7 +24,7 @@ PAS is now configured with:
 ## Create the `ignition` UAA client
 Any UAA commands will be run with the `uaa` CLI, which can be found
 [here](https://github.com/cloudfoundry-incubator/uaa-cli). Equivalent `uaac`
-commands exist but are out of scope for this document.
+commands exist but are out of scope for this document and may be omitted.
 
 The `ignition` client is an OAuth2 client with admin privileges so that it can
 create orgs for users. To create the client, run the following command:
@@ -37,6 +37,17 @@ $ uaa create-client ignition -s <UAA-IGNITION-CLIENT-SECRET> \
 ```
 where:
 - `UAA-IGNITION-CLIENT-SECRET` is a randomly generated string you choose
+
+### using `uaac`
+
+As an alternative, the `ignition` client can be created using `uaac` by running:
+
+```shell
+$ uaac client add ignition -s <UAA-IGNITION-CLIENT-SECRET> \
+    --authorized_grant_types client_credentials \
+    --scope cloud_controller.admin,scim.write,scim.read \
+    --authorities cloud_controller.admin,scim.write,scim.read
+```
 
 ## Create the Ignition Config User Provided Service
 This user provided service instance configures ignition for your environment.
