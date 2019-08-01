@@ -66,20 +66,23 @@ for your authentication method:
 
 ## Finish the JSON and Create the Service in PAS
 Once you have set your authentication method, add any [optional fields](./config-options.md)
-you need for your deployment. Create the service in PAS by running the commands:
-```shell
-$ cf target -o ignition -s production
-api endpoint:   https://api.sys.example.net
-api version:    2.131.0
-user:           admin
-org:            ignition
-space:          production
+you need for your deployment.
 
-$ cf create-user-provided-service ignition-config -p ignition-config.json
-Creating user provided service ignition-config in org ignition / space production as admin...
-OK
-
-```
+1. Ensure the correct space is targetted by running
+   ```shell
+   $ cf target -o ignition -s production
+   api endpoint:   https://api.sys.example.net
+   api version:    2.131.0
+   user:           admin
+   org:            ignition
+   space:          production
+   ```
+1. Create the service in PAS by running
+   ```shell
+   $ cf create-user-provided-service ignition-config -p ignition-config.json
+   Creating user provided service ignition-config in org ignition / space production as admin...
+   OK
+   ```
 
 ## Deploy `ignition`
 1. Download the [latest release](https://github.com/pivotalservices/ignition/releases/latest)
@@ -97,7 +100,7 @@ OK
      - ignition-config
      - ignition-identity # Only include this line if you chose SSO as your auth method
    ```
-1. Deploy the app to the correct org and space:
+1. Ensure the correct space is targetted by running:
    ```shell
    $ cf target -o ignition -s production
    api endpoint:   https://api.sys.example.net
@@ -105,7 +108,9 @@ OK
    user:           admin
    org:            ignition
    space:          production
-
+   ```
+1. Deploy the app by running:
+   ```shell
    $ cf push
    Pushing from manifest to org ignition / space production as admin...
 
