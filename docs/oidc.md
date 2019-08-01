@@ -15,20 +15,20 @@ follow these instructions.
    and add them to the existing json like below:
    ```json
    {
-     "session_secret": "YOUR_SESSION_SECRET",
+     "session_secret": "YOUR-SESSION-SECRET",
      "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
-     "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
+     "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
      "authorized_domain": "@example.net",
    }
    ```
    should become
    ```json
    {
-     "session_secret": "YOUR_SESSION_SECRET",
+     "session_secret": "YOUR-SESSION-SECRET",
      "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
-     "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
+     "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
      "authorized_domain": "@example.net",
      "uaa_origin": "google",
      "auth_variant": "openid",

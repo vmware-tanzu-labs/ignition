@@ -30,13 +30,13 @@ The `ignition` client is an OAuth2 client with admin privileges so that it can
 create orgs for users. To create the client, run the following command:
 
 ```shell
-$ uaa create-client ignition -s <UAA_IGNITION_CLIENT_SECRET> \
+$ uaa create-client ignition -s <UAA-IGNITION-CLIENT-SECRET> \
     --authorized_grant_types client_credentials \
     --scope cloud_controller.admin,scim.write,scim.read \
     --authorities cloud_controller.admin,scim.write,scim.read
 ```
 where:
-- `UAA_IGNITION_CLIENT_SECRET` is a randomly generated string you choose
+- `UAA-IGNITION-CLIENT-SECRET` is a randomly generated string you choose
 
 ## Create the Ignition Config User Provided Service
 This user provided service instance configures ignition for your environment.
@@ -44,15 +44,15 @@ Create a file called `ignition-config.json`, and include the following required
 attributes:
 ```json
 {
-  "session_secret": "YOUR_SESSION_SECRET",
+  "session_secret": "YOUR-SESSION-SECRET",
   "system_domain": "YOUR-SYSTEM-DOMAIN",
   "api_client_id": "ignition",
-  "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
+  "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
   "authorized_domain": "@example.net",
 }
 ```
 where:
-- `YOUR_SESSION_SECRET` is a randomly generated string you choose
+- `YOUR-SESSION-SECRET` is a randomly generated string you choose
 
 Please see the [glossary](./config-options.md) for definitions for available fields.
 

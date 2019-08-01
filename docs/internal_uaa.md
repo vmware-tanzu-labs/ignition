@@ -29,20 +29,20 @@ system as a whole, with no external dependencies required.
 1. Modify `ignition-config.json` from this:
    ```json
    {
-     "session_secret": "YOUR_SESSION_SECRET",
+     "session_secret": "YOUR-SESSION-SECRET",
      "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
-     "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
+     "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
      "authorized_domain": "@example.net",
    }
    ```
    to this:
    ```json
    {
-     "session_secret": "YOUR_SESSION_SECRET",
+     "session_secret": "YOUR-SESSION-SECRET",
      "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
-     "api_client_secret": "UAA_IGNITION_CLIENT_SECRET",
+     "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
      "authorized_domain": "@example.net",
      "uaa_origin": "<variant>",
      "auth_variant": "openid",
