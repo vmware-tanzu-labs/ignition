@@ -3,7 +3,7 @@ Using the internal UAA allows a seamless integration between ignition and the PA
 system as a whole, with no external dependencies required.
 
 1. Complete the steps located
-   [here](./README.md#create-the-ignition-config-user-provided-service)
+   [here](./README.md#4-create-the-ignition-config-user-provided-service)
 1. Create a second client used for logging in to ignition. Run a command similar
    to this:
    ```shell
@@ -29,25 +29,25 @@ system as a whole, with no external dependencies required.
 1. Modify `ignition-config.json` from this:
    ```json
    {
-     "session_secret": "REQUIRED",
-     "system_domain": "run.example.net",
+     "session_secret": "YOUR-SESSION-SECRET",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
-     "api_client_secret": "REQUIRED",
+     "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
      "authorized_domain": "@example.net",
    }
    ```
    to this:
    ```json
    {
-     "session_secret": "REQUIRED",
-     "system_domain": "run.example.net",
+     "session_secret": "YOUR-SESSION-SECRET",
+     "system_domain": "YOUR-SYSTEM-DOMAIN",
      "api_client_id": "ignition",
-     "api_client_secret": "REQUIRED",
+     "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
      "authorized_domain": "@example.net",
      "uaa_origin": "<variant>",
      "auth_variant": "openid",
      "auth_scopes": "openid,profile,email",
-     "auth_url": "https://login.YOURSYSTEMDOMAIN",
+     "auth_url": "https://login.YOUR-SYSTEM-DOMAIN",
      "client_id": "ignition-login",
      "client_secret": "REQUIRED"
    }
@@ -60,5 +60,5 @@ system as a whole, with no external dependencies required.
      configuration in Ops Manager.
 
 Return to the [main installation
-instructions](./README.md#finish-the-json-and-create-the-service-in-pas)
+instructions](./README.md#6-finish-the-json-and-create-the-service-in-pas)
 and finish the instructions on that page.
