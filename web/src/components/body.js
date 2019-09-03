@@ -402,7 +402,7 @@ class Body extends React.Component {
               RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
             </p>
             {this.renderButton(
-              `I'm ready. Go to my org!`,
+              'I\'m ready. Go to my org!',
               classes.speechButton
             )}
           </div>
