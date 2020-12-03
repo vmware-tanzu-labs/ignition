@@ -91,7 +91,7 @@
   },
   "dependencies": {
     "@material-ui/core": "4.4.0",
-    "@material-ui/icons": "4.2.1",
+    "@material-ui/icons": "4.11.2",
     "classnames": "^2.2.6",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
