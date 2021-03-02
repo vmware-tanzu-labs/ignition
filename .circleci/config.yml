@@ -7,9 +7,9 @@ jobs:
     steps:
       - checkout
       - run: |
-          GO111MODULE=on go test ./... -covermode=atomic -coverprofile=coverage.txt
+          go test ./... -covermode=atomic -coverprofile=coverage.txt
       - run: |
-          GO111MODULE=on GOOS=linux GOARCH=amd64 go build -o /tmp/output/ignition github.com/pivotalservices/ignition/cmd/ignition
+          GOOS=linux GOARCH=amd64 go build -o /tmp/output/ignition github.com/pivotalservices/ignition/cmd/ignition
       - persist_to_workspace:
           root: /tmp/output
           paths:
@@ -71,7 +71,7 @@ jobs:
       - attach_workspace:
           at: ~/ignition
       - run: |
-          go get -u github.com/tcnksm/ghr
+          go install github.com/tcnksm/ghr@latest
           ghr -t $GITHUB_TOKEN -u $GITHUB_USERNAME $CIRCLE_TAG ~/ignition/ignition.tar.gz
 
   deploy:

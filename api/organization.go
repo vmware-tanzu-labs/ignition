@@ -55,7 +55,7 @@ func OrganizationHandler(appsURL, orgPrefix, quotaID, isoSegmentID, spaceName st
 type OrgNotFoundError string
 
 func (o OrgNotFoundError) Error() string {
-	return fmt.Sprintf("organization %s not found", o)
+	return fmt.Sprintf("organization %s not found", string(o))
 }
 
 // CreateOrgForUser creates an org, a default space, and creates or retrieves
