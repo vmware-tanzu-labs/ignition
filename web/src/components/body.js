@@ -321,7 +321,7 @@ class Body extends React.Component {
                 {this.props.info.CompanyName}
               </span>{' '}
               is giving you a playground to push (deploy) apps and experiment.
-              Pivotal Cloud Foundry (PCF) uses{' '}
+              Tanzu Application Service (TAS) uses{' '}
               <span className={classes.emphasis}>orgs</span> to organize things.
             </p>
             <p>
@@ -329,7 +329,7 @@ class Body extends React.Component {
               each space can host <span className={classes.emphasis}>apps</span>.
               You will get your very own org and can create as many spaces as
               you like. {this.props.info.IgnitionOrgCount} people in your company are
-              already using PCF!
+              already using TAS!
             </p>
             {this.renderButton('Take me to my Org!', classes.speechButton)}
           </div>
@@ -350,11 +350,11 @@ class Body extends React.Component {
           </div>
           <p>
             Get the<br />
-            <a href="https://docs.pivotal.io/pivotalcf/latest/cf-cli/">
+            <a href="https://docs.pivotal.io/platform/cf-cli/">
               Cloud Foundry CLI
             </a>
             <br />
-            from Pivotal
+            from VMware
           </p>
         </div>
         <div className={classes.step}>
@@ -376,7 +376,7 @@ class Body extends React.Component {
           </div>
           <p>
             Learn to<br />
-            <a href="https://docs.pivotal.io/pivotalcf/latest/devguide/deploy-apps/deploy-app.html">
+            <a href="https://docs.pivotal.io/pivotalcf/devguide/deploy-apps/deploy-app.html">
               deploy an app
             </a>
           </p>
@@ -399,7 +399,7 @@ class Body extends React.Component {
             <p>
               Once apps are pushed to a space, you can bind them to{' '}
               <span className={classes.emphasis}>services</span> like MySQL and
-              RabbitMQ by visiting the &quot;Marketplace&quot; link in PCF.
+              RabbitMQ by visiting the &quot;Marketplace&quot; link in TAS.
             </p>
             {this.renderButton(
               'I\'m ready. Go to my org!',
@@ -440,7 +440,7 @@ class Body extends React.Component {
 
 Body.defaultProps = {
   info: {
-    CompanyName: 'Pivotal',
+    CompanyName: 'VMware',
     ExperimentationSpaceName: 'development',
     IgnitionOrgCount: 0
   }
