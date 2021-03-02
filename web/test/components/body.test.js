@@ -7,14 +7,14 @@ test('body defaults space name to development', () => {
   expect(body.html().includes('development')).toBe(true)
 })
 
-test('body defaults company name to Pivotal', () => {
+test('body defaults company name to VMware', () => {
   const body = shallow(<Body />)
-  expect(body.html().includes('Pivotal</span> is giving you')).toBe(true)
+  expect(body.html().includes('VMware</span> is giving you')).toBe(true)
 })
 
 test('body defaults org count to 0', () => {
   const body = shallow(<Body />)
-  expect(body.html().includes('0 people in your company are already using PCF!')).toBe(true)
+  expect(body.html().includes('0 people in your company are already using TAS!')).toBe(true)
 })
 
 test('body renders space name when present', () => {
@@ -42,5 +42,5 @@ test('body renders ignition org count when present', () => {
     IgnitionOrgCount: 42
   }
   const body = shallow(<Body info={info} />)
-  expect(body.html().includes('42 people in your company are already using PCF!')).toBe(true)
+  expect(body.html().includes('42 people in your company are already using TAS!')).toBe(true)
 })
