@@ -24,7 +24,7 @@ require (
 	github.com/mattn/go-isatty v0.0.3 // indirect
 	github.com/onsi/gomega v1.7.0
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20180306154005-525d0eb5f91d // indirect
 	github.com/sclevine/spec v1.2.0
 	github.com/smartystreets/assertions v1.0.1 // indirect
