@@ -1,27 +1,28 @@
 # How to Install Ignition
 
-## 1. Prepare Cloud Foundry
+## 1. Prepare Environment
 
 1. Install the
-[`Pivotal Application Service`](https://network.pivotal.io/products/elastic-runtime)
-(PAS) tile
+   [`Tanzu Application Service`](https://network.pivotal.io/products/elastic-runtime)
+   (TAS) tile
 
-PAS is now configured with:
+TAS is now configured with:
+
 - a system domain of `YOUR-SYSTEM-DOMAIN` (i.e. `sys.example.net`)
 - an applications domain of `YOUR-APPS-DOMAIN` (i.e. `apps.example.net`)
 
 ## 2. Create necessary artifacts
+
 1. Create an `ignition` org: `cf create-org ignition`. This will grant your user
    `OrgManager` permissions.
-1. Create a `production` space in the ignition org: `cf create-space production
-   -o ignition`. This will grant your user `SpaceManager` and `SpaceDeveloper`
+1. Create a `production` space in the ignition org: `cf create-space production -o ignition`. This will grant your user `SpaceManager` and `SpaceDeveloper`
    permissions. This is where the `ignition` app will live.
-1. Create an `ignition` quota: `cf create-quota ignition -m 10G -i -1 -r 1000
-   -s 100 --allow-paid-service-plans -a -1 --reserved-route-ports 1`. When
-   `ignition` creates orgs for users, it will set this quota on the newly created
-   org.
+1. Create an `ignition` quota: `cf create-quota ignition -m 10G -i -1 -r 1000 -s 100 --allow-paid-service-plans -a -1 --reserved-route-ports 1`. When
+   `ignition` creates orgs for users, it will set this quota on the newly
+   created org.
 
 ## 3. Create the `ignition` UAA client
+
 Any UAA commands will be run with the `uaa` CLI, which can be found
 [here](https://github.com/cloudfoundry-incubator/uaa-cli). Equivalent `uaac`
 commands exist but are out of scope for this document and may be omitted.
@@ -35,7 +36,9 @@ $ uaa create-client ignition -s <UAA-IGNITION-CLIENT-SECRET> \
     --scope cloud_controller.admin,scim.write,scim.read \
     --authorities cloud_controller.admin,scim.write,scim.read
 ```
+
 where:
+
 - `UAA-IGNITION-CLIENT-SECRET` is a randomly generated string you choose
 
 ### using `uaac`
@@ -50,34 +53,41 @@ $ uaac client add ignition -s <UAA-IGNITION-CLIENT-SECRET> \
 ```
 
 ## 4. Create the Ignition Config User Provided Service
+
 This user provided service instance configures ignition for your environment.
 Create a file called `ignition-config.json`, and include the following required
 attributes:
+
 ```json
 {
   "session_secret": "YOUR-SESSION-SECRET",
   "system_domain": "YOUR-SYSTEM-DOMAIN",
   "api_client_id": "ignition",
   "api_client_secret": "UAA-IGNITION-CLIENT-SECRET",
-  "authorized_domain": "@example.net",
+  "authorized_domain": "@example.net"
 }
 ```
+
 where:
+
 - `YOUR-SESSION-SECRET` is a randomly generated string you choose
 
 Please see the [glossary](./config-options.md) for definitions for available fields.
 
 ## 5. Choose Your Authentication Method
-Before creating the service in PAS, you must choose which authentication method
+
+Before creating the service in TAS, you must choose which authentication method
 you wish to use, and further configure the JSON file. Choose the appropriate link
 for your authentication method:
-1. [Pivotal SSO Tile](./sso.md)
-1. [Internal PAS UAA](./internal_uaa.md)
+
+1. [VMware SSO Tile](./sso.md)
+1. [Internal TAS UAA](./internal_uaa.md)
 1. [External OpenID Connect Provider](./oidc.md)
 
-## 6. Finish the JSON and Create the Service in PAS
-Once you have set your authentication method, add any [optional fields](./config-options.md)
-you need for your deployment.
+## 6. Finish the JSON and Create the Service in TAS
+
+Once you have set your authentication method, add any
+[optional fields](./config-options.md) you need for your deployment.
 
 1. Ensure the correct space is targeted by running
    ```shell
@@ -88,7 +98,7 @@ you need for your deployment.
    org:            ignition
    space:          production
    ```
-1. Create the service in PAS by running
+1. Create the service in TAS by running
    ```shell
    $ cf create-user-provided-service ignition-config -p ignition-config.json
    Creating user provided service ignition-config in org ignition / space production as admin...
@@ -96,20 +106,22 @@ you need for your deployment.
    ```
 
 ## 7. Deploy `ignition`
-1. Download the [latest release](https://github.com/pivotalservices/ignition/releases/latest)
+
+1. Download the
+   [latest release](https://github.com/vmware-tanzu-labs/ignition/releases/latest)
    from Github and expand it **into its own directory**.
 1. In that directory, create a file called `manifest.yml` that looks like this:
    ```yaml
    ---
    applications:
-   - name: ignition
-     memory: 128M
-     instances: 2
-     buildpacks: [binary_buildpack]
-     command: ./ignition
-     services:
-     - ignition-config
-     - ignition-identity # Only include this line if you chose SSO as your auth method
+     - name: ignition
+       memory: 128M
+       instances: 2
+       buildpacks: [binary_buildpack]
+       command: ./ignition
+       services:
+         - ignition-config
+         - ignition-identity # Only include this line if you chose SSO as your auth method
    ```
 1. Ensure the correct space is targeted by running:
    ```shell
@@ -121,6 +133,7 @@ you need for your deployment.
    space:          production
    ```
 1. Deploy the app by running:
+
    ```shell
    $ cf push
    Pushing from manifest to org ignition / space production as admin...

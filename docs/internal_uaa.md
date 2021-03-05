@@ -1,5 +1,6 @@
-# Ignition SSO with the Internal PAS UAA
-Using the internal UAA allows a seamless integration between ignition and the PAS
+# Ignition SSO with the Internal TAS UAA
+
+Using the internal UAA allows a seamless integration between ignition and the TAS
 system as a whole, with no external dependencies required.
 
 1. Complete the steps located
@@ -54,11 +55,11 @@ system as a whole, with no external dependencies required.
    ```
    For `uaa_origin`, the value should be one of the following:
    * `uaa` if you are using purely internal users
-   * `ldap` if PAS is configured to use LDAP
-   * If PAS is using SAML, `uaa_origin` should be the value of the `Provider Name`
-     field in the `Authentication and Enterprise SSO` section of the PAS Tile
-     configuration in Ops Manager.
+   * `ldap` if TAS is configured to use LDAP
+   * If TAS is using SAML, `uaa_origin` should be the value of the `Provider Name`
+     field in the `Authentication and Enterprise SSO` section of the TAS Tile
+     configuration in Operations Manager.
 
 Return to the [main installation
-instructions](./README.md#6-finish-the-json-and-create-the-service-in-pas)
+instructions](./README.md#6-finish-the-json-and-create-the-service-in-tas)
 and finish the instructions on that page.

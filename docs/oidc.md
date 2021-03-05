@@ -1,5 +1,6 @@
 # Ignition SSO with an External OpenID Connect Provider
-While you can use ignition without the [Single Sign-On for PCF](./sso.md) service,
+
+While you can use ignition without the [Single Sign-On for VMware Tanzu](./sso.md) service,
 we recommend you use either SSO or the [Internal UAA](./internal_uaa.md) to
 authenticate and authorize users for the application. It is possible that an
 external OpenID Connect compliant provider can be used directly, but it is not
@@ -39,5 +40,5 @@ follow these instructions.
    }
    ```
 Return to the [main installation
-instructions](./README.md#6-finish-the-json-and-create-the-service-in-pas)
+instructions](./README.md#6-finish-the-json-and-create-the-service-in-tas)
 and finish the instructions on that page.

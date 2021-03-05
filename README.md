@@ -1,57 +1,73 @@
 ## Ignition
-[![CircleCI](https://circleci.com/gh/pivotalservices/ignition/tree/master.svg?style=svg)](https://circleci.com/gh/pivotalservices/ignition/tree/master)
 
-A landing page for developers to self-service their way onto your Pivotal Cloud Foundry (PCF) deployment(s).
+[![CircleCI](https://circleci.com/gh/vmware-tanzu-labs/ignition/tree/master.svg?style=svg)](https://circleci.com/gh/vmware-tanzu-labs/ignition/tree/master)
 
-* Authenticates the user via OpenID Connect (which implicitly uses OAuth 2.0)
-* Allows the user to access Apps Manager and view their personal PCF org
+A landing page for developers to self-service their way onto your Tanzu
+Application Service (TAS) deployment(s).
+
+- Authenticates the user via OpenID Connect (which implicitly uses OAuth 2.0)
+- Allows the user to access Apps Manager and view their personal TAS org
 
 ### Installation Instructions
-We recommend you use the [Single Sign-On for PCF](https://network.pivotal.io/products/pivotal_single_sign-on_service) service to authenticate and authorize users for the application. It is possible that an OpenID Connect compliant provider can be used directly, but it is not recommended.
 
-* [Single Sign-On for PCF configured to use LDAP](./docs/ldap.md)
-* [External OpenID Connect provider](./docs/oidc.md)
+We recommend you use the
+[Single Sign-On for VMware Tanzu](https://network.pivotal.io/products/pivotal_single_sign-on_service)
+service to authenticate and authorize users for the application. It is possible
+that an OpenID Connect compliant provider can be used directly, but it is not
+recommended.
+
+- [Single Sign-On for TAS configured to use LDAP](./docs/ldap.md)
+- [External OpenID Connect provider](./docs/oidc.md)
 
 ### Contribute
 
-This application is a combination of a JavaScript single-page app (built with React) and a Go web app. The JavaScript app is built into a JavaScript bundle that the Go web app serves up. The Go web app also provides an API that the JavaScript app uses to function.
+This application is a combination of a JavaScript single-page app (built with
+React) and a Go web app. The JavaScript app is built into a JavaScript bundle
+that the Go web app serves up. The Go web app also provides an API that the
+JavaScript app uses to function.
 
 #### Yak Shaving (Developer Setup)
 
-This project uses [`dep`](https://github.com/golang/dep) and [`yarn`](https://yarnpkg.com) for dependency management.
+The web app uses [`yarn`](https://yarnpkg.com) for dependency management.
 
-The following setup script shows how to get your MacOS workstation ready for `ignition` development. Don't just blindly execute shell scripts though; [take a thorough look through it](https://raw.githubusercontent.com/pivotalservices/ignition/master/setup.sh) and then run the following:
+The following setup script shows how to get your MacOS workstation ready for
+`ignition` development. Don't just blindly execute shell scripts though;
+[take a thorough look through it](https://raw.githubusercontent.com/vmware-tanzu-labs/ignition/master/setup.sh)
+and then run the following:
 
-> `curl -o- https://raw.githubusercontent.com/pivotalservices/ignition/master/setup.sh | bash`
+> `curl -o- https://raw.githubusercontent.com/vmware-tanzu-labs/ignition/master/setup.sh | bash`
 
 #### Add A Feature / Fix An Issue
 
 We welcome pull requests to add additional functionality or fix issues. Please follow this procedure to get started:
 
-1. Ensure you have `go` `>=1.10.x` and `node` `v8.x.x` installed
-1. Ensure your `$GOPATH` is set; this is typically `$HOME/go`
-1. Clone this repository: `go get -u github.com/pivotalservices/ignition`
-1. Go to the repo root: `cd $GOPATH/src/github.com/pivotalservices/ignition`
-1. *Fork this repository*
+1. Ensure you have `go` `>=1.15x` and `node` `v8.x.x` installed
+1. Clone this repository
+1. Go to the repo root: `cd ignition`
+1. _Fork this repository_
 1. Add your fork as a new remote: `git remote add fork https://github.com/INSERT-YOUR-USERNAME-HERE/ignition.git`
 1. Create a local branch: `git checkout -b your initials-your-feature-name` (e.g. `git checkout -b jf-add-logo`)
 1. Make your changes, ensure you add tests to cover the changes, and then validate that all changes pass (see `Run all tests` below)
 1. Push your feature branch to your fork: `git push fork your initials-your-feature-name` (e.g. `git push fork jf-add-logo`)
-1. Make a pull request: `https://github.com/pivotalservices/ignition/compare/master...YOUR-USERNAME-HERE:your-initials-your-feature-name`
+1. Make a pull request: `https://github.com/vmware-tanzu-labs/ignition/compare/master...YOUR-USERNAME-HERE:your-initials-your-feature-name`
 
 ### Prerequisites
 
 1. Create a UAA client id and secret for ignition:
-  * `go get code.cloudfoundry.org/uaa-cli`
-  * `cd $GOPATH/src/code.cloudfoundry.org/uaa-cli`
-  * `make && make install`
-  * `uaa create-client ignition -s <GENERATE-YOUR-OWN-CLIENT-SECRET> --authorized_grant_types client_credentials --scope cloud_controller.admin,scim.write,scim.read --authorities cloud_controller.admin,scim.write,scim.read`
+
+- `go get code.cloudfoundry.org/uaa-cli`
+- `cd $GOPATH/src/code.cloudfoundry.org/uaa-cli`
+- `make && make install`
+- `uaa create-client ignition -s <GENERATE-YOUR-OWN-CLIENT-SECRET> --authorized_grant_types client_credentials --scope cloud_controller.admin,scim.write,scim.read --authorities cloud_controller.admin,scim.write,scim.read`
+
 1. Create a Cloud Foundry quota for ignition:
-  * `cf create-quota ignition -m 10G -i -1 -r 1000 -s 100 --allow-paid-service-plans -a -1 --reserved-route-ports 1`
+
+- `cf create-quota ignition -m 10G -i -1 -r 1000 -s 100 --allow-paid-service-plans -a -1 --reserved-route-ports 1`
 
 ### Run the application locally
 
-You will need to ensure your environment contains the relevant variables for the app to run. Here is an example `$GOPATH/src/github.com/pivotalservices/ignition/credentials/export.sh`:
+You will need to ensure your environment contains the relevant variables for the
+app to run. Here is an example `ignition/credentials/export.sh`:
 
 ```sh
 #!/bin/sh
@@ -96,17 +112,21 @@ export IGNITION_AUTH_URL="https://ignition.login.run.example.net"
 # export IGNITION_AUTH_SCOPES="openid,profile,email" # IGNITION_AUTH_SCOPES is not the same for Google as it is for the a Single Sign-On instance, and this allows you to override it with a comma separated list of values
 ```
 
-1. Make sure you're in the repository root directory: `cd $GOPATH/src/github.com/pivotalservices/ignition && . ./credentials/export.sh`
+1. Make sure you're in the repository root directory: `cd ignition && . ./credentials/export.sh`
 1. Ensure the web bundle is built: `pushd web && yarn install && yarn build && popd`
 1. Start the go web app: `go run cmd/ignition/main.go`
 1. Navigate to http://localhost:3000
 
 ### Run all tests
 
-1. Make sure you're in the repository root directory: `cd $GOPATH/src/github.com/pivotalservices/ignition`
+1. Make sure you're in the repository root directory: `cd ignition`
 1. Run go tests: `go test ./...`
 1. Run web tests: `pushd web && yarn ci && popd`
 
 ### Support
 
-`ignition` is a community supported Pivotal Cloud Foundry add-on. [Opening an issue](https://github.com/pivotalservices/ignition/issues/new) for questions, feature requests and/or bugs is the best path to getting "support". We strive to be active in keeping this tool working and meeting your needs in a timely fashion.
+`ignition` is a community supported add-on.
+[Opening an issue](https://github.com/vmware-tanzu-labs/ignition/issues/new) for
+questions, feature requests and/or bugs is the best path to getting "support".
+We strive to be active in keeping this tool working and meeting your needs in a
+timely fashion.

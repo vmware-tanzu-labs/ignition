@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 
-const styles = {
+const styles = theme =>  ({
   root: {
     display: 'flex',
     flexDirection: 'row',
@@ -12,7 +12,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     '& a': {
-      color: '#007D69',
+      color: theme.palette.primary.dark,
       fontSize: '12px',
       fontWeight: '600',
       letterSpacing: '0.5px',
@@ -21,9 +21,10 @@ const styles = {
     }
   },
   img: {
-    height: '60px'
+    height: '60px',
+    padding: '12px'
   }
-}
+})
 
 const Footer = props => {
   const { classes, links, logoURL } = props

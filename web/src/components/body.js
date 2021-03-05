@@ -17,7 +17,7 @@ import pewPew from './../../images/frgd_pewpew-man2.svg'
 import step1 from './../../images/step-1.svg'
 import step2 from './../../images/step-2.svg'
 import step3 from './../../images/step-3.svg'
-import pivotalLogo from './../../images/pivotal.png'
+import tanzuLogo from './../../images/VMware-Tanzu-Logo.svg'
 
 const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
   position: 'relative', // so we can overlap the button
@@ -74,7 +74,6 @@ const makeSpeechBubbleClass = (theme, bgColor, fgColor) => ({
 
 const speech1Background = '#083c61'
 const speech2Background = '#9bd2d2'
-const greenButton = '#007D69'
 
 const footerLinks = [
   { text: 'Copyright', url: '' },
@@ -91,14 +90,14 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     '&:hover': {
-      backgroundColor: '#007363'
+      backgroundColor: theme.palette.primary.main
     }
   },
   // for buttons that overlap the bottom of a speech bubble
   speechButton: {
     position: 'absolute',
     bottom: -4 * theme.spacing.unit,
-    backgroundColor: greenButton,
+    backgroundColor: theme.palette.primary.dark,
     color: 'white',
     height: 7 * theme.spacing.unit,
     fontWeight: 'bold',
@@ -432,7 +431,7 @@ class Body extends React.Component {
         {this.renderWelcomeInfo()}
         {this.renderGettingStartedSteps()}
         {this.renderSpacesInfo()}
-        <Footer links={footerLinks} logoURL={pivotalLogo} />
+        <Footer links={footerLinks} logoURL={tanzuLogo} />
       </div>
     )
   }
