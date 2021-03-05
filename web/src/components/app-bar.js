@@ -53,7 +53,7 @@ const styles = theme => ({
     flexShrink: 1
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     backgroundColor: theme.palette.primary.dark,
     '&:hover': {
       backgroundColor: theme.palette.primary.main
@@ -68,7 +68,7 @@ const styles = theme => ({
 })
 
 class MenuAppBar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       anchorEl: null
@@ -98,15 +98,15 @@ class MenuAppBar extends React.Component {
     location.replace('/logout')
   }
 
-  render () {
+  render() {
     const { classes } = this.props
     const { anchorEl } = this.state
     const open = Boolean(anchorEl)
-    const name = this.props.profile.Name
+    const email = this.props.profile.Email
 
     return (
       <div className={classes.root}>
-        <AppBar color="white">
+        <AppBar color="default">
           <Toolbar disableGutters={true}>
             <div className={classes.logoContainer}>
               <img
@@ -117,17 +117,16 @@ class MenuAppBar extends React.Component {
             </div>
             <div className={classes.userContainer}>
               <Typography
-                variant="subheading"
+                variant="subtitle1"
                 color="primary"
                 align="right"
                 className={classes.name}
               >
-                {`Welcome, ${name}`}
+                {`Welcome, ${email}`}
               </Typography>
               <Button
                 className={classes.button}
                 size="large"
-                variant="raised"
                 onClick={this.handleButton}
                 alt=""
               >

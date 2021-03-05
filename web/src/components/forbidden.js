@@ -30,7 +30,7 @@ const styles = theme => ({
     backgroundColor: '#007D69',
     color: 'white',
     width: '200px',
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     fontWeight: 'bold',
     letterSpacing: '3px',
     boxShadow: '-5px 5px 3px rgba(0, 0, 0, 0.20)',
@@ -43,7 +43,7 @@ const styles = theme => ({
       '@media only screen and (max-height: 375px) and (max-width: 667px)': {
         padding: '0',
         width: '150px',
-        margin: 0.5 * theme.spacing.unit,
+        margin: theme.spacing(0.5),
         minHeight: '32px'
       }
     }
@@ -85,7 +85,7 @@ const styles = theme => ({
 })
 
 class Forbidden extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       redirect: false
@@ -96,7 +96,7 @@ class Forbidden extends React.Component {
     window.location.replace('/logout')
   }
 
-  render () {
+  render() {
     const { classes } = this.props
     let email
     if (this.props.location.state !== undefined) {
@@ -127,7 +127,6 @@ class Forbidden extends React.Component {
             </div>
             <Button
               size="large"
-              variant="raised"
               className={this.props.classes.button}
               onClick={this.handleTryAgainButtonClick}
             >

@@ -88,7 +88,7 @@ const styles = theme => ({
     marginTop: '68px'
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     '&:hover': {
       backgroundColor: theme.palette.primary.main
     }
@@ -96,10 +96,10 @@ const styles = theme => ({
   // for buttons that overlap the bottom of a speech bubble
   speechButton: {
     position: 'absolute',
-    bottom: -4 * theme.spacing.unit,
+    bottom: theme.spacing(-4),
     backgroundColor: theme.palette.primary.dark,
     color: 'white',
-    height: 7 * theme.spacing.unit,
+    height: theme.spacing(7),
     fontWeight: 'bold',
     letterSpacing: '3px',
     boxShadow: '-5px 5px 3px rgba(0, 0, 0, 0.29)'
@@ -116,7 +116,7 @@ const styles = theme => ({
     backgroundColor: '#00253e',
     backgroundSize: 'cover',
     height: '80vh',
-    padding: 6 * theme.spacing.unit,
+    padding: theme.spacing(6),
     alignItems: 'center',
 
     display: 'flex',
@@ -125,7 +125,7 @@ const styles = theme => ({
     // screen less 600
     '@media screen and (orientation:portrait)': {
       [theme.breakpoints.down('sm')]: {
-        padding: 2 * theme.spacing.unit,
+        padding: theme.spacing(2),
         height: '80vh',
         alignItems: 'center'
       }
@@ -166,7 +166,7 @@ const styles = theme => ({
     backgroundSize: 'cover',
     backgroundColor: '#00253e',
     color: 'white',
-    padding: 6 * theme.spacing.unit,
+    padding: theme.spacing(6),
     height: '77vh',
     fontSize: '32px',
     display: 'flex',
@@ -175,7 +175,7 @@ const styles = theme => ({
       [theme.breakpoints.down('sm')]: {
         width: '100vw',
         height: '120vh',
-        padding: 2 * theme.spacing.unit,
+        padding: theme.spacing(2),
         fontSize: '2rem',
         paddingBottom: '20vh',
         flexDirection: 'column',
@@ -261,7 +261,7 @@ const styles = theme => ({
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     height: '80vh',
-    padding: 6 * theme.spacing.unit,
+    padding: theme.spacing(6),
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -292,7 +292,7 @@ const styles = theme => ({
 })
 
 class Body extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       orgUrl: ''
@@ -308,7 +308,7 @@ class Body extends React.Component {
     }
   }
 
-  renderWelcomeInfo () {
+  renderWelcomeInfo() {
     const { classes } = this.props
 
     return (
@@ -325,10 +325,10 @@ class Body extends React.Component {
             </p>
             <p>
               Orgs contain <span className={classes.emphasis}>spaces</span>, and
-              each space can host <span className={classes.emphasis}>apps</span>.
-              You will get your very own org and can create as many spaces as
-              you like. {this.props.info.IgnitionOrgCount} people in your company are
-              already using TAS!
+              each space can host <span className={classes.emphasis}>apps</span>
+              . You will get your very own org and can create as many spaces as
+              you like. {this.props.info.IgnitionOrgCount} people in your
+              company are already using TAS!
             </p>
             {this.renderButton('Take me to my Org!', classes.speechButton)}
           </div>
@@ -338,7 +338,7 @@ class Body extends React.Component {
     )
   }
 
-  renderGettingStartedSteps () {
+  renderGettingStartedSteps() {
     const { classes } = this.props
     return (
       <div className={classes.ctaSteps}>
@@ -348,7 +348,8 @@ class Body extends React.Component {
             <img className={classes.stepImage} src={step1} alt="step 1" />
           </div>
           <p>
-            Get the<br />
+            Get the
+            <br />
             <a href="https://docs.pivotal.io/platform/cf-cli/">
               Cloud Foundry CLI
             </a>
@@ -374,7 +375,8 @@ class Body extends React.Component {
             <img className={classes.stepImage} src={step3} alt="step 3" />
           </div>
           <p>
-            Learn to<br />
+            Learn to
+            <br />
             <a href="https://docs.pivotal.io/pivotalcf/devguide/deploy-apps/deploy-app.html">
               deploy an app
             </a>
@@ -384,7 +386,7 @@ class Body extends React.Component {
     )
   }
 
-  renderSpacesInfo () {
+  renderSpacesInfo() {
     const { classes } = this.props
     return (
       <div className={classes.ctaSpaces}>
@@ -401,7 +403,7 @@ class Body extends React.Component {
               RabbitMQ by visiting the &quot;Marketplace&quot; link in TAS.
             </p>
             {this.renderButton(
-              'I\'m ready. Go to my org!',
+              "I'm ready. Go to my org!",
               classes.speechButton
             )}
           </div>
@@ -411,11 +413,10 @@ class Body extends React.Component {
     )
   }
 
-  renderButton (text, extraClasses) {
+  renderButton(text, extraClasses) {
     return (
       <Button
         size="large"
-        variant="raised"
         className={classNames(this.props.classes.button, extraClasses)}
         onClick={this.handleOrgButtonClick}
       >
@@ -424,7 +425,7 @@ class Body extends React.Component {
     )
   }
 
-  render () {
+  render() {
     const { classes } = this.props
     return (
       <div className={classes.body}>

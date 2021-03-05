@@ -20,7 +20,7 @@ const styles = theme => ({
     backgroundColor: '#007D69',
     color: 'white',
     width: '200px',
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     marginTop: '15vh',
     fontWeight: 'bold',
     letterSpacing: '3px',
@@ -33,7 +33,7 @@ const styles = theme => ({
       '@media only screen and (max-height: 375px) and (max-width: 667px)': {
         padding: '0',
         width: '150px',
-        margin: 0.5 * theme.spacing.unit,
+        margin: theme.spacing(0.5),
         marginTop: '10vh',
         minHeight: '32px'
       }
@@ -46,13 +46,12 @@ class NotFound extends React.Component {
     window.location.replace('/')
   }
 
-  render () {
+  render() {
     const { classes } = this.props
     return (
       <div className={classes.page}>
         <Button
           size="large"
-          variant="raised"
           className={this.props.classes.button}
           onClick={this.handleTryAgainButtonClick}
         >
