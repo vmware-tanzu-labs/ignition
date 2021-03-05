@@ -72,7 +72,7 @@ jobs:
           at: ~/ignition
       - run: |
           go install github.com/tcnksm/ghr@latest
-          ghr -t $GITHUB_TOKEN -u $GITHUB_USERNAME $CIRCLE_TAG ~/ignition/ignition.tar.gz
+          ghr -t $GITHUB_TOKEN -u $GITHUB_USERNAME -r ignition $CIRCLE_TAG ~/ignition/ignition.tar.gz
 
   deploy:
     docker:
@@ -91,9 +91,9 @@ jobs:
           working_directory: ~/ignition
           command: |
             echo 'ignition.tar.gz' > .cfignore
-            ./../cf login -a $CF_STAGING_API -u $CF_STAGING_USERNAME -p "$CF_STAGING_PASSWORD" -o $CF_STAGING_ORG -s $CF_STAGING_SPACE
-            ./../cf push ignition -f /go/src/github.com/pivotalservices/ignition/manifests/ignition.yml
-            ./../cf push ignition-google -f /go/src/github.com/pivotalservices/ignition/manifests/ignition-google.yml
+            # ./../cf login -a $CF_STAGING_API -u $CF_STAGING_USERNAME -p "$CF_STAGING_PASSWORD" -o $CF_STAGING_ORG -s $CF_STAGING_SPACE
+            # ./../cf push ignition -f /go/src/github.com/pivotalservices/ignition/manifests/ignition.yml
+            # ./../cf push ignition-google -f /go/src/github.com/pivotalservices/ignition/manifests/ignition-google.yml
             ./../cf login -a $CF_PROD_API -u $CF_PROD_USERNAME -p "$CF_PROD_PASSWORD" -o $CF_PROD_ORG -s $CF_PROD_SPACE
             ./../cf push ignition -f /go/src/github.com/pivotalservices/ignition/manifests/ignition.yml
 workflows:
