@@ -2,7 +2,7 @@ resources:
 - name: ignition-github-release
   type: github-release
   source:
-    owner: pivotalservices
+    owner: vmware-tanzu-labs
     repository: ignition
     access_token: {{github-access-token}}
 
@@ -19,8 +19,7 @@ resources:
 - name: ignition-code
   type: git
   source:
-    uri: https://github.com/pivotalservices/ignition.git
-
+    uri: https://github.com/vmware-tanzu-labs/ignition.git
 
 jobs:
 - name: download-and-push
@@ -57,7 +56,6 @@ jobs:
               cf create-quota ignition -m 10G -i -1 -r 1000 -s 100 -a -1 \
                 --allow-paid-service-plans --reserved-route-ports 1
             fi
-
 
   - task: unzip-release
     config:

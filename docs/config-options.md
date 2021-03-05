@@ -3,7 +3,7 @@
 | Name | Description | Required? | Default Value | Example Value |
 | --- | --- | --- | --- | --- |
 | `session_secret` | Used to secure the user's session cookie. You should randomly generate the contents of this value and limit access to it. | YES | `null` | `somegeneratedvalue` |
-| `system_domain` | The PAS installation's system domain | YES | `null` | `sys.example.net` |
+| `system_domain` | The TAS installation's system domain | YES | `null` | `sys.example.net` |
 | `uaa_origin` | Where a user in UAA originated from. See [here](./README.md#5-choose-your-authentication-method) for more information | YES | `null` | `ldap` |
 | `api_client_id` | The client created [here](./README.md#3-create-the-ignition-uaa-client) | YES | `null` | `ignition` |
 | `api_client_secret` | The secret for the client created [here](./README.md#3-create-the-ignition-uaa-client) | YES | `null` | `supersecretvalue` |
